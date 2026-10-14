@@ -1,0 +1,10 @@
+{
+  "description": "Engage with a responsive digital companion that reacts to your facial expressions, voice, and movements, creating a unique interactive experience.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

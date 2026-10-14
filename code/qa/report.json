@@ -1,0 +1,301 @@
+{
+  "tests": [
+    "Home → preparation → Demo; eight original themes; Outfit weight 100",
+    "Smile: warm yellow, expanded, upward approach and faster rhythm",
+    "Sad: blue, slower, gathers and sinks",
+    "Surprise: one outward pulse, automatic recovery, purple tint remains",
+    "Sound: amplitude response, continuous modulation, single clap and recovery, mute",
+    "Rapid multi-event slider rise triggers exactly one loud onset",
+    "Hand: open/close, actual pointer slow follow and fast retreat/recovery",
+    "Body: stronger input increases rotation speed and whole-creature sway",
+    "Combined maximum inputs remain inside canvas with simultaneous color and motion",
+    "18 seconds of gentle combined input increases familiarity by over 30 percentage points",
+    "Three shapes, all eight themes, dialogs and familiarity reset",
+    "Capture downloads a nonempty PNG",
+    "Mobile 320/375/390, tablet 768 and landscape 844: no horizontal overflow; touch follow, sticky canvas, Help and Escape",
+    "Reduced-motion mode remains functional",
+    "No JavaScript exceptions; no tracking model or ElevenLabs requests"
+  ],
+  "errors": [],
+  "snapshots": {
+    "neutral": {
+      "stage": "demo",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "demo",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        546,
+        312.12550180676396
+      ],
+      "radius": 152.145,
+      "expansion": 1,
+      "scale": 1.0063997308231634,
+      "level": 0,
+      "speed": 1,
+      "rotation": 0.6412280000000002,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "surprise": 0,
+      "familiarity": 0.04,
+      "bounds": [
+        402.7124584484561,
+        162.8680435810612,
+        701.3708297335268,
+        460.4571253945171
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0
+      }
+    },
+    "smile": {
+      "stage": "demo",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "demo",
+        "shape": "seed",
+        "theme": 2,
+        "expression": "smile",
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0
+      },
+      "color": [
+        255,
+        213,
+        112
+      ],
+      "center": [
+        539.9436892748074,
+        268.72235412716446
+      ],
+      "radius": 152.145,
+      "expansion": 1.1953699792045387,
+      "scale": 1.1517598611739341,
+      "level": 0,
+      "speed": 1.467429532287393,
+      "rotation": 1.0937213483759294,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "surprise": 0,
+      "familiarity": 0.06679904556951237,
+      "bounds": [
+        344.3403497810035,
+        38.645405401250144,
+        790.7622703483648,
+        490.46007107256463
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0
+      }
+    },
+    "sad": {
+      "stage": "demo",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "demo",
+        "shape": "seed",
+        "theme": 2,
+        "expression": "sad",
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0
+      },
+      "color": [
+        120,
+        177,
+        255
+      ],
+      "center": [
+        546.0585597749737,
+        357.0587052086938
+      ],
+      "radius": 152.145,
+      "expansion": 0.7705817443178549,
+      "scale": 1.014161473507969,
+      "level": 0,
+      "speed": 0.43054405340361473,
+      "rotation": 1.307878080603206,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "surprise": 0,
+      "familiarity": 0.08304942855402987,
+      "bounds": [
+        440.03966868346356,
+        237.1773350071884,
+        664.7613412138035,
+        471.6003711294785
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0
+      }
+    },
+    "combined": {
+      "stage": "demo",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "demo",
+        "shape": "seed",
+        "theme": 2,
+        "expression": "smile",
+        "intensity": 0.85,
+        "sound": 1,
+        "sustain": false,
+        "muted": false,
+        "hand": true,
+        "openness": 1,
+        "body": 1
+      },
+      "color": [
+        212,
+        212,
+        140
+      ],
+      "center": [
+        593.3695408957298,
+        280.59242394896165
+      ],
+      "radius": 152.145,
+      "expansion": 1.382744093037694,
+      "scale": 1.0788299306701974,
+      "level": 0.9458988588496496,
+      "speed": 1.3848843319207103,
+      "rotation": 9.009507548848562,
+      "sway": 0.6135207210921167,
+      "clap": 0.9410492366863882,
+      "retreat": 0,
+      "surprise": 0,
+      "familiarity": 0.16059773450243786,
+      "bounds": [
+        217.75364088046257,
+        18.560427078716486,
+        974.941361190919,
+        539.1722341624754
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 1,
+        "clap": 3,
+        "retreat": 1
+      }
+    },
+    "familiar": {
+      "stage": "demo",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "demo",
+        "shape": "seed",
+        "theme": 2,
+        "expression": "smile",
+        "intensity": 0.85,
+        "sound": 0.25,
+        "sustain": false,
+        "muted": false,
+        "hand": true,
+        "openness": 0.65,
+        "body": 0
+      },
+      "color": [
+        255,
+        213,
+        112
+      ],
+      "center": [
+        552.5142179837668,
+        273.1778280599731
+      ],
+      "radius": 152.145,
+      "expansion": 1.3255000000000015,
+      "scale": 1.2347921852223989,
+      "level": 0.25000000000000017,
+      "speed": 1.4674999999999996,
+      "rotation": 14.592476530815588,
+      "sway": -1.926723656717496e-24,
+      "clap": 0,
+      "retreat": 0,
+      "surprise": 0,
+      "familiarity": 0.5745816345024457,
+      "bounds": [
+        272.18194474305227,
+        21.834865286108,
+        826.2729194287947,
+        523.9673430301405
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 1,
+        "clap": 3,
+        "retreat": 1
+      }
+    }
+  },
+  "network": [
+    "http://127.0.0.1:4173/",
+    "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500&family=Outfit:wght@100&display=swap",
+    "http://127.0.0.1:4173/style.css",
+    "http://127.0.0.1:4173/sketch.js",
+    "https://fonts.gstatic.com/s/outfit/v15/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC0O4a0Ew.woff2",
+    "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
+    "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2"
+  ],
+  "font": true,
+  "frameTiming": {
+    "averageMs": 16.455000000024786,
+    "maxMs": 16.80000000000291
+  }
+}
