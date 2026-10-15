@@ -1,5 +1,5 @@
 /* RESONANCE — vanilla port of figma-reference.
- * Signal boundary: DemoInput -> Creature.s. No hardware or network input.
+ * Signal boundary: exclusive Demo or Live input -> Creature.s.
  * Shape distributions and additive particle rendering derive from creature.ts.
  */
 'use strict';
@@ -75,6 +75,236 @@
       pts.set([x / norm, y / norm, z / norm], i * 3);
     }
     return pts;
+  }
+
+  // Pure signal filters are also exercised by the Node acceptance tests.
+  class AudioGate {
+    constructor() { this.reset(); }
+    reset() { this.elapsed = 0; this.samples = []; this.floor = .006; this.baseline = 0; this.level = 0; this.armed = false; this.quiet = 0; this.cooldown = 0; }
+    update(rms, dt, sensitivity = 1) {
+      rms = clamp(Number.isFinite(rms) ? rms : 0); dt = clamp(dt, 0, .1);
+      this.elapsed += dt; this.cooldown = Math.max(0, this.cooldown - dt);
+      if (this.elapsed < 1.3) {
+        this.samples.push(rms); this.baseline = rms;
+        const sorted = [...this.samples].sort((a, b) => a - b);
+        this.floor = clamp(sorted[Math.floor(sorted.length * .2)] || .003, .003, .15);
+        return { level: 0, spike: false, calibrating: true };
+      }
+      const gate = Math.max(.009, this.floor * 1.8 + .003) / Math.sqrt(sensitivity);
+      if (rms < gate) this.floor = approach(this.floor, Math.max(.003, rms), .15, dt);
+      const target = clamp((rms - gate) * 7 * sensitivity);
+      this.level = approach(this.level, target, target > this.level ? 9 : 4, dt);
+      const quietThreshold = Math.max(.035, this.floor * 2.4);
+      this.quiet = rms < quietThreshold ? this.quiet + dt : 0;
+      if (this.quiet > .4 && this.cooldown === 0) this.armed = true;
+      const onset = Math.max(.15 / Math.sqrt(sensitivity), this.floor * 5, this.baseline * 2.8);
+      const spike = this.armed && this.cooldown === 0 && rms > onset && rms - this.baseline > .045;
+      if (spike) { this.armed = false; this.cooldown = 3; this.quiet = 0; }
+      this.baseline = approach(this.baseline, rms, 2.4, dt);
+      return { level: this.level, spike, calibrating: false };
+    }
+  }
+
+  class ExpressionFilter {
+    constructor() { this.scores = { smile: 0, sad: 0, surprise: 0 }; this.active = null; this.candidate = null; this.since = 0; this.present = false; }
+    update(categories, now, dt) {
+      this.present = !!categories?.length;
+      const b = Object.fromEntries((categories || []).map(c => [c.categoryName, clamp(c.score)]));
+      const val = name => b[name] || 0;
+      const pair = name => (val(name + 'Left') + val(name + 'Right')) / 2;
+      const smile = clamp((pair('mouthSmile') - .2) / .5);
+      // A jaw opening cannot produce surprise without BOTH raised brows and widened eyes.
+      const brows = clamp((pair('browOuterUp') - .22) / .45);
+      const eyes = clamp((pair('eyeWide') - .15) / .4);
+      const surprise = Math.sqrt(brows * eyes) * (.8 + .2 * val('jawOpen')) * (1 - smile * .8);
+      const frown = clamp((pair('mouthFrown') - .12) / .4);
+      const sad = frown * (.45 + .55 * clamp((val('browInnerUp') - .1) / .45)) * (1 - smile) * (1 - surprise);
+      const raw = this.present ? { smile, sad, surprise } : { smile: 0, sad: 0, surprise: 0 };
+      for (const key of Object.keys(this.scores)) this.scores[key] = approach(this.scores[key], raw[key], 6, dt);
+      const strongest = Object.keys(this.scores).sort((a, b) => this.scores[b] - this.scores[a])[0];
+      let next = this.scores[strongest] > .32 ? strongest : null;
+      if (this.active && this.scores[this.active] > .18 && (!next || this.scores[next] < this.scores[this.active] + .14)) next = this.active;
+      if (!this.present) next = null;
+      if (next !== this.candidate) { this.candidate = next; this.since = now; }
+      const delay = next === 'sad' ? 500 : next ? 300 : 400;
+      if (now - this.since >= delay) this.active = next;
+      const result = { smile: 0, sad: 0, surprise: 0 };
+      if (this.present && this.active) result[this.active] = this.scores[this.active];
+      return result;
+    }
+  }
+
+  // Serialized into a classic worker: the official WASM loader needs importScripts.
+  // All URLs are absolute, same-origin paths computed from sketch.js, never a CDN.
+  function faceWorker() {
+    let task;
+    self.onmessage = async ({ data }) => {
+      try {
+        if (data.type === 'init') {
+          const { FilesetResolver, FaceLandmarker } = await import(data.library);
+          const files = await FilesetResolver.forVisionTasks(data.wasm);
+          task = await FaceLandmarker.createFromOptions(files, {
+            baseOptions: { modelAssetPath: data.model, delegate: 'CPU' }, runningMode: 'VIDEO', numFaces: 1,
+            outputFaceBlendshapes: true, outputFacialTransformationMatrixes: false,
+            minFaceDetectionConfidence: .55, minFacePresenceConfidence: .55, minTrackingConfidence: .55,
+          });
+          self.postMessage({ type: 'ready' });
+        } else if (data.type === 'frame') {
+          try {
+            const result = task.detectForVideo(data.image, data.time);
+            self.postMessage({ type: 'result', categories: result.faceBlendshapes?.[0]?.categories || [], time: data.time });
+          } finally { data.image.close(); }
+        } else if (data.type === 'close') { task?.close(); self.close(); }
+      } catch (error) { self.postMessage({ type: 'error', message: String(error?.message || error) }); }
+    };
+  }
+  const assetBase = new URL('.', document.currentScript.src);
+  const localAsset = path => new URL(path, assetBase).href;
+  const failure = (name, message) => Object.assign(new Error(message), { name });
+  class LiveInput {
+    constructor() {
+      this.generation = 0; this.stream = null; this.audio = null; this.worker = null; this.active = false;
+      this.sensitivity = 1; this.muted = false; this.previewHidden = false; this.gate = new AudioGate();
+      this.expression = new ExpressionFilter(); this.frames = 0; this.modelReady = false; this.starting = false;
+      this.modelTimer = 0; this.permissionTimer = 0; this.frameTimer = 0; this.cancelLoad = null;
+    }
+    stop() {
+      this.generation++; this.active = false; this.starting = false; this.modelReady = false;
+      clearTimeout(this.modelTimer); clearTimeout(this.permissionTimer); clearTimeout(this.frameTimer);
+      this.cancelLoad?.(); this.cancelLoad = null;
+      this.worker?.terminate(); this.worker = null;
+      if (this.workerURL) URL.revokeObjectURL(this.workerURL); this.workerURL = null;
+      this.stream?.getTracks().forEach(track => track.stop()); this.stream = null;
+      this.source?.disconnect(); this.analyser?.disconnect(); this.source = this.analyser = null;
+      if (this.audio) this.audio.close().catch(() => {}); this.audio = null;
+      const video = $('#camera'); video.pause(); video.srcObject = null;
+      this.busy = false; this.resultAt = 0; this.lastFrame = 0; this.lastVideo = -1;
+      this.expression = new ExpressionFilter(); this.gate.reset(); this.frames = 0;
+      if (typeof creature !== 'undefined') creature.reset();
+    }
+    async start() {
+      if (this.starting || this.active) return;
+      this.stop(); const id = this.generation;
+      const current = () => id === this.generation;
+      this.starting = true; this.muted = false; this.previewHidden = false;
+      resetInputs(); setStage('loading');
+      $('#connection-title').textContent = 'Getting ready';
+      $('#connection-message').textContent = 'Allow your camera and microphone to begin.';
+      $('#retry').hidden = true;
+      let phase = 'permission';
+      try {
+        if (!isSecureContext || !navigator.mediaDevices?.getUserMedia) throw failure('UnsupportedError', 'Use HTTPS or localhost in a browser with camera and microphone support.');
+        if (!window.Worker || !window.createImageBitmap || !window.OffscreenCanvas) throw failure('UnsupportedError', 'This browser cannot run face tracking. Try a recent Chrome, Edge or Safari browser, or use Demo.');
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) throw failure('UnsupportedError', 'Audio analysis is not supported in this browser. Try another browser or use Demo.');
+        this.audio = new Audio(); this.audio.resume().catch(() => {});
+        this.permissionTimer = setTimeout(() => {
+          if (current()) $('#connection-message').textContent = 'Still waiting for device access. Check your browser’s permission prompt, or choose Demo.';
+        }, 15000);
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 24, max: 30 } },
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: false },
+        });
+        if (!current()) { stream.getTracks().forEach(t => t.stop()); return; }
+        clearTimeout(this.permissionTimer); this.stream = stream;
+        stream.getTracks().forEach(track => track.addEventListener('ended', () => {
+          if (current()) this.fail(failure('NotReadableError', 'A device disconnected. Reconnect it and try again.'));
+        }));
+        phase = 'camera';
+        $('#connection-message').textContent = 'Starting the camera…';
+        const video = $('#camera'); video.srcObject = stream;
+        let videoTimer;
+        try { await Promise.race([video.play(), new Promise((_, reject) => { videoTimer = setTimeout(() => reject(failure('CameraError', 'The camera did not start. Check that it is available, then try again.')), 12000); })]); }
+        finally { clearTimeout(videoTimer); }
+        if (!current()) return;
+        this.source = this.audio.createMediaStreamSource(stream); this.analyser = this.audio.createAnalyser();
+        this.analyser.fftSize = 1024; this.data = new Float32Array(this.analyser.fftSize); this.source.connect(this.analyser);
+        // No connection to the audio destination: there is no microphone feedback.
+        phase = 'model';
+        $('#connection-message').textContent = 'Loading the face model on this device. The first start may take a moment…';
+        await this.loadModel(id);
+        if (!current()) return;
+        this.gate.reset(); this.expression = new ExpressionFilter(); this.active = true; this.starting = false;
+        this.modelReady = true; this.resultAt = performance.now(); this.lastResultTime = this.resultAt;
+        $('#camera').classList.remove('preview-hidden'); $('#preview-placeholder').hidden = true;
+        $('#toggle-preview').textContent = 'Hide preview'; $('#toggle-preview').setAttribute('aria-pressed', 'false');
+        $('#model-status').textContent = 'Face Landmarker is ready. Processing stays on this device.';
+        setStage('live'); syncControls();
+      } catch (error) {
+        if (!current()) return;
+        if (phase === 'model' && error.name !== 'AbortError') error = failure('ModelError', 'The face model could not load. Check the connection and model files, then try again.');
+        this.fail(error);
+      }
+    }
+    loadModel(id) {
+      return new Promise((resolve, reject) => {
+        this.workerURL = URL.createObjectURL(new Blob([`(${faceWorker.toString()})()`], { type: 'text/javascript' }));
+        this.worker = new Worker(this.workerURL);
+        this.cancelLoad = () => reject(failure('AbortError', 'Cancelled'));
+        this.modelTimer = setTimeout(() => reject(failure('ModelError', 'Model loading timed out')), 45000);
+        this.worker.onerror = () => {
+          if (id !== this.generation) return;
+          if (this.starting) reject(failure('ModelError', 'Worker could not load'));
+          else this.fail(failure('ModelError', 'Face tracking stopped. Try again to reconnect.'));
+        };
+        this.worker.onmessage = ({ data }) => {
+          if (id !== this.generation) return;
+          if (data.type === 'ready') { clearTimeout(this.modelTimer); this.cancelLoad = null; resolve(); }
+          else if (data.type === 'result') {
+            clearTimeout(this.frameTimer); this.busy = false; this.resultAt = performance.now(); this.frames++;
+            const signals = this.expression.update(data.categories, data.time, clamp((data.time - this.lastResultTime) / 1000, .01, .2));
+            this.lastResultTime = data.time;
+            if (this.active && model.stage === 'live' && !document.hidden) Object.assign(creature.s, signals);
+          } else if (data.type === 'error') {
+            if (this.starting) reject(failure('ModelError', data.message));
+            else this.fail(failure('ModelError', 'Face tracking stopped. Try again to reconnect.'));
+          }
+        };
+        this.worker.postMessage({ type: 'init', library: localAsset('vendor/mediapipe-0.10.14/vision_bundle.mjs'),
+          wasm: localAsset('vendor/mediapipe-0.10.14/wasm'), model: localAsset('models/face_landmarker.task') });
+      });
+    }
+    fail(error) {
+      const messages = {
+        NotAllowedError: 'Camera or microphone access was blocked. Allow both in your browser’s site settings, then try again.',
+        SecurityError: 'Device access is blocked by this browser or page. Open the site directly over HTTPS and try again.',
+        NotFoundError: 'No camera or microphone was found. Connect both devices, then try again.',
+        OverconstrainedError: 'The camera or microphone could not use these settings. Try a different device or browser.',
+        NotReadableError: 'A camera or microphone is unavailable or disconnected. Close other apps using it, then try again.',
+      };
+      const message = messages[error.name] || (['UnsupportedError', 'ModelError', 'CameraError'].includes(error.name) ? error.message : 'The interaction could not start. Check your devices and try again.');
+      setStage('error'); $('#connection-title').textContent = 'Could not connect';
+      $('#connection-message').textContent = message; $('#retry').hidden = false;
+      $('#connection-title').focus({ preventScroll: true });
+    }
+    update(now, dt) {
+      if (!this.active || model.stage !== 'live') return;
+      const s = creature.s;
+      // Explicitly zero channels that this phase does not track.
+      s.handPresent = false; s.handSpeed = 0; s.bodyMotion = 0;
+      if (!this.muted && this.audio?.state === 'running') {
+        this.analyser.getFloatTimeDomainData(this.data);
+        const rms = Math.sqrt(this.data.reduce((sum, v) => sum + v * v, 0) / this.data.length);
+        this.audioState = this.gate.update(rms, dt, this.sensitivity); s.level = this.audioState.level;
+        if (this.audioState.spike) s.spike++;
+      } else { s.level = 0; }
+      if (now - this.resultAt > 1000) { s.smile = s.sad = s.surprise = 0; this.expression.present = false; }
+      const video = $('#camera');
+      if (!this.busy && now - this.lastFrame >= 80 && video.readyState >= 2 && video.currentTime !== this.lastVideo) {
+        this.lastFrame = now; this.lastVideo = video.currentTime; this.busy = true;
+        const id = this.generation;
+        this.frameTimer = setTimeout(() => { if (id === this.generation) this.fail(failure('ModelError', 'Face tracking stopped responding. Try again to reconnect.')); }, 12000);
+        createImageBitmap(video).then(image => {
+          if (id !== this.generation || !this.active) { image.close(); return; }
+          this.worker.postMessage({ type: 'frame', image, time: now }, [image]);
+        }).catch(() => { if (id === this.generation) this.fail(failure('CameraError', 'The camera image is unavailable. Try again to reconnect.')); });
+      }
+    }
+    setMuted(muted) {
+      this.muted = muted; this.stream?.getAudioTracks().forEach(track => { track.enabled = !muted; });
+      this.gate.reset(); creature.s.level = 0;
+      if (!muted) this.audio?.resume().catch(() => {});
+    }
   }
 
   class Creature {
@@ -247,6 +477,7 @@
   const model = { stage: 'welcome', shape: 'seed', theme: 2, expression: null, intensity: .85,
     sound: 0, sustain: false, muted: false, hand: false, openness: .5, body: 0 };
   const creature = new Creature($('#creature'), { count: matchMedia('(max-width: 767px)').matches ? 2300 : 3600 });
+  const live = new LiveInput();
   const previews = [];
   let toastTimer, lastUI = 0, lastSoundInput = { value: 0, time: 0 }, pointer = null;
   function toast(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').hidden = false; toastTimer = setTimeout(() => $('#toast').hidden = true, 2400); }
@@ -284,8 +515,10 @@
       $(`#${id}`).value = model[key]; $(`#${id}-value`).textContent = `${Math.round(model[key] * 100)}%`;
     }
     for (const [id, key] of [['sustain', 'sustain'], ['hand', 'hand'], ['mute', 'muted']]) $(`#${id}`).setAttribute('aria-pressed', String(model[key]));
-    $('#hand').textContent = `手势跟随 · ${model.hand ? 'On' : 'Off'}`;
-    $('#mute-label').textContent = model.muted ? 'Sound off' : 'Demo sound';
+    $('#hand').textContent = `Follow hand · ${model.hand ? 'On' : 'Off'}`;
+    const muted = model.stage === 'live' ? live.muted : model.muted;
+    $('#mute').setAttribute('aria-pressed', String(muted));
+    $('#mute-label').textContent = muted ? 'Sound off' : model.stage === 'live' ? 'Microphone' : 'Demo sound';
     document.body.classList.toggle('hand-active', model.hand && model.stage === 'demo');
     $('#creature').tabIndex = model.hand && model.stage === 'demo' ? 0 : -1;
     if (!model.hand) $('#hand-marker').hidden = true;
@@ -295,32 +528,56 @@
     creature.reset(familiarity); pointer = null; lastSoundInput = { value: 0, time: performance.now() }; syncControls();
   }
   function setStage(stage) {
+    if (stage !== 'live' && stage !== 'loading') live.stop();
     $$('dialog[open]').forEach(d => d.close());
-    model.stage = stage; creature.engaged = stage === 'demo';
+    model.stage = stage; creature.engaged = stage === 'demo' || stage === 'live';
     document.body.dataset.stage = stage;
+    document.body.classList.toggle('in-session', creature.engaged);
     $('#welcome').hidden = stage !== 'welcome'; $('#prep').hidden = stage !== 'prep';
-    $('#session').hidden = stage !== 'demo'; $('#home').hidden = stage === 'welcome';
+    $('#session').hidden = !creature.engaged; $('#home').hidden = stage === 'welcome';
+    $('#connection').hidden = stage !== 'loading' && stage !== 'error';
+    $('#demo-controls').hidden = stage !== 'demo'; $('#live-controls').hidden = stage !== 'live';
+    $('#mode-badge').textContent = stage === 'live' ? 'LIVE · CAMERA + MICROPHONE' : 'DEMO · SIMULATED INPUTS';
+    $('.skip-link').href = stage === 'live' ? '#live-controls' : '#demo-controls';
+    $('.skip-link').textContent = stage === 'live' ? 'Skip to live controls' : 'Skip to Demo controls';
     if (stage === 'welcome') resetInputs(true);
+    clearTimeout(toastTimer); $('#toast').hidden = true; syncControls();
     window.scrollTo(0, 0); creature.resize();
     requestAnimationFrame(() => {
       if (stage === 'prep') $('#prep-title').focus();
       else if (stage === 'demo') $('#demo-controls').focus({ preventScroll: true });
+      else if (stage === 'live') $('#live-controls').focus({ preventScroll: true });
+      else if (stage === 'loading' || stage === 'error') $('#connection-title').focus({ preventScroll: true });
       else $('#meet').focus({ preventScroll: true });
     });
   }
   $('#meet').addEventListener('click', () => setStage('prep'));
-  $('#start').addEventListener('click', () => setStage('demo'));
+  $('#start').addEventListener('click', () => live.start());
+  $('#retry').addEventListener('click', () => live.start());
+  for (const id of ['try-demo', 'fallback-demo']) $(`#${id}`).addEventListener('click', () => { resetInputs(); setStage('demo'); });
+  $('#cancel-start').addEventListener('click', () => setStage('prep'));
+  $('#exit').addEventListener('click', () => setStage('welcome'));
+  $('#sensitivity').addEventListener('input', e => { live.sensitivity = +e.target.value; $('#sensitivity-value').textContent = `${live.sensitivity.toFixed(1)}×`; });
+  $('#calibrate').addEventListener('click', () => { live.gate.reset(); toast('Stay quiet for a moment while the microphone settles.'); });
+  $('#resume-audio').addEventListener('click', () => { live.audio?.resume().catch(() => toast('Could not resume the microphone. End the interaction and try again.')); });
+  $('#toggle-preview').addEventListener('click', () => {
+    live.previewHidden = !live.previewHidden;
+    $('#camera').classList.toggle('preview-hidden', live.previewHidden);
+    $('#preview-placeholder').hidden = !live.previewHidden;
+    $('#toggle-preview').textContent = live.previewHidden ? 'Show preview' : 'Hide preview';
+    $('#toggle-preview').setAttribute('aria-pressed', String(live.previewHidden));
+  });
   $('#home').addEventListener('click', () => setStage('welcome'));
   $$('.dialog-home').forEach(b => b.addEventListener('click', () => setStage('welcome')));
-  $('#reset').addEventListener('click', () => { resetInputs(); toast('已恢复中性 · 保留熟悉度'); });
-  $('#restart').addEventListener('click', () => { resetInputs(true); $('#help-dialog').close(); toast('从初次见面重新开始'); });
+  $('#reset').addEventListener('click', () => { if (model.stage === 'demo') resetInputs(); toast('Inputs reset. Familiarity stays.'); });
+  $('#restart').addEventListener('click', () => { resetInputs(true); $('#help-dialog').close(); toast('A fresh start. Take your time.'); });
   $$('[data-expression]').forEach(b => b.addEventListener('click', () => {
     model.expression = model.expression === b.dataset.expression ? null : b.dataset.expression; syncControls();
   }));
   $('#expression').addEventListener('input', e => { model.intensity = +e.target.value; syncControls(); });
   $('#sound').addEventListener('input', e => {
     const value = +e.target.value, now = performance.now();
-    if (!model.muted && value > .72 && value - lastSoundInput.value > .24 && now - lastSoundInput.time < 450) creature.trigger('clap');
+    if (model.stage === 'demo' && !model.muted && value > .72 && value - lastSoundInput.value > .24 && now - lastSoundInput.time < 450) creature.trigger('clap');
     model.sound = value;
     // Keep a short onset window: several small slider events can form one quick loud rise.
     if (now - lastSoundInput.time > 450) lastSoundInput = { value, time: now };
@@ -330,13 +587,14 @@
   $('#sound').addEventListener('keydown', () => { lastSoundInput.time = performance.now(); });
   $('#sustain').addEventListener('click', () => { model.sustain = !model.sustain; if (model.sustain && model.sound === 0) model.sound = .45; syncControls(); });
   $('#clap').addEventListener('click', () => {
-    if (model.muted) { toast('Demo sound 已静音，请先开启'); return; }
-    if (creature.trigger('clap')) toast('Demo · 突然大声，散开后会重聚');
+    if (model.stage !== 'demo') return;
+    if (model.muted) { toast('Demo sound is off. Turn it on first.'); return; }
+    if (creature.trigger('clap')) toast('Demo · A loud sound. It will gather again.');
   });
-  $('#mute').addEventListener('click', () => { model.muted = !model.muted; syncControls(); });
+  $('#mute').addEventListener('click', () => { if (model.stage === 'live') live.setMuted(!live.muted); else model.muted = !model.muted; syncControls(); });
   $('#hand').addEventListener('click', () => { model.hand = !model.hand; pointer = null; creature.s.handSpeed = 0; syncControls(); });
   $('#openness').addEventListener('input', e => { model.openness = +e.target.value; model.hand = true; syncControls(); });
-  $('#retreat').addEventListener('click', () => { model.hand = true; creature.trigger('retreat'); syncControls(); });
+  $('#retreat').addEventListener('click', () => { if (model.stage !== 'demo') return; model.hand = true; creature.trigger('retreat'); syncControls(); });
   $('#body').addEventListener('input', e => { model.body = +e.target.value; syncControls(); });
   function moveHand(e) {
     if (!model.hand || model.stage !== 'demo') return;
@@ -354,7 +612,7 @@
   $('#creature').addEventListener('pointermove', moveHand);
   for (const event of ['pointerleave', 'pointercancel', 'pointerup']) $('#creature').addEventListener(event, () => { pointer = null; $('#hand-marker').hidden = true; });
   $('#creature').addEventListener('keydown', e => {
-    if (!model.hand || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    if (model.stage !== 'demo' || !model.hand || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
     e.preventDefault();
     creature.s.handX = clamp(creature.s.handX + (e.key === 'ArrowRight' ? .05 : e.key === 'ArrowLeft' ? -.05 : 0));
     creature.s.handY = clamp(creature.s.handY + (e.key === 'ArrowDown' ? .05 : e.key === 'ArrowUp' ? -.05 : 0));
@@ -369,7 +627,7 @@
       if (!blob) return;
       const link = document.createElement('a'), url = URL.createObjectURL(blob);
       link.href = url; link.download = `resonance-${Date.now()}.png`; link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1500); toast('已保存这一刻 · PNG');
+      setTimeout(() => URL.revokeObjectURL(url), 1500); toast('This moment is saved as a PNG.');
     }, 'image/png');
   });
   function feedDemo(dt) {
@@ -383,17 +641,27 @@
   function updateStatus() {
     const fam = creature.fam;
     $('#bond-fill').style.width = `${fam * 100}%`; $('#bond-value').textContent = `${Math.round(fam * 100)}%`;
-    $('#bond-label').textContent = fam < .15 ? 'Cautious · 还有一点害羞' : fam < .4 ? 'Curious · 开始对你好奇' : fam < .7 ? 'Warming up · 慢慢靠近' : 'Familiar · 已经认得你了';
+    $('#bond-label').textContent = fam < .15 ? 'Cautious · Still a little shy' : fam < .4 ? 'Curious · Getting to know you' : fam < .7 ? 'Warming up · Coming closer' : 'Familiar · At ease with you';
+    const s = creature.s;
+    const expression = model.stage === 'live' ? live.expression.active : model.expression;
+    if (model.stage === 'live') {
+      $('#face-status').textContent = live.expression.present ? 'Face in view' : 'Look toward the camera';
+      $('#expression-status').textContent = live.expression.present ? ({ smile: 'Smile cue', sad: 'Sad-look cue', surprise: 'Surprise cue' }[expression] || 'Neutral') : 'No face detected';
+      const suspended = live.audio?.state !== 'running';
+      $('#resume-audio').hidden = !suspended || live.muted;
+      $('#mic-status').textContent = live.muted ? 'Microphone is off.' : suspended ? 'Microphone paused. Tap Resume microphone.' : live.audioState?.calibrating ? 'Stay quiet for a moment while the microphone settles.' : 'Listening. Gentle sounds make ripples.';
+      $('#mic-meter').value = s.level;
+    }
     const reactions = [];
-    if (creature.events.retreat < 2.7) reactions.push('有点吓到了，轻轻退后');
-    else if (creature.events.clap < 4.2) reactions.push('散开了，正在慢慢重聚');
-    else if (model.expression === 'smile') reactions.push('它带着暖意，轻快地靠近');
-    else if (model.expression === 'sad') reactions.push('它慢下来，轻轻下沉、聚拢');
-    else if (model.expression === 'surprise') reactions.push('它展开又收回，留下一点紫色');
-    if (model.sound > .05 && !model.muted) reactions.push('声音在它身上泛起波纹');
-    if (model.hand) reactions.push(model.openness > .65 ? '掌心张开，它也舒展开' : model.openness < .35 ? '掌心收拢，它凝聚起来' : '慢慢移动，它会跟随');
-    if (model.body > .1) reactions.push('它随着动作摇摆');
-    const text = reactions.length ? reactions.join(' · ') : '慢慢来，它正在认识你。';
+    if (creature.events.retreat < 2.7) reactions.push('A little startled. Gently stepping back');
+    else if (creature.events.clap < 4.2) reactions.push('Drifting apart, then gathering again');
+    else if (expression === 'smile' && s.smile > .1) reactions.push('A warm glow, a little closer');
+    else if (expression === 'sad' && s.sad > .1) reactions.push('Slowing down and gathering close');
+    else if (expression === 'surprise' && s.surprise > .1) reactions.push('Opening up, then settling into violet');
+    if (s.level > .05) reactions.push('Sound ripples through it');
+    if (model.stage === 'demo' && model.hand) reactions.push(model.openness > .65 ? 'Opening with your hand' : model.openness < .35 ? 'Gathering with your hand' : 'Move slowly. It will follow');
+    if (model.stage === 'demo' && model.body > .1) reactions.push('Swaying with you');
+    const text = reactions.length ? reactions.join(' · ') : 'Take your time. It is getting to know you.';
     if ($('#reaction').textContent !== text) $('#reaction').textContent = text;
   }
   renderPickers(); syncControls();
@@ -401,16 +669,24 @@
   function frame(now) {
     const dt = Math.min(.04, Math.max(0, (now - lastTime) / 1000)); lastTime = now;
     if (!document.hidden) {
-      feedDemo(dt); creature.update(dt); creature.draw();
+      if (model.stage === 'demo') feedDemo(dt);
+      else if (model.stage === 'live') live.update(now, dt);
+      creature.update(dt); creature.draw();
       for (const preview of previews) if (preview.canvas.getClientRects().length) { preview.update(dt); preview.draw(); }
       if (now - lastUI > 250) { updateStatus(); lastUI = now; }
     }
     requestAnimationFrame(frame);
   }
-  document.addEventListener('visibilitychange', () => { lastTime = performance.now(); pointer = null; creature.s.handSpeed = 0; });
+  document.addEventListener('visibilitychange', () => {
+    lastTime = performance.now(); pointer = null; creature.s.handSpeed = 0;
+    if (live.active) { live.gate.reset(); live.expression = new ExpressionFilter(); creature.s.smile = creature.s.sad = creature.s.surprise = creature.s.level = 0; }
+  });
+  window.addEventListener('pagehide', () => { live.stop(); if (model.stage === 'live' || model.stage === 'loading') setStage('prep'); });
   requestAnimationFrame(frame);
   // Read-only diagnostic snapshot for browser QA; it cannot inject real inputs.
   Object.defineProperty(window, 'resonanceDemo', { value: Object.freeze({
-    snapshot: () => ({ stage: model.stage, shape: model.shape, theme: THEMES[model.theme].name, inputs: { ...model }, ...structuredClone(creature.metrics) }),
+    snapshot: () => ({ stage: model.stage, shape: model.shape, theme: THEMES[model.theme].name, inputs: { ...model }, signals: { ...creature.s }, ...structuredClone(creature.metrics),
+      live: { active: live.active, starting: live.starting, modelReady: live.modelReady, worker: !!live.worker, frames: live.frames, facePresent: live.expression.present, expression: live.expression.active,
+        tracks: live.stream?.getTracks().map(t => ({ kind: t.kind, state: t.readyState, enabled: t.enabled })) || [], audio: live.audio?.state || 'closed', previewHidden: live.previewHidden } }),
   }) });
 })();

@@ -35,6 +35,19 @@
         "openness": 0.5,
         "body": 0
       },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "handPresent": false,
+        "handX": 0.5,
+        "handY": 0.5,
+        "handOpen": 0.5,
+        "handSpeed": 0,
+        "bodyMotion": 0
+      },
       "color": [
         162,
         211,
@@ -42,24 +55,24 @@
       ],
       "center": [
         546,
-        312.12550180676396
+        312.30652323874676
       ],
       "radius": 152.145,
       "expansion": 1,
-      "scale": 1.0063997308231634,
+      "scale": 1.0063997014347361,
       "level": 0,
       "speed": 1,
-      "rotation": 0.6412280000000002,
+      "rotation": 0.6346339999999991,
       "sway": 0,
       "clap": 0,
       "retreat": 0,
       "surprise": 0,
       "familiarity": 0.04,
       "bounds": [
-        402.7124584484561,
-        162.8680435810612,
-        701.3708297335268,
-        460.4571253945171
+        407.20555145813984,
+        161.3901231867671,
+        706.1308395972549,
+        459.96073762012475
       ],
       "viewport": [
         1092,
@@ -69,6 +82,18 @@
         "surprise": 0,
         "clap": 0,
         "retreat": 0
+      },
+      "live": {
+        "active": false,
+        "starting": false,
+        "modelReady": false,
+        "worker": false,
+        "frames": 0,
+        "facePresent": false,
+        "expression": null,
+        "tracks": [],
+        "audio": "closed",
+        "previewHidden": false
       }
     },
     "smile": {
@@ -88,31 +113,44 @@
         "openness": 0.5,
         "body": 0
       },
+      "signals": {
+        "smile": 0.85,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "handPresent": false,
+        "handX": 0.5,
+        "handY": 0.5,
+        "handOpen": 0.5,
+        "handSpeed": 0,
+        "bodyMotion": 0
+      },
       "color": [
         255,
         213,
         112
       ],
       "center": [
-        539.9436892748074,
-        268.72235412716446
+        539.8055521081096,
+        268.6874436299586
       ],
       "radius": 152.145,
-      "expansion": 1.1953699792045387,
-      "scale": 1.1517598611739341,
+      "expansion": 1.1953781389024856,
+      "scale": 1.1518833645173685,
       "level": 0,
-      "speed": 1.467429532287393,
-      "rotation": 1.0937213483759294,
+      "speed": 1.4674340593808162,
+      "rotation": 1.0905376604180446,
       "sway": 0,
       "clap": 0,
       "retreat": 0,
       "surprise": 0,
-      "familiarity": 0.06679904556951237,
+      "familiarity": 0.067026183541955,
       "bounds": [
-        344.3403497810035,
-        38.645405401250144,
-        790.7622703483648,
-        490.46007107256463
+        337.0831243914332,
+        50.74007547382266,
+        781.4381070110322,
+        490.69226919111554
       ],
       "viewport": [
         1092,
@@ -122,6 +160,18 @@
         "surprise": 0,
         "clap": 0,
         "retreat": 0
+      },
+      "live": {
+        "active": false,
+        "starting": false,
+        "modelReady": false,
+        "worker": false,
+        "frames": 0,
+        "facePresent": false,
+        "expression": null,
+        "tracks": [],
+        "audio": "closed",
+        "previewHidden": false
       }
     },
     "sad": {
@@ -141,31 +191,44 @@
         "openness": 0.5,
         "body": 0
       },
+      "signals": {
+        "smile": 0,
+        "sad": 0.85,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "handPresent": false,
+        "handX": 0.5,
+        "handY": 0.5,
+        "handOpen": 0.5,
+        "handSpeed": 0,
+        "bodyMotion": 0
+      },
       "color": [
         120,
         177,
         255
       ],
       "center": [
-        546.0585597749737,
-        357.0587052086938
+        546.0469661476798,
+        356.75028476172616
       ],
       "radius": 152.145,
-      "expansion": 0.7705817443178549,
-      "scale": 1.014161473507969,
+      "expansion": 0.7705872907298171,
+      "scale": 1.014193935727544,
       "level": 0,
-      "speed": 0.43054405340361473,
-      "rotation": 1.307878080603206,
+      "speed": 0.43054709668500446,
+      "rotation": 1.3002774727298396,
       "sway": 0,
       "clap": 0,
       "retreat": 0,
       "surprise": 0,
-      "familiarity": 0.08304942855402987,
+      "familiarity": 0.08296780061345427,
       "bounds": [
-        440.03966868346356,
-        237.1773350071884,
-        664.7613412138035,
-        471.6003711294785
+        438.18327247609506,
+        240.99217579617869,
+        662.6355940759445,
+        473.9913857659559
       ],
       "viewport": [
         1092,
@@ -175,6 +238,18 @@
         "surprise": 0,
         "clap": 0,
         "retreat": 0
+      },
+      "live": {
+        "active": false,
+        "starting": false,
+        "modelReady": false,
+        "worker": false,
+        "frames": 0,
+        "facePresent": false,
+        "expression": null,
+        "tracks": [],
+        "audio": "closed",
+        "previewHidden": false
       }
     },
     "combined": {
@@ -194,31 +269,44 @@
         "openness": 1,
         "body": 1
       },
+      "signals": {
+        "smile": 0.85,
+        "sad": 0,
+        "surprise": 0,
+        "level": 1,
+        "spike": 0,
+        "handPresent": true,
+        "handX": 0.5,
+        "handY": 0.5,
+        "handOpen": 1,
+        "handSpeed": 0,
+        "bodyMotion": 1
+      },
       "color": [
         212,
         212,
         140
       ],
       "center": [
-        593.3695408957298,
-        280.59242394896165
+        585.7729083610624,
+        281.04280932612227
       ],
       "radius": 152.145,
-      "expansion": 1.382744093037694,
-      "scale": 1.0788299306701974,
-      "level": 0.9458988588496496,
+      "expansion": 1.3846745219000502,
+      "scale": 1.078878559090505,
+      "level": 0.9518339084351922,
       "speed": 1.3848843319207103,
-      "rotation": 9.009507548848562,
-      "sway": 0.6135207210921167,
+      "rotation": 9.008018163024245,
+      "sway": 0.6192133179265495,
       "clap": 0.9410492366863882,
       "retreat": 0,
       "surprise": 0,
-      "familiarity": 0.16059773450243786,
+      "familiarity": 0.160901793193339,
       "bounds": [
-        217.75364088046257,
-        18.560427078716486,
-        974.941361190919,
-        539.1722341624754
+        200.06579360695895,
+        13.325466938182501,
+        965.6474238637009,
+        548.9812489679825
       ],
       "viewport": [
         1092,
@@ -228,6 +316,18 @@
         "surprise": 1,
         "clap": 3,
         "retreat": 1
+      },
+      "live": {
+        "active": false,
+        "starting": false,
+        "modelReady": false,
+        "worker": false,
+        "frames": 0,
+        "facePresent": false,
+        "expression": null,
+        "tracks": [],
+        "audio": "closed",
+        "previewHidden": false
       }
     },
     "familiar": {
@@ -247,31 +347,44 @@
         "openness": 0.65,
         "body": 0
       },
+      "signals": {
+        "smile": 0.85,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0.25,
+        "spike": 0,
+        "handPresent": true,
+        "handX": 0.5,
+        "handY": 0.5,
+        "handOpen": 0.65,
+        "handSpeed": 0,
+        "bodyMotion": 0
+      },
       "color": [
         255,
         213,
         112
       ],
       "center": [
-        552.5142179837668,
-        273.1778280599731
+        551.1901289496737,
+        273.30939707203913
       ],
       "radius": 152.145,
-      "expansion": 1.3255000000000015,
-      "scale": 1.2347921852223989,
-      "level": 0.25000000000000017,
+      "expansion": 1.3255000000000017,
+      "scale": 1.234900918433089,
+      "level": 0.2500000000000002,
       "speed": 1.4674999999999996,
-      "rotation": 14.592476530815588,
-      "sway": -1.926723656717496e-24,
+      "rotation": 14.595357496387113,
+      "sway": -1.7113442513298103e-24,
       "clap": 0,
       "retreat": 0,
       "surprise": 0,
-      "familiarity": 0.5745816345024457,
+      "familiarity": 0.5752697931933468,
       "bounds": [
-        272.18194474305227,
-        21.834865286108,
-        826.2729194287947,
-        523.9673430301405
+        290.2190996262272,
+        22.694548948169682,
+        826.499542399466,
+        520.5415561019691
       ],
       "viewport": [
         1092,
@@ -281,6 +394,18 @@
         "surprise": 1,
         "clap": 3,
         "retreat": 1
+      },
+      "live": {
+        "active": false,
+        "starting": false,
+        "modelReady": false,
+        "worker": false,
+        "frames": 0,
+        "facePresent": false,
+        "expression": null,
+        "tracks": [],
+        "audio": "closed",
+        "previewHidden": false
       }
     }
   },
@@ -295,7 +420,7 @@
   ],
   "font": true,
   "frameTiming": {
-    "averageMs": 16.455000000024786,
+    "averageMs": 16.408333333333335,
     "maxMs": 16.80000000000291
   }
 }

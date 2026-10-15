@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="RESONANCE — a little life that responds to you. An interactive particle demo.">
-  <title>RESONANCE · Demo</title>
+  <meta name="description" content="RESONANCE — a little life that responds to your voice and expressions.">
+  <title>RESONANCE</title>
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +17,7 @@
   <a class="skip-link" href="#demo-controls">Skip to Demo controls</a>
   <main id="app">
     <div id="stage" class="creature-stage">
-      <canvas id="creature" aria-label="柔和发光的粒子生命体，响应 Demo 表情、声音和动作"></canvas>
+      <canvas id="creature" aria-label="A glowing particle creature responding to sound and facial movements"></canvas>
       <span id="hand-marker" hidden>＋</span>
     </div>
     <button id="home" class="home pill" hidden>← Home</button>
@@ -35,37 +35,57 @@
         <h2 id="prep-title" tabindex="-1">Choose its form</h2>
         <div class="shape-picker" data-shape-picker></div>
         <div><p class="eyebrow">COLOUR</p><div class="theme-picker" data-theme-picker></div></div>
-        <p class="description">一点光，一点耐心。<br>让它通过你的表情、声音和动作，慢慢认识你。</p>
-        <div class="demo-note"><span class="badge">DEMO</span><p>第一阶段使用模拟输入。无需摄像头或麦克风，也不会播放或生成语音。</p></div>
-        <button id="start" class="primary">Enter Demo <span aria-hidden="true">→</span></button>
+        <p class="description">A little light. A little patience.<br>Let it get to know your voice and expressions.</p>
+        <p class="description">Start with your camera and microphone. Processing stays on this device. Nothing is recorded or uploaded.</p>
+        <div class="prep-actions"><button id="start" class="primary">Start interaction <span aria-hidden="true">→</span></button><button id="try-demo" class="pill">Try demo</button></div>
+        <p class="hint">Demo uses simulated inputs and needs no device access. Facial movements are approximate signals, not a reading of how you feel.</p>
       </div>
     </section>
-    <section id="session" hidden aria-label="Demo interaction">
-      <header class="session-heading"><span class="badge">DEMO · SIMULATED INPUTS</span><span class="session-wordmark">RESONANCE</span></header>
-      <div class="bond"><span id="bond-label">Cautious · 还有一点害羞</span><div class="bond-track"><div id="bond-fill"></div></div><span id="bond-value">4%</span></div>
-      <p id="reaction" class="reaction" aria-live="polite">慢慢来，它正在认识你。</p>
+    <section id="connection" hidden aria-labelledby="connection-title">
+      <div class="connection-card"><p class="eyebrow accent">LIVE INTERACTION</p><h2 id="connection-title" tabindex="-1">Getting ready</h2><p id="connection-message" class="description" role="status">Waiting for camera and microphone access…</p><div class="prep-actions"><button id="retry" class="primary" hidden>Try again</button><button id="fallback-demo" class="pill">Try demo</button><button id="cancel-start" class="text-button">Cancel</button></div></div>
+    </section>
+    <section id="session" hidden aria-label="Creature interaction">
+      <header class="session-heading"><span id="mode-badge" class="badge">DEMO · SIMULATED INPUTS</span><span class="session-wordmark">RESONANCE</span></header>
+      <div class="bond"><span id="bond-label">Cautious · Still a little shy</span><div class="bond-track"><div id="bond-fill"></div></div><span id="bond-value">4%</span></div>
+      <p id="reaction" class="reaction" aria-live="polite">Take your time. It is getting to know you.</p>
       <aside id="demo-controls" class="controls" aria-labelledby="controls-title" tabindex="-1">
-        <div class="panel-heading"><div><p class="eyebrow accent">DEMO PLAYGROUND</p><h2 id="controls-title">A little give & take.</h2></div><button id="reset" class="text-button" title="清空模拟输入，保留熟悉度">Reset</button></div>
-        <p class="panel-intro">试着给它一个信号，看它如何回应。<br>不同输入可以叠加。</p>
-        <fieldset><legend><span>01</span> 表情 <small>EXPRESSION</small></legend>
-          <div class="expression-buttons"><button data-expression="smile" aria-pressed="false">☺ 微笑</button><button data-expression="sad" aria-pressed="false">☾ 悲伤</button><button data-expression="surprise" aria-pressed="false">✧ 惊讶</button></div>
-          <label class="slider-label" for="expression">表情强度 <output for="expression" id="expression-value">85%</output></label><input id="expression" type="range" min="0" max="1" step="0.01" value="0.85">
-          <p class="hint">再点一次恢复中性；惊讶展开后会自行收回。</p>
+        <div class="panel-heading"><div><p class="eyebrow accent">DEMO PLAYGROUND</p><h2 id="controls-title">A little give & take.</h2></div><button id="reset" class="text-button" title="Clear simulated inputs and keep familiarity">Reset</button></div>
+        <p class="panel-intro">Give it a signal. See how it responds.<br>Try combining different inputs.</p>
+        <fieldset><legend><span>01</span> Expression</legend>
+          <div class="expression-buttons"><button data-expression="smile" aria-pressed="false">☺ Smile</button><button data-expression="sad" aria-pressed="false">☾ Sad look</button><button data-expression="surprise" aria-pressed="false">✧ Surprise</button></div>
+          <label class="slider-label" for="expression">Intensity <output for="expression" id="expression-value">85%</output></label><input id="expression" type="range" min="0" max="1" step="0.01" value="0.85">
+          <p class="hint">Tap again for neutral. A surprised pulse settles on its own.</p>
         </fieldset>
-        <fieldset><legend><span>02</span> 声音 <small>SOUND</small></legend>
-          <label class="slider-label" for="sound">模拟音量 <output for="sound" id="sound-value">0%</output></label><input id="sound" type="range" min="0" max="1" step="0.01" value="0">
-          <div class="button-row"><button id="sustain" aria-pressed="false">≈ 持续声音</button><button id="clap">✳ 突然大声</button></div>
-          <p class="hint">持续声音自动起伏；突然大声只散开一次。</p>
+        <fieldset><legend><span>02</span> Sound</legend>
+          <label class="slider-label" for="sound">Demo volume <output for="sound" id="sound-value">0%</output></label><input id="sound" type="range" min="0" max="1" step="0.01" value="0">
+          <div class="button-row"><button id="sustain" aria-pressed="false">≈ Sustained sound</button><button id="clap">✳ Loud sound</button></div>
+          <p class="hint">Sustained sound makes waves. A sudden loud sound scatters it once.</p>
         </fieldset>
-        <fieldset><legend><span>03</span> 手势 <small>GESTURE</small></legend>
-          <div class="button-row"><button id="hand" aria-pressed="false">手势跟随 · Off</button><button id="retreat">快速挥手</button></div>
-          <label class="slider-label" for="openness">收拢 <span>张开 <output for="openness" id="openness-value">50%</output></span></label><input id="openness" type="range" min="0" max="1" step="0.01" value="0.5">
-          <p class="hint">开启后，在粒子区域移动鼠标或拖动手指。方向键也可移动手的位置。</p>
+        <fieldset><legend><span>03</span> Gesture · Demo only</legend>
+          <div class="button-row"><button id="hand" aria-pressed="false">Follow hand · Off</button><button id="retreat">Quick wave</button></div>
+          <label class="slider-label" for="openness">Closed <span>Open <output for="openness" id="openness-value">50%</output></span></label><input id="openness" type="range" min="0" max="1" step="0.01" value="0.5">
+          <p class="hint">Turn on hand follow, then move your pointer or drag over the creature. Arrow keys work too.</p>
         </fieldset>
-        <fieldset><legend><span>04</span> 身体 <small>MOVEMENT</small></legend>
-          <label class="slider-label" for="body">摇摆幅度 <output for="body" id="body-value">0%</output></label><input id="body" type="range" min="0" max="1" step="0.01" value="0">
+        <fieldset><legend><span>04</span> Body · Demo only</legend>
+          <label class="slider-label" for="body">Movement <output for="body" id="body-value">0%</output></label><input id="body" type="range" min="0" max="1" step="0.01" value="0">
         </fieldset>
-        <div class="control-footer"><span class="status-dot"></span>All signals are simulated · 所有输入均为模拟</div>
+        <div class="control-footer"><span class="status-dot"></span>All Demo inputs are simulated.</div>
+      </aside>
+      <aside id="live-controls" class="controls" hidden tabindex="-1" aria-labelledby="live-title">
+        <p class="eyebrow accent">LIVE · ON THIS DEVICE</p><h2 id="live-title">Here with you.</h2>
+        <p id="model-status" class="panel-intro" role="status">Face Landmarker is ready.</p>
+        <div class="camera-box"><video id="camera" autoplay playsinline muted aria-label="Mirrored camera preview"></video><span id="preview-placeholder" hidden>Preview hidden. Tracking is still on.</span></div>
+        <button id="toggle-preview" class="text-button" aria-pressed="false">Hide preview</button>
+        <div class="live-readings"><span id="face-status">Looking for a face</span><span id="expression-status">Neutral</span></div>
+        <fieldset><legend>Microphone</legend>
+          <p id="mic-status" class="hint" role="status">Stay quiet for a moment while the microphone settles.</p>
+          <label class="slider-label" for="sensitivity">Sensitivity <output id="sensitivity-value" for="sensitivity">1.0×</output></label><input id="sensitivity" type="range" min="0.5" max="3" step="0.1" value="1">
+          <label class="slider-label" for="mic-meter">Sound level</label><meter id="mic-meter" min="0" max="1" value="0"></meter>
+          <button id="calibrate" class="text-button">Recalibrate room noise</button><button id="resume-audio" class="pill" hidden>Resume microphone</button>
+        </fieldset>
+        <p class="hint">Try a smile, a gentle frown, or raised brows with wide eyes. These are facial movement cues, not your emotions.</p>
+        <p class="hint">Hand and body tracking are not active. No generated audio is played.</p>
+        <button id="exit" class="pill">End interaction</button>
       </aside>
       <nav class="toolbar" aria-label="Creature tools">
         <button id="capture"><span aria-hidden="true">◎</span>Capture</button>
@@ -77,13 +97,14 @@
     </section>
   </main>
   <dialog id="shape-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>Choose its form</h2><button class="close" aria-label="Close">×</button></div><div class="shape-picker" data-shape-picker></div></dialog>
-  <dialog id="theme-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>A colour of its own</h2><button class="close" aria-label="Close">×</button></div><div class="theme-picker" data-theme-picker></div><p class="hint">表情会暂时改变粒子颜色；恢复中性后回到主题色。</p></dialog>
+  <dialog id="theme-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>A colour of its own</h2><button class="close" aria-label="Close">×</button></div><div class="theme-picker" data-theme-picker></div><p class="hint">Expressions gently tint its colour. It returns to your theme when the signal settles.</p></dialog>
   <dialog id="help-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>Small gestures matter.</h2><button class="close" aria-label="Close">×</button></div>
-    <span class="badge">DEMO · 模拟互动</span>
-    <ul class="help-list"><li><b>微笑</b> · 暖黄、舒展，轻快地靠近。</li><li><b>悲伤</b> · 蓝色、慢下来，下沉并聚拢。</li><li><b>惊讶</b> · 紫色，短暂展开后慢慢恢复。</li><li><b>声音</b> · 音量控制波纹与颤动；突然大声散开后重聚。滑块快速拉高也会触发。</li><li><b>手势</b> · 慢移跟随，张开舒展，收拢凝聚，快移退缩。</li><li><b>身体</b> · 幅度越大，整体摇摆与旋转越明显。</li></ul>
-    <p class="description">温和互动持续约一分钟，能逐渐看到更主动的靠近与跟随。Reset 清空输入；“重新认识”也会重置熟悉度。</p>
-    <button id="restart" class="pill">重新认识</button>
-    <p class="hint">未接入摄像头、麦克风、表情识别或 ElevenLabs。Capture 只在本地保存当前粒子图像。</p>
+    <span id="help-mode" class="badge">HOW TO CONNECT</span>
+    <ul class="help-list"><li><b>Smile</b> · It warms, opens up and comes closer.</li><li><b>Sad look</b> · It turns blue, slows and gathers.</li><li><b>Surprise</b> · It turns purple, opens outward and settles.</li><li><b>Sound</b> · Your volume creates ripples. A sudden loud sound scatters it once, then it gathers again.</li><li><b>Demo gestures</b> · Slow movement invites it to follow. Open to expand, close to gather, move quickly to startle it.</li><li><b>Demo body movement</b> · More movement brings a bigger sway.</li></ul>
+    <p class="description">Gentle interaction builds familiarity. Reset clears Demo inputs. Start fresh resets familiarity.</p>
+    <button id="restart" class="pill">Start fresh</button>
+    <p class="hint">Live uses your microphone and MediaPipe Face Landmarker on this device. Facial movements are approximate cues, not a measure of your feelings. Hiding the preview keeps tracking on. Home or End interaction stops both devices.</p>
+    <p class="hint">Demo is fully simulated. Hand and body tracking and ElevenLabs are not connected. Capture saves only the particle image, never the camera.</p>
   </dialog>
   <div id="toast" role="status" hidden></div>
 </body>

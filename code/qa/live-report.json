@@ -1,0 +1,106 @@
+{
+  "tests": [
+    "Every pinned asset exists, matches SHA-256, and serves as binary with the correct MIME type",
+    "Home, preparation and Demo never request device access or load the face worker",
+    "Real local MediaPipe initializes and infers on fake-camera frames; repeated Start creates one session",
+    "Hiding the mirrored camera preview keeps real inference running",
+    "Live excludes simulated channels; microphone mute disables audio track and recalibration works",
+    "Live panel and preview fit mobile and landscape layouts",
+    "Home and End interaction stop all tracks, close AudioContext and worker; re-entry runs normally",
+    "Permission denial, missing/busy device and real model 404 show English errors; Retry loads the model successfully",
+    "Leaving during pending permission stops late-arriving tracks without restarting the session",
+    "Switching to Demo during model loading cancels the worker and stops devices",
+    "No uncaught page JavaScript exceptions"
+  ],
+  "errors": [],
+  "deviceType": "Chrome fake camera/microphone; real MediaPipe WASM and model",
+  "initialLive": {
+    "stage": "live",
+    "shape": "seed",
+    "theme": "Green",
+    "inputs": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": 2,
+      "expression": null,
+      "intensity": 0.85,
+      "sound": 0,
+      "sustain": false,
+      "muted": false,
+      "hand": false,
+      "openness": 0.5,
+      "body": 0
+    },
+    "signals": {
+      "smile": 0,
+      "sad": 0,
+      "surprise": 0,
+      "level": 0,
+      "spike": 0,
+      "handPresent": false,
+      "handX": 0.5,
+      "handY": 0.5,
+      "handOpen": 0.5,
+      "handSpeed": 0,
+      "bodyMotion": 0
+    },
+    "color": [
+      182,
+      211,
+      158
+    ],
+    "center": [
+      545.766436639161,
+      312.22355977507186
+    ],
+    "radius": 152.145,
+    "expansion": 1.0171844436330864,
+    "scale": 1.035739897501437,
+    "level": 0,
+    "speed": 1.013007009977389,
+    "rotation": 0.27500604484819774,
+    "sway": 0,
+    "clap": 0,
+    "retreat": 0,
+    "surprise": 0,
+    "familiarity": 0.04019381817479607,
+    "bounds": [
+      367.87218597798085,
+      135.52828934447578,
+      724.5917879940534,
+      481.2709911841951
+    ],
+    "viewport": [
+      1092,
+      621
+    ],
+    "events": {
+      "surprise": 0,
+      "clap": 0,
+      "retreat": 0
+    },
+    "live": {
+      "active": true,
+      "starting": false,
+      "modelReady": true,
+      "worker": true,
+      "frames": 4,
+      "facePresent": false,
+      "expression": null,
+      "tracks": [
+        {
+          "kind": "audio",
+          "state": "live",
+          "enabled": true
+        },
+        {
+          "kind": "video",
+          "state": "live",
+          "enabled": true
+        }
+      ],
+      "audio": "running",
+      "previewHidden": false
+    }
+  }
+}

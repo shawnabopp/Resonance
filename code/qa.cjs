@@ -38,7 +38,7 @@ async function main() {
     await click('#meet'); await sleep(500);
     assert.equal(await evaluate('document.querySelector("#home").hidden'), false);
     assert.equal(await evaluate('document.querySelectorAll("#prep [data-theme]").length'), 8);
-    await shot('desktop-prepare'); await click('#start'); await sleep(1600);
+    await shot('desktop-prepare'); await click('#try-demo'); await sleep(1600);
     const neutral = await snapshot(); report.snapshots.neutral = neutral; await shot('desktop-neutral');
     assert(neutral.familiarity < .041);
     passed('Home → preparation → Demo; eight original themes; Outfit weight 100');
@@ -106,7 +106,7 @@ async function main() {
     await click('#home');
     await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
     await send('Emulation.setTouchEmulationEnabled', { enabled: true }); await sleep(700); await shot('mobile-home');
-    await click('#meet'); await sleep(500); await shot('mobile-prepare'); await click('#start'); await sleep(700); await shot('mobile-demo');
+    await click('#meet'); await sleep(500); await shot('mobile-prepare'); await click('#try-demo'); await sleep(700); await shot('mobile-demo');
     assert(await evaluate('document.documentElement.scrollWidth <= innerWidth'));
     await click('#hand');
     const mobileRect = await evaluate('(()=>{const r=document.querySelector("#creature").getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height}})()');
@@ -130,7 +130,7 @@ async function main() {
     }
     passed('Mobile 320/375/390, tablet 768 and landscape 844: no horizontal overflow; touch follow, sticky canvas, Help and Escape');
     await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
-    await click('#home'); await click('#meet'); await click('#start'); await range('#body', 1); await sleep(1000); assert((await snapshot()).bounds.every(Number.isFinite));
+    await click('#home'); await click('#meet'); await click('#try-demo'); await range('#body', 1); await sleep(1000); assert((await snapshot()).bounds.every(Number.isFinite));
     passed('Reduced-motion mode remains functional');
     report.frameTiming = await evaluate('new Promise(resolve=>{const times=[];let previous=performance.now();function measure(now){times.push(now-previous);previous=now;if(times.length<60)requestAnimationFrame(measure);else resolve({averageMs:times.reduce((a,b)=>a+b,0)/times.length,maxMs:Math.max(...times)});}requestAnimationFrame(measure);})');
     assert.equal(errors.length, 0); assert(!network.some(url => /mediapipe|elevenlabs|face_landmarker|hand_landmarker/.test(url)));
