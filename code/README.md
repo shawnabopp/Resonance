@@ -6,7 +6,7 @@
 
 在 `D:\Shawna\Resonance` 运行 `node code/serve.cjs`，访问 **http://127.0.0.1:4173**。
 
-真实模式需要 localhost 或 HTTPS；不要双击 HTML 使用 `file://` 启动识别。字体仍从 Google Fonts 加载，断网时使用系统字体回退。启动脚本已为 `.mjs`、`.wasm`、`.task` 配置 MIME。
+真实模式需要 localhost 或 HTTPS；不要双击 HTML 使用 `file://` 启动识别。字体仍从 Google Fonts 加载，断网时使用系统字体回退。启动脚本已为 `.mjs`、`.wasm`、`.task`、`.mp3`、`.wav` 配置 MIME。
 
 ## 两种模式
 
@@ -23,7 +23,7 @@ Live 的 **Hide preview** 仅隐藏镜像画面，识别继续。工具栏 **Mic
 
 ### 麦克风
 
-- Web Audio Analyser 获取时域样本并计算 RMS，不连接扬声器，不播放自己的声音。
+- Web Audio Analyser 获取时域样本并计算 RMS，麦克风采样不直连扬声器（无返听）；Music / Sound Effects 使用独立播放节点与 AudioContext。
 - 开始或 **Recalibrate room noise** 后约 1.3 秒采样，使用较低分位估计底噪；请在这段时间保持安静。
 - **Sensitivity** 范围 0.5–3.0。底噪门限、快速上升/缓慢释放的指数平滑共同驱动粒子颤动与波纹。
 - 受惊必须超过绝对响度门限、底噪倍数和近期音量基线，同时出现明显上升。
@@ -65,7 +65,7 @@ Live 的 **Hide preview** 仅隐藏镜像画面，识别继续。工具栏 **Mic
 
 真人简测：刷新页面，进入 Live，展开面板并完成中性校准；分别做轻微悲伤、惊讶（可仅轻微张嘴）、微笑，各保持 1–2 秒，中间恢复平静。对照 Raw scores、相对变化、通过路径、Final 与蓝色/紫色行为，再检查张嘴哼唱、闭眼和低头。若仍不响应或误判，请采集三秒数据，尤其保留校准噪声与实际门槛；不同人、弱光、眼镜及实体手机仍需现场验证。
 
-两种模式共用既有粒子颜色、位移、恢复过程和熟悉度渲染；输入源严格互斥。尚未接入音效或 ElevenLabs。Capture 只下载粒子图像，不含摄像头。
+两种模式共用既有粒子颜色、位移、恢复过程、熟悉度和音效调度；识别与 Demo 输入源严格互斥。四类已确认音效已接入，未使用在线 ElevenLabs 服务。Capture 只下载粒子图像，不含摄像头。
 
 ### 手势
 
@@ -177,19 +177,40 @@ node code/qa.cjs
 
 ## 独立音效试听
 
-独立音效试听页为 `sound-test.html`：在 VS Code 右键 **Open with Live Server**，或运行现有预览服务器后访问 `http://127.0.0.1:4173/sound-test.html`。此页没有接入主网站，现有 BGM、开启音效与主页面代码不受影响。
+独立音效试听页为 `sound-test.html`：在 VS Code 右键 **Open with Live Server**，或运行现有预览服务器后访问 `http://127.0.0.1:4173/sound-test.html`。此页只作开发工具，正式页面没有入口；当前四类确认音效已导出供正式网站使用。
 
 试听页最终保留四类声音：**Wake、Curious、Happy、Afraid**。Curious 采用已确认的 Pure 音色，保留原参数：音量 30%、起始音高 280 Hz、上扬 2 半音、波动深度 30%、时长 1.2 秒；原来的另两个候选版本及其控件已移除。Happy 基于同一圆润正弦主音，加入少量二次泛音和更温暖的持续段，以连续平滑的曲线做出两次音高起伏，第二次略高，之后回落并自然淡出；起始音高仍有 1 半音轻微抬升，峰值变化幅度为滑块数值再加 .7 半音。默认设置下，两次峰值约 333 / 346 Hz，中间保持连续声音，轻微水波感来自缓慢的泛音和滤波变化。无分立音符、静音间断或新噪声层。Curious 时长仍为 1–1.5 秒、默认 1.2 秒；Happy 改为 **1.5–2 秒、默认 1.8 秒**，切换声音时自动切换时长滑块范围，Reset 恢复所选声音各自的默认值。Curious / Happy 各自保留音高、上扬、波动、时长的调节值，共享 Volume；调整 Happy 再切回 Curious 不会改掉后者的参数。
 
-Wake 与 Afraid 读取 `sounds/wake.mp3` 和 `sounds/afraid.mp3`，分别提供 **Original / Adjusted**。已确认两份文件含 MPEG Layer III 帧，解码时长约 0.614 / 0.499 秒。原版仅应用公共 Volume；调整版在浏览器内处理，不覆盖原文件，也没有另存修改后的 MP3。选择录音时只启用 Volume，其他合成音滑块保持数值但不影响录音。所有按钮共用一个播放通道，Replay 重播最后选择，Stop 停止，切换时先淡出旧声音。
+Wake 与 Afraid 的原始文件为 `sounds/wake.mp3` 和 `sounds/afraid.mp3`，含 MPEG Layer III 帧，解码时长约 0.614 / 0.499 秒，原文件保留。开发试听页仅保留最终的 **Adjusted** 入口；原版仍可由开发分析代码逐采样核对。选择录音时只启用 Volume，其他合成音滑块保持数值但不影响录音。所有按钮共用一个播放通道，Replay 重播最后选择，Stop 停止，切换时先淡出旧声音。
 
 根据音频数据，两份文件都从非零采样开始，无明显前导静音；末尾低电平区域约 39 / 34 ms，保留，不裁掉中间间隔或尾音。Afraid 加 8 ms 渐入、35 ms 渐出；Wake 为 28 / 55 ms。保持 1× 播放速度、不改音高、不添加滤波或新声音层。对较强瞬态使用联动双声道的平滑增益，最多约 4 dB 衰减，再参考已调好的有效片段 RMS（30% 音量下 .10540948）作近似电平调整；固定保留该参考值，避免删除旧候选音色时改变已经调整过的 MP3。默认 30% 音量的峰值上限为 .45，60% 上限为 .90。
 
-**没有进行直接听音评估，也不是 LUFS 感知响度匹配。**请以 30% Volume 对比 Curious 与 Happy，确认后者是否足够温暖、明亮、愉悦；再交替试听两份录音的 Original / Adjusted，确认音色、退缩感和苏醒感。数据报告在 `qa/source-sound-analysis.json` 与 `qa/sound-test-report.json`；`qa/fixtures/approved-pure.json` 保存重命名前的参数和渲染指标。`node code/tools/analyze-sounds.cjs` 只解码分析、不播放；`node code/qa-sound-test.cjs` 检查 Curious 原参数及指标、Happy 时长与边界、独立调参、实际解码、原版逐采样一致、源文件校验、渐变边界、峰值、互斥播放、失败重试与手机布局。两条命令需要本地服务器与 Chrome `:9227` 调试端口，仍不能替代真人试听或实体手机测试。
+**没有进行直接听音评估，也不是 LUFS 感知响度匹配。**请以 30% Volume 对比 Curious 与 Happy、Wake 与 Afraid，确认音色、退缩感和苏醒感。数据报告在 `qa/source-sound-analysis.json` 与 `qa/sound-test-report.json`；`qa/fixtures/approved-pure.json` 保存重命名前的参数和渲染指标。`node code/tools/analyze-sounds.cjs` 只解码分析、不播放；`node code/qa-sound-test.cjs` 检查 Curious 原参数及指标、Happy 时长与边界、独立调参、实际解码、原版逐采样一致、源文件校验、渐变边界、峰值、互斥播放、失败重试与手机布局。两条命令需要本地服务器与 Chrome `:9227` 调试端口，仍不能替代真人试听或实体手机测试。
+
+## 正式体验的 Music 与 Sound Effects
+
+点击 **Start interaction / Try demo** 后才解锁播放；首页和准备页不会自动播放或加载声音。开始时每次播放一次 Wake，并同步一个轻微的粒子展开过程。Live 和 Demo 都有独立的 **Music / Sound Effects** 开关；原工具栏仍控制 **Microphone / Demo sound** 输入。关闭音效不会停止麦克风，关闭 Music 不会关闭效果音；开关偏好在当前页面的后续会话中保留。
+
+正式文件是 `sounds/wake-adjusted.wav`、`curious.wav`、`happy.wav`、`afraid-adjusted.wav`，由试听页当时确认的参数离线渲染并量化为 48 kHz / 16-bit WAV。Happy 保留最新版两次连贯起伏、默认 1.8 秒；Curious 保留 Pure 的参数和 1.2 秒时长。`sounds/approved-manifest.json` 记录哈希和参数来源；需要更新声音时，运行 `node code/tools/export-approved-sounds.cjs`（预览服务器与 Chrome `:9227` 需已启动）。原 MP3 不覆盖。
+
+- **Wake**：每次进入体验一次，配合展开；开关关闭或音频加载失败时，视觉仍可继续。
+- **Curious**：新看到手稳定约 .65 秒，或安静陪伴中熟悉度比上次探索点增加约 .12 时可触发；至少冷却 16 秒。持续同一只手不会重复触发“新看到”，离开约两秒才重新准备。
+- **Happy**：微笑稳定约一秒，或熟悉度进入 .15 / .40 / .70 的新阶段时触发；至少冷却 11 秒。持续微笑只触发一次，平静两秒才重新准备。
+- **Afraid**：绑定现有 clap 散开和快速手势 retreat 动画事件，优先中断其他音效；同帧事件合并，冷却至少 3.2 秒。效果音之间不叠加，普通回应还留出约 4 秒间隔；Wake 后允许当前手势／微笑衔接。
+
+背景声使用原文件 `sounds/waterfall.mp3`，单条媒体轨道循环，默认输出增益 **10%（.10）**。点击开始后从静音柔和渐入；效果音期间降至 .035，结束后平滑恢复至 .10。说话、唱歌、麦克风检测到声音或底噪校准均不暂停、静音或降低 BGM。降音量仅由互动音效播放触发，使用约 .07 秒的时间常数，渐入／恢复使用约 .4 秒的时间常数，避免音量跳变。效果音使用确认试听电平再乘 .65，检测到声音输入时，正在播放的普通回应平滑降至 .14；说话／唱歌期间不新增普通回应，Afraid 仍有事件优先级。Music 开关只控制背景音乐，不改变效果音或麦克风输入。
+
+防回声措施：麦克风继续启用 echoCancellation / noiseSuppression；每次自身效果音及其后约 450 ms 内，抑制麦克风受惊判定并要求重新安静约 .4 秒才准备下一次突发。声音电平／波纹继续工作；初次校准会跳过自身 Wake，避免把它学成底噪。因此该短时间窗口内，真实大声也可能不触发受惊，快速手势仍可触发并抢占。实际扬声器、麦克风距离和设备回声处理仍需真人测试，不能用虚拟设备证明声学反馈完全消除。
+
+返回 Home、End interaction 或取消／失败时，背景音乐约 .4 秒淡出，随后停止并释放媒体和输出上下文；效果音、采集和识别立即停止。快速重新开始会先清理上一条音乐再启动新轨道，旧淡出定时器不会影响新体验。pagehide 立即清理，避免卸载后遗留播放；晚到的下载／解码结果被丢弃。切到后台停止声音，返回后继续当前会话音乐，不补播旧事件。资源或自动播放受限会显示英文提示及 **Resume sound** 重试，不阻塞识别。
+
+自动验证：`node code/qa-audio-policy.cjs` 测试持续输入锁定、重新准备、阶段变化、优先级和回声门控；`node code/qa-playback.cjs` 实际加载四份 WAV、背景 MP3 与识别模型，用 Chrome 虚拟设备及明确注入的 RMS / 表情检查播放同步、单音轨、抢占、独立开关、麦克风输入／校准不影响 BGM、效果音降音量与恢复、反馈保护、退出／重进、资源失败与手机宽度。报告与截图为 `qa/playback-*`。现有 Demo、信号、熟悉度和 Live 生命周期检查也通过。未验证真人听感、实体手机、Safari 或真实扬声器回声。
+
+真人简测：先用 Demo 检查 Wake、手、微笑和 Quick wave 对应的音效；分别关闭 Music / Sound Effects，确认输入仍能驱动粒子。Live 中戴耳机试微笑、缓慢移手、安静停留；说话／唱歌时应少打扰。再以较低扬声器音量复测，确认播放自身声音后不会连续受惊。返回 Home 检查声音和设备指示灯停止，再进入一次确认没有双重音乐或补播旧音效。
 
 ## Cloudflare Pages
 
-沿用已有仓库连接：Framework preset **None**，Root directory 留空，Build command **exit 0**，Build output directory **code**。生产分支需包含核心文件以及完整的 `code/vendor/`、`code/models/`；不要只上传三个核心文件。构建监听规则也应覆盖资源子目录。
+沿用已有仓库连接：Framework preset **None**，Root directory 留空，Build command **exit 0**，Build output directory **code**。生产分支需包含核心文件以及完整的 `code/vendor/`、`code/models/`、`code/sounds/`；不要只上传三个核心文件。构建监听规则也应覆盖资源子目录。
 
 部署后从正式 HTTPS 域名打开首页，在浏览器 Network 面板确认 `.mjs`、被选中的 WASM 文件和 `.task` 返回实际文件（不是 HTML 或 Git LFS 指针），再允许设备权限。仓库中仍没有 Wrangler 配置；本次没有修改 Cloudflare 账户设置或执行线上部署。自定义 CSP 如有配置，需要允许同源资源、`worker-src 'self' blob:` 及 WASM 执行，否则请先调整 CSP。
 

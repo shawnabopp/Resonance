@@ -51,6 +51,7 @@
       <aside id="demo-controls" class="controls" aria-labelledby="controls-title" tabindex="-1">
         <div class="panel-heading"><div><p class="eyebrow accent">DEMO PLAYGROUND</p><h2 id="controls-title">A little give & take.</h2></div><button id="reset" class="text-button" title="Clear simulated inputs and keep familiarity">Reset</button></div>
         <p class="panel-intro">Give it a signal. See how it responds.<br>Try combining different inputs.</p>
+        <fieldset class="playback-controls"><legend>Audio</legend><div class="button-row"><button data-music aria-pressed="true">Music · On</button><button data-effects aria-pressed="true">Sound Effects · On</button></div><button data-resume-playback class="text-button" hidden>Resume sound</button><p class="hint" data-playback-status role="status">Music and effects are separate from Demo input.</p></fieldset>
         <fieldset><legend>Presence · Demo only</legend>
           <div class="button-row"><button id="demo-presence" aria-pressed="true">Face in view · On</button></div>
           <label class="slider-label" for="face-position">Face position <span>Left ↔ Right</span></label><input id="face-position" type="range" min="0" max="1" step="0.01" value="0.5">
@@ -83,6 +84,7 @@
       <aside id="live-controls" class="controls" hidden tabindex="-1" aria-labelledby="live-title">
         <p class="eyebrow accent">LIVE · ON THIS DEVICE</p><h2 id="live-title">Here with you.</h2>
         <p id="model-status" class="panel-intro" role="status">Face Landmarker is ready.</p>
+        <fieldset class="playback-controls"><legend>Audio</legend><div class="button-row"><button data-music aria-pressed="true">Music · On</button><button data-effects aria-pressed="true">Sound Effects · On</button></div><button data-resume-playback class="text-button" hidden>Resume sound</button><p class="hint" data-playback-status role="status">Music and effects are separate from your microphone.</p></fieldset>
         <div class="camera-box"><video id="camera" autoplay playsinline muted aria-label="Mirrored camera preview"></video><span id="preview-placeholder" hidden>Preview hidden. Tracking is still on.</span></div>
         <button id="toggle-preview" class="text-button" aria-pressed="false">Hide preview</button>
         <div class="live-readings"><span id="face-status">Looking for a face</span><span id="expression-status">Neutral</span></div>
@@ -135,14 +137,14 @@
           <p class="hint body-phone-hint">Place your phone somewhere stable and step back.</p>
           <p class="hint">Sway gently, then raise or open both arms. Keep moving to add rotation and flow. Rest your arms to let it settle. Your hand still guides and gathers it.</p>
         </fieldset>
-        <p class="hint">No generated audio is played.</p>
+        <p class="hint">Headphones help keep the creature's sounds out of your microphone.</p>
         <button id="exit" class="pill">End interaction</button>
       </aside>
       <nav class="toolbar" aria-label="Creature tools">
         <button id="capture"><span aria-hidden="true">◎</span>Capture</button>
         <button data-dialog="shape-dialog"><span aria-hidden="true">◇</span>Shape</button>
         <button data-dialog="theme-dialog"><span aria-hidden="true">◌</span>Theme</button>
-        <button id="mute" aria-pressed="false"><span aria-hidden="true">≈</span><span id="mute-label">Demo sound</span></button>
+        <button id="mute" aria-pressed="false"><span aria-hidden="true">≈</span><span id="mute-label">Demo input</span></button>
         <button data-dialog="help-dialog"><span aria-hidden="true">?</span>Help</button>
       </nav>
     </section>
@@ -158,7 +160,7 @@
     <p class="hint">Live uses your microphone and MediaPipe Face Landmarker on this device. Facial movements are approximate cues, not a measure of your feelings. Hiding the preview keeps tracking on. Home or End interaction stops both devices.</p>
     <p class="hint">Live hand gestures use ml5 HandPose and the same camera as face tracking. Follow the mirrored preview. When your hand leaves, it gently returns to floating. Familiarity makes it more willing to follow.</p>
     <p class="hint">Body tracking shares the same camera. Keep your shoulders and arms in view; if they leave the frame, it settles gently. Face and sound still work when only your face is visible.</p>
-    <p class="hint">Demo is fully simulated. No generated audio is connected. Capture saves only the particle image, never the camera.</p>
+    <p class="hint">Music loops at 10% volume and keeps playing while you speak or sing. It softens only while an interaction effect plays. Sound Effects controls Wake, Curious, Happy and Afraid. Interaction effects soften while you speak. Home or End interaction stops playback. During an effect and its short echo tail, microphone startles pause to help prevent feedback; sound ripples still work. Demo inputs are simulated, and the same sounds play. Capture saves only the particle image, never the camera.</p>
   </dialog>
   <div id="toast" role="status" hidden></div>
 </body>

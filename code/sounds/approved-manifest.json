@@ -1,0 +1,52 @@
+{
+  "note": "Rendered from sound-test.html at approved settings, then quantized to 16-bit PCM. Originals preserved. No listening evaluation.",
+  "files": [
+    {
+      "file": "sounds/curious.wav",
+      "duration": 1.2,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peak": 0.20999999344348907,
+      "sha256": "394b4fb3717600f23f75577792b7ccf944e9943260660efc5aab952bbde39fee"
+    },
+    {
+      "file": "sounds/happy.wav",
+      "duration": 1.8,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peak": 0.20999999344348907,
+      "sha256": "97027434202c9a192220d70578bf17e19fad3b6fdb8b5b8672f08dc1edb1d720"
+    },
+    {
+      "file": "sounds/wake-adjusted.wav",
+      "duration": 0.6139791666666666,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peak": 0.44999998807907104,
+      "sha256": "0089bfa107430a407269b0916c12c9b16ef744912aaf6ca4a85ad522ea8906bb"
+    },
+    {
+      "file": "sounds/afraid-adjusted.wav",
+      "duration": 0.499,
+      "sampleRate": 48000,
+      "channels": 2,
+      "peak": 0.44999998807907104,
+      "sha256": "02ba77e79334b5d9c254958ea67110418bb602e155e1dd8bacbe82a07e40b11c"
+    },
+    {
+      "file": "sounds/wake.mp3",
+      "original": true,
+      "sha256": "3c1b35ecb2f56a809da358f9d769f7e4a42db263e2992e697954d618f6ae2f24"
+    },
+    {
+      "file": "sounds/afraid.mp3",
+      "original": true,
+      "sha256": "6abda0156a65638811fa0c0b64a0d6664ec190bee8dabae6d7de669fbd3b3b5f"
+    },
+    {
+      "file": "sounds/waterfall.mp3",
+      "original": true,
+      "sha256": "50479884955339d1c40a9a7a4a3bfda1ac2ddc67e41d1f6e8051ed7cc948c974"
+    }
+  ]
+}

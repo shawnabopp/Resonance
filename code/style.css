@@ -39,6 +39,8 @@
 #live-controls .hint{margin:12px 0}
 #live-controls #exit{margin-top:22px;width:100%}
 .body-phone-hint{display:none}
+.playback-controls .button-row button{min-height:44px;font-size:10px;padding:8px 5px}
+.playback-controls .hint{margin-bottom:0!important}
 @media(max-width:767px),(pointer:coarse){.body-desktop-hint{display:none}.body-phone-hint{display:block}}
 #mic-meter{display:block;width:100%;height:10px;accent-color:var(--accent);margin:8px 0}
 #mic-meter::-webkit-meter-bar{background:#202620;border:0}

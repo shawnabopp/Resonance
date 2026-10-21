@@ -151,9 +151,10 @@ async function main() {
     const before = JSON.parse(fs.readFileSync(path.join(__dirname, 'qa/source-sound-analysis.json'), 'utf8'));
     for (const name of ['afraid', 'wake']) assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(__dirname, 'sounds', name + '.mp3'))).digest('hex'), before.sounds[name].sha256);
     pass('Real MP3 decode: originals unchanged, timing and speed preserved, adjusted endpoints silent, bounded peaks and approximate active levels near curiosity');
-    await click('[data-recording="afraid-original"]'); await wait('!!voice');
+    assert.equal(await run('document.querySelectorAll("[data-recording$=original]").length'), 0);
+    await click('[data-recording="afraid-adjusted"]'); await wait('!!voice');
     assert(await run('document.querySelector("#duration").disabled && !document.querySelector("#volume").disabled'));
-    assert(await run('document.querySelector("#replay").textContent.includes("Afraid · Original")'));
+    assert(await run('document.querySelector("#replay").textContent.includes("Afraid · Adjusted")'));
     await click('[data-recording="wake-adjusted"]'); await wait('!!voice && !busy');
     assert(await run('document.querySelector("#status").textContent.includes("Wake · Adjusted")'));
     await click('#replay'); await wait('!!voice && !busy');

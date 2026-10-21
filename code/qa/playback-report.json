@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "No audio before Start; Wake plays once; the original waterfall.mp3 loops as a single track and gently rises to 10%",
+    "Hand noticing, stable smile and retreat use their corresponding effects; Afraid preempts Curious; held inputs and quick repeats do not stack or retrigger",
+    "Effects duck Music and it smoothly recovers; independent switches work; Home fades before stopping; rapid re-entry has one track and no stale cleanup timer",
+    "A missing effect does not block the experience; English retry reloads failed assets without a delayed Wake",
+    "Mic calibration and sustained loud input leave Music playing at 10%; Wake feedback protection and one-shot loud onset still work",
+    "Injected smile triggers Happy with unchanged speech attenuation; Music ducks only for the effect and returns to 10% during ongoing voice; independent switches preserve microphone input",
+    "Desktop and 320/390/landscape controls fit; End interaction closes playback and capture, with no uncaught page errors"
+  ],
+  "errors": [],
+  "limitations": "Chrome fake devices and injected RMS/face values; real output assets and models. No human listening, physical phone, Safari, or loudspeaker/acoustic echo test."
+}

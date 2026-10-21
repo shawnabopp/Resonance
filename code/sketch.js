@@ -84,8 +84,10 @@
   class AudioGate {
     constructor() { this.reset(); }
     reset() { this.elapsed = 0; this.samples = []; this.floor = .006; this.baseline = 0; this.level = 0; this.armed = false; this.quiet = 0; this.cooldown = 0; }
-    update(rms, dt, sensitivity = 1) {
+    update(rms, dt, sensitivity = 1, ownPlayback = false) {
       rms = clamp(Number.isFinite(rms) ? rms : 0); dt = clamp(dt, 0, .1);
+      // Do not learn the creature's own wake-up sound as room noise.
+      if (ownPlayback && this.elapsed < 1.3) return { level: 0, spike: false, calibrating: true };
       this.elapsed += dt; this.cooldown = Math.max(0, this.cooldown - dt);
       if (this.elapsed < 1.3) {
         this.samples.push(rms); this.baseline = rms;
@@ -100,6 +102,8 @@
       const quietThreshold = Math.max(.035, this.floor * 2.4);
       this.quiet = rms < quietThreshold ? this.quiet + dt : 0;
       if (this.quiet > .4 && this.cooldown === 0) this.armed = true;
+      // Keep volume/ripples responsive, but require new quiet after output + echo tail.
+      if (ownPlayback) { this.armed = false; this.quiet = 0; }
       const onset = Math.max(.15 / Math.sqrt(sensitivity), this.floor * 5, this.baseline * 2.8);
       const spike = this.armed && this.cooldown === 0 && rms > onset && rms - this.baseline > .045;
       if (spike) { this.armed = false; this.cooldown = 3; this.quiet = 0; }
@@ -670,6 +674,7 @@
       const current = () => id === this.generation;
       this.starting = true; this.muted = false; this.previewHidden = false;
       resetInputs(); setStage('loading');
+      sounds.prepareGesture();
       $('#connection-title').textContent = 'Getting ready';
       $('#connection-message').textContent = 'Allow your camera and microphone to begin.';
       $('#retry').hidden = true;
@@ -772,7 +777,7 @@
       if (!this.muted && this.audio?.state === 'running') {
         this.analyser.getFloatTimeDomainData(this.data);
         const rms = Math.sqrt(this.data.reduce((sum, v) => sum + v * v, 0) / this.data.length);
-        this.audioState = this.gate.update(rms, dt, this.sensitivity); s.level = this.audioState.level;
+        this.audioState = this.gate.update(rms, dt, this.sensitivity, sounds.guardMicrophone(now)); s.level = this.audioState.level;
         if (this.audioState.spike) s.spike++;
       } else { s.level = 0; }
       if (now - this.lastResultTime > 1000) { s.smile = s.sad = s.surprise = 0; this.expression.clearTracking(); }
@@ -790,8 +795,234 @@
     setMuted(muted) {
       this.muted = muted; this.stream?.getAudioTracks().forEach(track => { track.enabled = !muted; });
       this.gate.reset(); creature.s.level = 0;
+      sounds.guardForCalibration();
       if (!muted) this.audio?.resume().catch(() => {});
     }
+  }
+
+  // Playback policy uses observed transitions and real elapsed time, not frame counts.
+  class SoundCues {
+    constructor() { this.reset(); }
+    reset() {
+      this.last = null; this.smileTime = 0; this.neutralTime = 0; this.smileLatched = false;
+      this.handTime = 0; this.handAway = 2; this.handLatched = false; this.phase = 0;
+      this.approachLevel = .04; this.events = { clap: 0, retreat: 0 };
+    }
+    pause() { this.last = null; this.smileTime = this.handTime = 0; }
+    update(now, s, familiarity, events) {
+      const dt = this.last === null ? 0 : Math.min(.2, Math.max(0, (now - this.last) / 1000)); this.last = now;
+      const startled = events.clap > this.events.clap || events.retreat > this.events.retreat;
+      this.events = { clap: events.clap, retreat: events.retreat };
+      const phase = familiarity >= .7 ? 3 : familiarity >= .4 ? 2 : familiarity >= .15 ? 1 : 0;
+      const newPhase = phase > this.phase; this.phase = Math.max(this.phase, phase);
+      this.smileTime = s.facePresent && s.smile > .2 ? this.smileTime + dt : 0;
+      this.neutralTime = s.smile < .1 ? this.neutralTime + dt : 0;
+      if (this.neutralTime >= 2) this.smileLatched = false;
+      const newSmile = this.smileTime >= 1 && !this.smileLatched;
+      if (newSmile) this.smileLatched = true;
+      this.handAway = s.handPresent ? 0 : this.handAway + dt;
+      if (this.handAway >= 2) this.handLatched = false;
+      this.handTime = s.handPresent && s.handSpeed < .8 ? this.handTime + dt : 0;
+      const newHand = this.handTime >= .65 && !this.handLatched;
+      if (newHand) this.handLatched = true;
+      const approaching = s.facePresent && familiarity >= this.approachLevel + .12;
+      if (approaching) this.approachLevel = familiarity;
+      if (startled) return { name: 'afraid', reason: 'retreat' };
+      if (newSmile || newPhase) return { name: 'happy', reason: newSmile ? 'smile' : 'familiarity' };
+      if ((newHand || approaching) && s.sad < .2 && s.surprise < .2) return { name: 'curious', reason: newHand ? 'hand noticed' : 'approaching' };
+      return null;
+    }
+  }
+
+  class ExperienceAudio {
+    constructor() {
+      this.context = null; this.music = null; this.musicNode = null; this.musicGain = null;
+      this.musicTarget = null; this.departingMusic = new Set();
+      this.musicLevels = { normal: .10, effect: .035 };
+      this.buffers = new Map(); this.loading = null; this.generation = 0; this.active = false;
+      this.effectsEnabled = true; this.musicEnabled = true; this.voice = null; this.retiring = new Set();
+      this.policy = new SoundCues(); this.lastPlayed = {}; this.history = []; this.counts = { wake: 0, curious: 0, happy: 0, afraid: 0 };
+      this.guardUntil = 0; this.lastAny = -Infinity; this.ready = false; this.blocked = false; this.errors = [];
+    }
+    prepareGesture() {
+      // A rapid new Start must finish the previous session's exit fade first.
+      this.finishDepartingMusic();
+      if (!this.context || this.context.state === 'closed') {
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio) { this.errors = ['Playback is unavailable in this browser.']; return; }
+        try { this.context = new Audio({ latencyHint: 'interactive' }); }
+        catch { this.errors = ['Playback could not start.']; return; }
+      }
+      const id = this.generation, ctx = this.context;
+      ctx.resume().then(() => { if (id === this.generation) this.blocked = ctx.state !== 'running'; }).catch(() => { if (id === this.generation) this.blocked = true; });
+      if (this.musicEnabled) this.startMusicGesture();
+      if (!this.loading || (this.ready && this.errors.length)) {
+        this.ready = false;
+        this.abort = new AbortController(); this.errors = [];
+        this.loading = Promise.allSettled(['wake', 'curious', 'happy', 'afraid'].map(async name => {
+          if (this.buffers.has(name)) return;
+          const file = name === 'wake' || name === 'afraid' ? name + '-adjusted' : name;
+          const response = await fetch(localAsset('sounds/' + file + '.wav'), { signal: this.abort.signal });
+          if (!response.ok) throw Error(name);
+          const buffer = await ctx.decodeAudioData(await response.arrayBuffer());
+          if (id === this.generation) this.buffers.set(name, buffer);
+        })).then(results => {
+          if (id !== this.generation) return;
+          const names = ['Wake', 'Curious', 'Happy', 'Afraid'];
+          this.errors = results.flatMap((r, i) => r.status === 'rejected' ? [names[i] + ' sound could not load.'] : []);
+          this.ready = true;
+        });
+      }
+    }
+    startMusicGesture() {
+      if (!this.context || !this.musicEnabled) return;
+      if (!this.music) {
+        const element = new Audio(); element.loop = true; element.preload = 'auto';
+        element.src = localAsset('sounds/waterfall.mp3');
+        this.music = element; this.musicGain = this.context.createGain(); this.musicGain.gain.value = 0;
+        this.musicTarget = null;
+        this.musicNode = this.context.createMediaElementSource(element); this.musicNode.connect(this.musicGain).connect(this.context.destination);
+        element.addEventListener('error', () => { if (this.music === element) this.musicError = true; });
+      }
+      const element = this.music, id = this.generation;
+      element.play().then(() => { if (id === this.generation) { this.musicBlocked = false; this.musicError = false; } }).catch(() => { if (id === this.generation) this.musicBlocked = true; });
+    }
+    begin() {
+      if (this.active) return;
+      this.active = true; this.policy.reset(); this.lastPlayed = {}; this.lastAny = -Infinity;
+      this.policy.events = { clap: creature.eventCounts.clap, retreat: creature.eventCounts.retreat }; this.lastName = null;
+      this.counts = { wake: 0, curious: 0, happy: 0, afraid: 0 }; this.history = []; this.wakePending = true;
+      const id = this.generation;
+      Promise.resolve(this.loading).then(() => {
+        if (id !== this.generation || !this.active || document.hidden || !this.wakePending) return;
+        this.wakePending = false; creature.awaken(); this.request('wake', 'session start');
+      });
+    }
+    guardMicrophone(now) { return now < this.guardUntil; }
+    setMusicLevel(target, seconds = .4) {
+      const ctx = this.context, gain = this.musicGain?.gain;
+      if (!gain || ctx?.state !== 'running' || target === this.musicTarget) return;
+      const now = ctx.currentTime;
+      if (gain.cancelAndHoldAtTime) gain.cancelAndHoldAtTime(now);
+      else { const value = gain.value; gain.cancelScheduledValues(now); gain.setValueAtTime(value, now); }
+      gain.setTargetAtTime(target, now, seconds);
+      this.musicTarget = target;
+    }
+    finishDepartingMusic() {
+      for (const session of this.departingMusic) session.finish();
+    }
+    guardForCalibration() {
+      this.guardUntil = Math.max(this.guardUntil, performance.now() + 250);
+    }
+    releaseVoice(immediate = false) {
+      if (!this.voice) return;
+      const v = this.voice; this.voice = null; this.retiring.add(v);
+      const now = v.context.currentTime;
+      v.gain.gain.cancelScheduledValues(now); v.gain.gain.setValueAtTime(v.gain.gain.value, now);
+      v.gain.gain.linearRampToValueAtTime(0, now + (immediate ? .002 : .02));
+      try { v.source.stop(now + (immediate ? .003 : .025)); } catch {}
+      v.ends = now + (immediate ? .003 : .025); this.guardUntil = performance.now() + 450;
+    }
+    request(name, reason) {
+      const now = performance.now(), ctx = this.context;
+      if (!this.active || !this.effectsEnabled || !ctx || ctx.state !== 'running' || document.hidden || !this.buffers.has(name)) return false;
+      const cooldown = { wake: Infinity, curious: 16000, happy: 11000, afraid: 3200 }[name];
+      if (this.lastPlayed[name] !== undefined && now - this.lastPlayed[name] < cooldown) return false;
+      if (name !== 'afraid' && (this.voice || this.retiring.size || now - this.lastAny < (this.lastName === 'wake' ? 600 : 4000))) return false;
+      if (name === 'afraid') this.releaseVoice();
+      const source = ctx.createBufferSource(), gain = ctx.createGain(); source.buffer = this.buffers.get(name);
+      // Files contain the approved 30% preview levels; a further soft output trim.
+      gain.gain.value = .65; source.connect(gain).connect(ctx.destination);
+      const priorEnd = Math.max(ctx.currentTime, ...Array.from(this.retiring, v => v.ends));
+      const start = Math.max(ctx.currentTime + .008, priorEnd + .005);
+      const v = { name, source, gain, context: ctx, ends: start + source.buffer.duration };
+      this.voice = v; this.lastPlayed[name] = now; this.lastAny = now; this.counts[name]++;
+      this.lastName = name;
+      this.guardUntil = now + (v.ends - ctx.currentTime) * 1000 + 450;
+      this.history.push({ name, reason, at: now, duration: source.buffer.duration, delay: start - ctx.currentTime });
+      if (this.history.length > 40) this.history.shift();
+      source.onended = () => { source.disconnect(); gain.disconnect(); this.retiring.delete(v); if (this.voice === v) this.voice = null; };
+      source.start(start); return true;
+    }
+    update(now, s, familiarity, events) {
+      if (!this.active || document.hidden) return;
+      const cue = this.policy.update(now, s, familiarity, events);
+      const calibrating = model.stage === 'live' && !live.muted && live.gate.elapsed < 1.3;
+      const speaking = s.level > .1;
+      // Do not queue belated replies while the user is speaking/singing or a sound plays.
+      if (cue && (cue.name === 'afraid' || (!speaking && !calibrating))) {
+        const played = this.request(cue.name, cue.reason);
+        // A hand/smile that arrives during the very short wake keeps its current cue.
+        if (!played && this.voice?.name === 'wake') {
+          if (cue.reason === 'smile') this.policy.smileLatched = false;
+          if (cue.reason === 'hand noticed') this.policy.handLatched = false;
+        }
+      }
+      const ctx = this.context;
+      if (!ctx || ctx.state !== 'running') return;
+      if (this.voice && this.voice.name !== 'afraid') this.voice.gain.gain.setTargetAtTime(speaking ? .14 : .65, ctx.currentTime, .07);
+      if (this.musicGain) {
+        // Microphone level and calibration never control background music.
+        const target = !this.musicEnabled ? 0 : this.voice ? this.musicLevels.effect : this.musicLevels.normal;
+        this.setMusicLevel(target, target < (this.musicTarget ?? 0) ? .07 : .4);
+      }
+    }
+    pause() {
+      this.policy.pause(); this.releaseVoice();
+      this.finishDepartingMusic();
+      this.music?.pause();
+      if (this.musicGain && this.context?.state !== 'closed') {
+        this.musicGain.gain.cancelScheduledValues(this.context.currentTime); this.musicGain.gain.value = 0; this.musicTarget = null;
+      }
+    }
+    resume() {
+      if (!this.active) return;
+      this.prepareGesture();
+      if (this.wakePending) { this.wakePending = false; creature.awaken(); }
+    }
+    setEffects(enabled) { this.effectsEnabled = enabled; if (!enabled) this.releaseVoice(); else this.prepareGesture(); }
+    setMusic(enabled) {
+      this.musicEnabled = enabled;
+      if (enabled) { this.prepareGesture(); }
+      else {
+        this.music?.pause();
+        if (this.musicGain) { this.musicGain.gain.cancelScheduledValues(this.context.currentTime); this.musicGain.gain.value = 0; this.musicTarget = null; }
+      }
+    }
+    stop(fadeMusic = true) {
+      this.active = false; this.generation++; this.wakePending = false; this.abort?.abort(); this.abort = null;
+      this.releaseVoice(true);
+      for (const v of this.retiring) { try { v.source.stop(); } catch {} v.source.disconnect(); v.gain.disconnect(); }
+      this.retiring.clear();
+      const ctx = this.context, element = this.music, node = this.musicNode, gain = this.musicGain;
+      this.context = this.music = this.musicNode = this.musicGain = null; this.musicTarget = null;
+      if (ctx) {
+        // Capture only this session: a late fade timer cannot stop a new experience.
+        const session = { timer: null, finish: () => {
+          clearTimeout(session.timer); this.departingMusic.delete(session);
+          if (element) { element.pause(); element.removeAttribute('src'); element.load(); }
+          node?.disconnect(); gain?.disconnect(); ctx.close().catch(() => {});
+        } };
+        if (fadeMusic && !document.hidden && ctx.state === 'running' && element && !element.paused && gain.gain.value > .0001) {
+          const now = ctx.currentTime, param = gain.gain;
+          if (param.cancelAndHoldAtTime) param.cancelAndHoldAtTime(now);
+          else { const value = param.value; param.cancelScheduledValues(now); param.setValueAtTime(value, now); }
+          // Anchor the linear fade after the preceding exponential target.
+          param.setValueAtTime(param.value, now);
+          param.linearRampToValueAtTime(0, now + .4);
+          this.departingMusic.add(session); session.timer = setTimeout(session.finish, 450);
+        } else session.finish();
+      }
+      if (!fadeMusic) this.finishDepartingMusic();
+      this.loading = null; this.ready = false; this.blocked = this.musicBlocked = this.musicError = false;
+      this.guardUntil = 0; this.policy.reset();
+    }
+    snapshot() { return { active: this.active, context: this.context?.state || 'closed', musicEnabled: this.musicEnabled,
+      effectsEnabled: this.effectsEnabled, current: this.voice?.name || null, retiring: this.retiring.size, ready: this.ready,
+      musicPlaying: !!this.music && !this.music.paused, musicTracks: this.music ? 1 : 0, musicGain: this.musicGain?.gain.value || 0,
+      musicDefault: this.musicLevels.normal, musicTarget: this.musicTarget, departingMusic: this.departingMusic.size,
+      effectGain: this.voice?.gain.gain.value || 0, blocked: !!(this.blocked || this.musicBlocked),
+      echoGuard: this.guardMicrophone(performance.now()), counts: { ...this.counts }, history: this.history.map(e => ({ ...e })), errors: [...this.errors] }; }
   }
 
   class Creature {
@@ -804,6 +1035,7 @@
       this.theme = rgb(theme); this.color = [...this.theme]; this.s = emptySignals();
       this.relationship = new Familiarity(); this.fam = .04; this.engaged = false; this.t = 0; this.time = 0; this.rotation = 0;
       this.cx = 0; this.cy = 0; this.radius = 0; this.w = 0; this.h = 0; this.morph = 1;
+      this.wakeAge = 10;
       this.sm = { smile: 0, sad: 0, surprise: 0, level: 0, open: .5, hand: 0, body: 0, bodySway: 0, bodyLift: 0, bodySpread: 0, expansion: 1, scale: 1, closeness: .04, rest: 0 };
       this.events = { surprise: 20, clap: 20, retreat: 20 }; this.power = { surprise: 1, clap: 1, retreat: 1 };
       this.lastEvent = { surprise: -10, clap: -10, retreat: -10 }; this.eventCounts = { surprise: 0, clap: 0, retreat: 0 };
@@ -840,7 +1072,9 @@
       }
       return true;
     }
+    awaken() { this.wakeAge = 0; }
     reset(familiarity = false) {
+      this.wakeAge = 10;
       this.s = emptySignals(); this.lastSpike = 0; this.wasSurprised = false;
       this.relationship.pause();
       if (familiarity) { this.relationship.reset(); this.fam = .04; }
@@ -848,6 +1082,7 @@
     }
     update(dt, now = performance.now()) {
       const s = this.s, sm = this.sm;
+      this.wakeAge = Math.min(10, this.wakeAge + dt);
       this.time += dt;
       for (const key of Object.keys(this.events)) this.events[key] += dt;
       for (const key of ['smile', 'sad', 'surprise', 'level']) sm[key] = approach(sm[key], s[key], key === 'level' ? 7 : 4, dt);
@@ -883,7 +1118,8 @@
       const open = (sm.open - .5) * .7 * sm.hand;
       // A closed hand keeps its gathering effect even when both arms are open.
       const bodyExpansion = sm.bodySpread * .28 * (1 - sm.hand * (1 - sm.open) * .8);
-      const expansion = clamp(1 + sm.smile * .23 - sm.sad * .27 + open + bodyExpansion + sm.level * .1 + surprise * .52 * motionFactor - retreat * .2, .6, 1.75);
+      const waking = this.engaged ? 1 - Math.exp(-this.wakeAge * 5) : 1;
+      const expansion = clamp(1 + sm.smile * .23 - sm.sad * .27 + open + bodyExpansion + sm.level * .1 + surprise * .52 * motionFactor - retreat * .2, .6, 1.75) * (.82 + .18 * waking);
       sm.expansion = approach(sm.expansion, expansion, 5, dt);
       sm.scale = approach(sm.scale, 1 + closeness * .3 + sm.smile * .17 - sm.rest * .16, 2.2, dt);
       const W = this.w, H = this.h;
@@ -972,7 +1208,7 @@
       }
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
       this.metrics = { color: this.color.map(Math.round), center: [this.cx, this.cy], radius: R,
-        expansion: sm.expansion, scale: sm.scale, level: sm.level, speed: this.visual.speed,
+        expansion: sm.expansion, scale: sm.scale, level: sm.level, speed: this.visual.speed, wakeAge: this.wakeAge,
         rotation: this.rotation, sway, clap, retreat, surprise: this.visual.surprise,
         body: { sway: sm.bodySway, lift: sm.bodyLift, spread: sm.bodySpread, motion: sm.body },
         familiarity: this.fam, rest: sm.rest, absenceSeconds: this.relationship.absence, followRate: this.visual.followRate,
@@ -984,6 +1220,7 @@
     sound: 0, sustain: false, muted: false, hand: false, openness: .5, body: 0, bodyLean: 0, arms: 0, present: true, faceX: .5 };
   const creature = new Creature($('#creature'), { count: matchMedia('(max-width: 767px)').matches ? 2300 : 3600 });
   const live = new LiveInput();
+  const sounds = new ExperienceAudio();
   const previews = [];
   let toastTimer, lastUI = 0, lastSoundInput = { value: 0, time: 0 }, pointer = null;
   function toast(message) { clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').hidden = false; toastTimer = setTimeout(() => $('#toast').hidden = true, 2400); }
@@ -1028,7 +1265,8 @@
     $('#body-lean').value = model.bodyLean; $('#body-arms').value = model.arms;
     const muted = model.stage === 'live' ? live.muted : model.muted;
     $('#mute').setAttribute('aria-pressed', String(muted));
-    $('#mute-label').textContent = muted ? 'Sound off' : model.stage === 'live' ? 'Microphone' : 'Demo sound';
+    $('#mute-label').textContent = model.stage === 'live' ? (muted ? 'Mic off' : 'Microphone') : (muted ? 'Input off' : 'Demo input');
+    $('#mute').setAttribute('aria-label', model.stage === 'live' ? (muted ? 'Turn microphone on' : 'Turn microphone off') : (muted ? 'Turn Demo sound input on' : 'Turn Demo sound input off'));
     document.body.classList.toggle('hand-active', model.hand && model.stage === 'demo');
     $('#creature').tabIndex = model.hand && model.stage === 'demo' ? 0 : -1;
     if (!model.hand) $('#hand-marker').hidden = true;
@@ -1036,11 +1274,15 @@
   function resetInputs(familiarity = false) {
     Object.assign(model, { expression: null, intensity: .85, sound: 0, sustain: false, muted: false, hand: false, openness: .5, body: 0, bodyLean: 0, arms: 0, present: true, faceX: .5 });
     creature.reset(familiarity); pointer = null; lastSoundInput = { value: 0, time: performance.now() }; syncControls();
+    if (familiarity && sounds.active) { sounds.policy.reset(); sounds.policy.events = { clap: creature.eventCounts.clap, retreat: creature.eventCounts.retreat }; }
   }
   function setStage(stage) {
+    const previous = model.stage;
     if (stage !== 'live' && stage !== 'loading') live.stop();
+    if (!['live', 'demo', 'loading'].includes(stage)) sounds.stop();
     $$('dialog[open]').forEach(d => d.close());
     model.stage = stage; creature.engaged = stage === 'demo' || stage === 'live';
+    if (creature.engaged && stage !== previous) sounds.begin();
     document.body.dataset.stage = stage;
     document.body.classList.toggle('in-session', creature.engaged);
     $('#welcome').hidden = stage !== 'welcome'; $('#prep').hidden = stage !== 'prep';
@@ -1069,11 +1311,14 @@
     model.present = !model.present; syncControls();
   });
   $('#face-position').addEventListener('input', e => { model.faceX = +e.target.value; });
-  for (const id of ['try-demo', 'fallback-demo']) $(`#${id}`).addEventListener('click', () => { resetInputs(); setStage('demo'); });
+  for (const id of ['try-demo', 'fallback-demo']) $(`#${id}`).addEventListener('click', () => { sounds.prepareGesture(); resetInputs(); setStage('demo'); });
   $('#cancel-start').addEventListener('click', () => setStage('prep'));
   $('#exit').addEventListener('click', () => setStage('welcome'));
   $('#sensitivity').addEventListener('input', e => { live.sensitivity = +e.target.value; $('#sensitivity-value').textContent = `${live.sensitivity.toFixed(1)}×`; });
-  $('#calibrate').addEventListener('click', () => { live.gate.reset(); toast('Stay quiet for a moment while the microphone settles.'); });
+  $('#calibrate').addEventListener('click', () => { sounds.guardForCalibration(); live.gate.reset(); toast('Stay quiet for a moment while the microphone settles.'); });
+  $$('[data-music]').forEach(button => button.addEventListener('click', () => { sounds.setMusic(!sounds.musicEnabled); syncPlaybackControls(); }));
+  $$('[data-effects]').forEach(button => button.addEventListener('click', () => { sounds.setEffects(!sounds.effectsEnabled); syncPlaybackControls(); }));
+  $$('[data-resume-playback]').forEach(button => button.addEventListener('click', () => sounds.resume()));
   $('#resume-audio').addEventListener('click', () => { live.audio?.resume().catch(() => toast('Could not resume the microphone. End the interaction and try again.')); });
   $('#toggle-preview').addEventListener('click', () => {
     live.previewHidden = !live.previewHidden;
@@ -1247,7 +1492,17 @@
   $('#expression-debug').addEventListener('toggle', updateExpressionDebug);
   $('#calibrate-expression').addEventListener('click', () => { if (live.active) live.expression.startCalibration(performance.now()); updateExpressionDebug(); });
   $('#reset-expression-calibration').addEventListener('click', () => { live.expression.resetCalibration(); updateExpressionDebug(); });
+  function syncPlaybackControls() {
+    for (const button of $$('[data-music]')) { button.setAttribute('aria-pressed', String(sounds.musicEnabled)); button.textContent = `Music · ${sounds.musicEnabled ? 'On' : 'Off'}`; }
+    for (const button of $$('[data-effects]')) { button.setAttribute('aria-pressed', String(sounds.effectsEnabled)); button.textContent = `Sound Effects · ${sounds.effectsEnabled ? 'On' : 'Off'}`; }
+    const blocked = sounds.blocked || sounds.musicBlocked || (sounds.active && sounds.context?.state === 'suspended');
+    $$('[data-resume-playback]').forEach(button => { button.hidden = !blocked && !sounds.errors.length && !sounds.musicError; });
+    const baseMessage = model.stage === 'demo' ? 'Music and effects are separate from simulated sound input. Demo cues use the same sound responses.' : 'Music and effects are separate from your microphone. Sounds soften while you speak.';
+    const message = sounds.errors.length ? sounds.errors.join(' ') + ' Tap Resume sound to retry.' : sounds.musicError ? 'Music could not load. Tap Resume sound to retry.' : blocked ? 'Playback is paused. Tap Resume sound to continue.' : !sounds.ready && sounds.active ? 'Preparing sound…' : baseMessage;
+    for (const label of $$('[data-playback-status]')) if (label.textContent !== message) label.textContent = message;
+  }
   function updateStatus() {
+    syncPlaybackControls();
     const fam = creature.fam;
     $('#bond-fill').style.width = `${fam * 100}%`; $('#bond-value').textContent = `${Math.round(fam * 100)}%`;
     $('#bond-label').textContent = fam < .15 ? 'Cautious · Still a little shy' : fam < .4 ? 'Curious · Getting to know you' : fam < .7 ? 'Warming up · Coming closer' : 'Familiar · At ease with you';
@@ -1292,7 +1547,7 @@
     if (!document.hidden) {
       if (model.stage === 'demo') feedDemo(dt);
       else if (model.stage === 'live') live.update(now, dt);
-      creature.update(dt, now); creature.draw();
+      creature.update(dt, now); sounds.update(now, creature.s, creature.fam, creature.eventCounts); creature.draw();
       for (const preview of previews) if (preview.canvas.getClientRects().length) { preview.update(dt); preview.draw(); }
       if (now - lastUI > 250) { updateStatus(); lastUI = now; }
     }
@@ -1304,6 +1559,7 @@
       expressionSamples.pending = null; $('#expression-sample-status').textContent = 'Sampling paused by a tab switch. Please start a new sample.';
     }
     creature.relationship.pause();
+    if (document.hidden) sounds.pause(); else sounds.resume();
     if (live.active) {
       live.presenceInvalidBefore = lastTime;
       live.hands.filter.lose(); creature.s.handPresent = false;
@@ -1313,11 +1569,11 @@
       creature.s.smile = creature.s.sad = creature.s.surprise = creature.s.level = 0;
     }
   });
-  window.addEventListener('pagehide', () => { live.stop(); if (model.stage === 'live' || model.stage === 'loading') setStage('prep'); });
+  window.addEventListener('pagehide', () => { sounds.stop(false); live.stop(); if (model.stage === 'live' || model.stage === 'loading') setStage('prep'); });
   requestAnimationFrame(frame);
   // Read-only diagnostic snapshot for browser QA; it cannot inject real inputs.
   Object.defineProperty(window, 'resonanceDemo', { value: Object.freeze({
-    snapshot: () => ({ stage: model.stage, shape: model.shape, theme: THEMES[model.theme].name, inputs: { ...model }, signals: { ...creature.s }, ...structuredClone(creature.metrics),
+    snapshot: () => ({ stage: model.stage, shape: model.shape, theme: THEMES[model.theme].name, inputs: { ...model }, signals: { ...creature.s }, ...structuredClone(creature.metrics), playback: sounds.snapshot(),
       live: { active: live.active, starting: live.starting, modelReady: live.modelReady, worker: !!live.worker, frames: live.frames, facePresent: live.expression.present, expression: live.expression.active, expressionDebug: live.expression.diagnostics(),
         hands: { state: live.hands.state, active: live.hands.active, worker: !!live.hands.worker, error: live.hands.error, busy: live.hands.busy, frames: live.hands.frames, interval: live.hands.interval },
         body: { state: live.body.state, worker: !!live.body.worker, error: live.body.error, busy: live.body.busy, frames: live.body.frames, interval: live.body.interval },

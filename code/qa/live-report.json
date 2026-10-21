@@ -45,7 +45,7 @@
       "faceX": 0.5,
       "faceY": 0.5,
       "presenceSince": 0,
-      "presenceUntil": 2660.9,
+      "presenceUntil": 2678.4,
       "handPresent": false,
       "handX": 0.5,
       "handY": 0.5,
@@ -58,20 +58,21 @@
       "bodySpread": 0
     },
     "color": [
-      195,
+      197,
       212,
-      150
+      149
     ],
     "center": [
-      545.6219148362811,
-      311.08217674553396
+      545.635095263759,
+      311.0805662225321
     ],
     "radius": 152.145,
-    "expansion": 1.037588101273937,
-    "scale": 1.0571852589771409,
+    "expansion": 0.9730775658393773,
+    "scale": 1.0590834992379956,
     "level": 0,
-    "speed": 1.0381758446150453,
-    "rotation": 0.27395395618266116,
+    "speed": 1.03950309819041,
+    "wakeAge": 0.21670000000000006,
+    "rotation": 0.27697256523224195,
     "sway": 0,
     "clap": 0,
     "retreat": 0,
@@ -84,13 +85,13 @@
     },
     "familiarity": 0.04,
     "rest": 0,
-    "absenceSeconds": 0.21659999999999993,
-    "followRate": 1.6238616843156315,
+    "absenceSeconds": 0.20000000000000004,
+    "followRate": 1.6241980181326525,
     "bounds": [
-      362.703478328737,
-      116.24059087954132,
-      742.7059061288414,
-      487.092522957455
+      382.7044109369231,
+      136.75459731632662,
+      727.2015965577915,
+      479.91564553277556
     ],
     "viewport": [
       1092,
@@ -100,6 +101,37 @@
       "surprise": 0,
       "clap": 0,
       "retreat": 0
+    },
+    "playback": {
+      "active": true,
+      "context": "running",
+      "musicEnabled": true,
+      "effectsEnabled": true,
+      "current": "wake",
+      "retiring": 0,
+      "ready": true,
+      "musicPlaying": true,
+      "musicTracks": 1,
+      "musicGain": 0,
+      "effectGain": 0.6499999761581421,
+      "blocked": false,
+      "echoGuard": true,
+      "counts": {
+        "wake": 1,
+        "curious": 0,
+        "happy": 0,
+        "afraid": 0
+      },
+      "history": [
+        {
+          "name": "wake",
+          "reason": "session start",
+          "at": 1474.800000000745,
+          "duration": 0.6139791666666666,
+          "delay": 0.008000000000000007
+        }
+      ],
+      "errors": []
     },
     "live": {
       "active": true,

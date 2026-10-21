@@ -48,8 +48,8 @@
         "facePresent": true,
         "faceX": 0.5,
         "faceY": 0.5,
-        "presenceSince": 2967,
-        "presenceUntil": 5558.700000000186,
+        "presenceSince": 3065,
+        "presenceUntil": 5664.5,
         "handPresent": false,
         "handX": 0.5,
         "handY": 0.5,
@@ -67,15 +67,15 @@
         171
       ],
       "center": [
-        545.9169351062015,
-        311.43353375168516
+        546.1186616900812,
+        314.6432795445725
       ],
       "radius": 152.145,
-      "expansion": 1,
-      "scale": 1.0130263709011202,
+      "expansion": 0.9995016288713501,
+      "scale": 1.0130311860497834,
       "level": 0,
-      "speed": 1.0054398447125164,
-      "rotation": 0.6354001805745104,
+      "speed": 1.0054440232880761,
+      "rotation": 0.5041116170730015,
       "sway": 0,
       "clap": 0,
       "retreat": 0,
@@ -86,15 +86,15 @@
         "spread": 0,
         "motion": 0
       },
-      "familiarity": 0.04954900000000016,
+      "familiarity": 0.049589800000000066,
       "rest": 0,
       "absenceSeconds": 0,
-      "followRate": 1.635996117812911,
+      "followRate": 1.6361005822019017,
       "bounds": [
-        402.2479331565431,
-        161.83857611710874,
-        705.728073943937,
-        453.87315557436864
+        394.96435781142776,
+        151.7267615722787,
+        715.2822742113979,
+        474.0061072556887
       ],
       "viewport": [
         1092,
@@ -105,6 +105,35 @@
         "clap": 0,
         "retreat": 0
       },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.034883081912994385,
+        "echoGuard": false,
+        "counts": {
+          "wake": 1,
+          "curious": 0,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "at": 3088.2999999998137,
+            "duration": 0.6139791666666666,
+            "delay": 0.008
+          }
+        ],
+        "errors": []
+      },
       "live": {
         "active": false,
         "starting": false,
@@ -113,6 +142,79 @@
         "frames": 0,
         "facePresent": false,
         "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
         "hands": {
           "state": "idle",
           "active": false,
@@ -165,8 +267,8 @@
         "facePresent": true,
         "faceX": 0.5,
         "faceY": 0.5,
-        "presenceSince": 2967,
-        "presenceUntil": 7892.200000000186,
+        "presenceSince": 3065,
+        "presenceUntil": 8013.5999999996275,
         "handPresent": false,
         "handX": 0.5,
         "handY": 0.5,
@@ -184,15 +286,15 @@
         112
       ],
       "center": [
-        539.8770811359833,
-        267.24351771538016
+        547.3014861578235,
+        267.74273053146237
       ],
       "radius": 152.145,
-      "expansion": 1.1953780912727816,
-      "scale": 1.1621623882322996,
+      "expansion": 1.195369917346018,
+      "scale": 1.162072766088478,
       "level": 0,
-      "speed": 1.4803417951011881,
-      "rotation": 1.0944681340759888,
+      "speed": 1.4803342326636795,
+      "rotation": 0.9644252642250479,
       "sway": 0,
       "clap": 0,
       "retreat": 0,
@@ -203,15 +305,15 @@
         "spread": 0,
         "motion": 0
       },
-      "familiarity": 0.08596809750000002,
+      "familiarity": 0.08594058849999989,
       "rest": 0,
       "absenceSeconds": 0,
-      "followRate": 1.7199036176691616,
+      "followRate": 1.7198526152874951,
       "bounds": [
-        337.20958162781506,
-        37.83047183964635,
-        773.7065195601592,
-        486.1253179851874
+        334.0715911809027,
+        31.92621650028795,
+        808.0679003103903,
+        493.745771385969
       ],
       "viewport": [
         1092,
@@ -222,6 +324,42 @@
         "clap": 0,
         "retreat": 0
       },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": "happy",
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.012026007287204266,
+        "echoGuard": true,
+        "counts": {
+          "wake": 1,
+          "curious": 0,
+          "happy": 1,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "at": 3088.2999999998137,
+            "duration": 0.6139791666666666,
+            "delay": 0.008
+          },
+          {
+            "name": "happy",
+            "reason": "smile",
+            "at": 5814.5,
+            "duration": 1.8,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
       "live": {
         "active": false,
         "starting": false,
@@ -230,6 +368,79 @@
         "frames": 0,
         "facePresent": false,
         "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
         "hands": {
           "state": "idle",
           "active": false,
@@ -282,8 +493,8 @@
         "facePresent": true,
         "faceX": 0.5,
         "faceY": 0.5,
-        "presenceSince": 2967,
-        "presenceUntil": 10526.700000000186,
+        "presenceSince": 3065,
+        "presenceUntil": 10663.5,
         "handPresent": false,
         "handX": 0.5,
         "handY": 0.5,
@@ -301,15 +512,15 @@
         255
       ],
       "center": [
-        546.6738217828298,
-        355.19525773262393
+        546.2852918010768,
+        351.13035166727303
       ],
       "radius": 152.145,
-      "expansion": 0.770581776691051,
-      "scale": 1.0295816173036654,
+      "expansion": 0.7705817120743145,
+      "scale": 1.029653438897407,
       "level": 0,
-      "speed": 0.43558747520231106,
-      "rotation": 1.3073558806759211,
+      "speed": 0.4355999016709641,
+      "rotation": 1.180771281277691,
       "sway": 0,
       "clap": 0,
       "retreat": 0,
@@ -320,15 +531,15 @@
         "spread": 0,
         "motion": 0
       },
-      "familiarity": 0.1029477180000001,
+      "familiarity": 0.103188918,
       "rest": 0,
       "absenceSeconds": 0,
-      "followRate": 1.7928506344584845,
+      "followRate": 1.7935742610317646,
       "bounds": [
-        435.74481765592714,
-        240.69918788735177,
-        664.6335956990539,
-        476.340590590508
+        433.41968655057576,
+        235.43658545970533,
+        673.2682877501121,
+        468.256083217551
       ],
       "viewport": [
         1092,
@@ -339,6 +550,42 @@
         "clap": 0,
         "retreat": 0
       },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.03499597683548927,
+        "echoGuard": false,
+        "counts": {
+          "wake": 1,
+          "curious": 0,
+          "happy": 1,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "at": 3088.2999999998137,
+            "duration": 0.6139791666666666,
+            "delay": 0.008
+          },
+          {
+            "name": "happy",
+            "reason": "smile",
+            "at": 5814.5,
+            "duration": 1.8,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
       "live": {
         "active": false,
         "starting": false,
@@ -347,6 +594,79 @@
         "frames": 0,
         "facePresent": false,
         "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
         "hands": {
           "state": "idle",
           "active": false,
@@ -399,8 +719,8 @@
         "facePresent": true,
         "faceX": 0.5,
         "faceY": 0.5,
-        "presenceSince": 33509.80000000028,
-        "presenceUntil": 38209.30000000028,
+        "presenceSince": 33579.700000000186,
+        "presenceUntil": 38245.799999999814,
         "handPresent": true,
         "handX": 0.5,
         "handY": 0.5,
@@ -408,7 +728,7 @@
         "handSpeed": 0,
         "bodyPresent": true,
         "bodyMotion": 1,
-        "bodySway": -0.9946654101112637,
+        "bodySway": 0.3021334986667368,
         "bodyLift": 0,
         "bodySpread": 0
       },
@@ -418,34 +738,34 @@
         140
       ],
       "center": [
-        557.8297541923281,
-        301.949847950263
+        575.955865594678,
+        292.3372558116923
       ],
       "radius": 152.145,
-      "expansion": 1.3028036682067137,
-      "scale": 1.154577271313508,
-      "level": 0.9458609747929693,
-      "speed": 2.017486965438638,
-      "rotation": 10.386157918652065,
-      "sway": -0.3132243495713497,
-      "clap": 0.94109898487837,
+      "expansion": 1.3048699041796048,
+      "scale": 1.1544394471097703,
+      "level": 0.9518676129013477,
+      "speed": 2.017421338054775,
+      "rotation": 10.204406259073165,
+      "sway": 0.3502345962812454,
+      "clap": 0.9410492366863882,
       "retreat": 0,
       "surprise": 0,
       "body": {
-        "sway": -0.3869601388664264,
+        "sway": 0.6416342874565168,
         "lift": 0,
         "spread": 0,
-        "motion": 0.9988680751918401
+        "motion": 0.9988106361889416
       },
-      "familiarity": 0.346170617999997,
+      "familiarity": 0.3456216159999992,
       "rest": 0,
       "absenceSeconds": 0,
-      "followRate": 2.5231611231592947,
+      "followRate": 2.521499924120051,
       "bounds": [
-        153.65570966605156,
-        20.804347948629072,
-        965.3946274125908,
-        586.3580151601693
+        229.5547837030885,
+        12.086433993361993,
+        991.4714568084755,
+        571.9374285958497
       ],
       "viewport": [
         1092,
@@ -456,6 +776,70 @@
         "clap": 3,
         "retreat": 1
       },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": "afraid",
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.0077637010253965855,
+        "echoGuard": true,
+        "counts": {
+          "wake": 1,
+          "curious": 0,
+          "happy": 1,
+          "afraid": 4
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "at": 3088.2999999998137,
+            "duration": 0.6139791666666666,
+            "delay": 0.008
+          },
+          {
+            "name": "happy",
+            "reason": "smile",
+            "at": 5814.5,
+            "duration": 1.8,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 18595.099999999627,
+            "duration": 0.499,
+            "delay": 0.007999999999999119
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 24429.700000000186,
+            "duration": 0.499,
+            "delay": 0.007999999999999119
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 30196,
+            "duration": 0.499,
+            "delay": 0.007999999999999119
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 36846.90000000037,
+            "duration": 0.499,
+            "delay": 0.008000000000002672
+          }
+        ],
+        "errors": []
+      },
       "live": {
         "active": false,
         "starting": false,
@@ -464,6 +848,79 @@
         "frames": 0,
         "facePresent": false,
         "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
         "hands": {
           "state": "idle",
           "active": false,
@@ -516,8 +973,8 @@
         "facePresent": true,
         "faceX": 0.5,
         "faceY": 0.5,
-        "presenceSince": 37358.80000000028,
-        "presenceUntil": 56340.60000000009,
+        "presenceSince": 37381.09999999963,
+        "presenceUntil": 56378.299999999814,
         "handPresent": true,
         "handX": 0.5,
         "handY": 0.5,
@@ -535,34 +992,34 @@
         112
       ],
       "center": [
-        540.2771760680213,
-        258.71937960248204
+        554.615146117848,
+        262.67650480663787
       ],
       "radius": 152.145,
-      "expansion": 1.325499999999999,
-      "scale": 1.3638882976377569,
-      "level": 0.2500000000000002,
-      "speed": 1.598088430335054,
-      "rotation": 17.623040324065926,
-      "sway": -8.16487313585063e-12,
+      "expansion": 1.3254999999999992,
+      "scale": 1.3638048133843625,
+      "level": 0.2500000000000001,
+      "speed": 1.5980386853171415,
+      "rotation": 17.39269060372543,
+      "sway": 6.007681019614161e-13,
       "clap": 0,
       "retreat": 0,
       "surprise": 0,
       "body": {
-        "sway": -7.387286217731286e-23,
+        "sway": 5.923460268750365e-23,
         "lift": 0,
         "spread": 0,
-        "motion": 6.879783166128142e-11
+        "motion": 6.731495771098413e-11
       },
-      "familiarity": 0.7605340179999907,
+      "familiarity": 0.7602476160000087,
       "rest": 0,
       "absenceSeconds": 0,
-      "followRate": 3.7246751327270258,
+      "followRate": 3.7238276878043104,
       "bounds": [
-        241.19112918291034,
-        15.6815855341749,
-        799.8829796856143,
-        494.4800518504602
+        197.81170992865168,
+        12.358077516703162,
+        836.8483268453872,
+        509.7350005736834
       ],
       "viewport": [
         1092,
@@ -573,6 +1030,70 @@
         "clap": 3,
         "retreat": 1
       },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.005000502802431583,
+        "echoGuard": false,
+        "counts": {
+          "wake": 1,
+          "curious": 0,
+          "happy": 1,
+          "afraid": 4
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "at": 3088.2999999998137,
+            "duration": 0.6139791666666666,
+            "delay": 0.008
+          },
+          {
+            "name": "happy",
+            "reason": "smile",
+            "at": 5814.5,
+            "duration": 1.8,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 18595.099999999627,
+            "duration": 0.499,
+            "delay": 0.007999999999999119
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 24429.700000000186,
+            "duration": 0.499,
+            "delay": 0.007999999999999119
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 30196,
+            "duration": 0.499,
+            "delay": 0.007999999999999119
+          },
+          {
+            "name": "afraid",
+            "reason": "retreat",
+            "at": 36846.90000000037,
+            "duration": 0.499,
+            "delay": 0.008000000000002672
+          }
+        ],
+        "errors": []
+      },
       "live": {
         "active": false,
         "starting": false,
@@ -581,6 +1102,79 @@
         "frames": 0,
         "facePresent": false,
         "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
         "hands": {
           "state": "idle",
           "active": false,
@@ -611,11 +1205,18 @@
     "http://127.0.0.1:4173/sketch.js",
     "https://fonts.gstatic.com/s/outfit/v15/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC0O4a0Ew.woff2",
     "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7.woff2",
-    "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2"
+    "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-6zUTjg.woff2",
+    "http://127.0.0.1:4173/sounds/wake-adjusted.wav",
+    "http://127.0.0.1:4173/sounds/curious.wav",
+    "http://127.0.0.1:4173/sounds/happy.wav",
+    "http://127.0.0.1:4173/sounds/afraid-adjusted.wav",
+    "http://127.0.0.1:4173/sounds/waterfall.mp3",
+    "http://127.0.0.1:4173/sounds/waterfall.mp3",
+    "http://127.0.0.1:4173/sounds/waterfall.mp3"
   ],
   "font": true,
   "frameTiming": {
-    "averageMs": 16.45833333333479,
+    "averageMs": 16.438333333333382,
     "maxMs": 16.80000000000291
   }
 }
