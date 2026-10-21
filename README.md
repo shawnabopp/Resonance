@@ -1,6 +1,6 @@
 # RESONANCE
 
-- `code/`：当前原生 HTML / CSS / JavaScript 网站，含真实麦克风、MediaPipe Face Landmarker、独立 Demo、本地模型资源与验收脚本。
+- `code/`：当前原生 HTML / CSS / JavaScript 网站，含真实麦克风、MediaPipe Face Landmarker、ml5 HandPose、Pose Landmarker 上半身追踪、独立 Demo、本地模型资源与验收脚本。
 - `figma-reference/`：保留的 Figma Make 参考项目。
 
 在仓库根目录启动本地预览：

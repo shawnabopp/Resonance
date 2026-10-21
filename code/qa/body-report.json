@@ -1,0 +1,21 @@
+{
+  "checks": [
+    "Official lite model and QA photo are local, complete and match SHA-256",
+    "Slow body loading does not reserve the hand inference slot or pause face tracking",
+    "Face, hand and body models infer from one stream; hand/body never overlap or queue duplicate work; Demo requests no devices",
+    "Particle animation continues while three real models are active",
+    "Actual Pose Landmarker recognizes shoulders, elbows and wrists in the official pose photo",
+    "Synthetic sway is mirrored; open/raised arms float and expand; lowering settles without a startle",
+    "Synthetic sustained movement increases flow/rotation and decays gradually after stopping",
+    "Body offsets coexist with hand-led following/gathering and facial colour; particles stay bounded",
+    "Hidden preview keeps tracking; missing upper body settles while face and microphone remain active",
+    "Background tabs stop submitting pose frames and resume without stale results",
+    "English body instructions fit narrow mobile and landscape; phone-specific guidance is visible",
+    "Body failure releases its shared slot; face/hand continue and Retry reconnects without new permissions",
+    "Home terminates every worker/track; late results are ignored; reentry has no duplicate tasks",
+    "Actual missing model file gives a non-blocking error and retries successfully",
+    "Demo body controls exercise the same renderer; Reset clears inputs without loading models"
+  ],
+  "errors": [],
+  "input": "Chrome virtual media; official pose photo for real recognition; synthetic sequences for behavioural assertions"
+}

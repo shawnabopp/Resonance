@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "Pinned ml5 library and both local model graphs/weights serve with matching SHA-256",
+    "Actual ml5 HandPose loads and infers alongside Face Landmarker using one fake camera stream; all model requests are local",
+    "Particle animation continues while real HandPose inference runs in its own Worker",
+    "Real ml5 detector AND landmark inference recognize an open hand in the official TensorFlow test photo (not synthetic landmarks)",
+    "Synthetic landmarks drive mirrored following and open/fist expansion through the live pipeline",
+    "Synthetic continuous waving triggers one retreat and recovery, with no repeated startles",
+    "Loss returns to autonomous floating; hiding preview keeps hand inference active",
+    "Live hand instructions fit 390px, 320px and landscape layouts without page overflow",
+    "Hand inference failure has an independent retry; face/microphone session stays live",
+    "Home stops devices and the hand worker; pending results cannot leak; reentry has one worker and one inference at a time",
+    "An actual model 404 shows failure; retry loads the real model without another camera request"
+  ],
+  "errors": [],
+  "input": "Chrome fake media; synthetic landmark cases explicitly marked"
+}

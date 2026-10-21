@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "Live neutral landmarks grow the bond without expression scores or audio, and invite gentle following",
+    "Short face loss pauses growth without losing progress or immediately resting",
+    "Long absence eases into rest; returning wakes the creature and resumes the same bond",
+    "Background visibility pauses accumulation and returning does not catch up hidden time",
+    "Demo quiet presence, absence toggle, face position and loud startle preserve the same rules",
+    "Presence controls fit mobile; no uncaught browser errors"
+  ],
+  "errors": [],
+  "faceInput": "Synthetic coordinates injected only by this test"
+}

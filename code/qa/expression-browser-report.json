@@ -1,0 +1,14 @@
+{
+  "input": "Synthetic blendshape scores injected only by this test; real local models with Chrome fake camera/microphone. No human accuracy validation.",
+  "checks": [
+    "Synthetic moderate sad scores reach blue tint, slower flow, gathering and sinking without reducing familiarity",
+    "Default-collapsed English diagnostics show actual raw values, decision, thresholds and animation strength",
+    "Synthetic smile → sad → speech-like open mouth → surprise → neutral transitions reach Live correctly",
+    "Synthetic 3-second samples export raw ranges, neutral deltas, decisions and animation delivery; clipboard fallback and face-loss cancellation work",
+    "Optional calibration works in UI, survives visibility pauses, cancels on face loss and resets on request",
+    "User screenshot values replay through neutral calibration, subtle sad blue/sink/gather, surprise purple, preserved smile and neutral speaking; this is NOT post-fix human testing",
+    "Expanded diagnostics fit 320 / 390 px layouts and calibration buttons remain reachable",
+    "Single device request, Home cleanup and no uncaught browser errors"
+  ],
+  "errors": []
+}

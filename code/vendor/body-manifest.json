@@ -1,0 +1,19 @@
+{
+  "runtime": "@mediapipe/tasks-vision",
+  "version": "0.10.14",
+  "modelVersion": "lite/float16/1",
+  "files": [
+    {
+      "file": "models/pose_landmarker_lite.task",
+      "source": "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task",
+      "bytes": 5777746,
+      "sha256": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a"
+    },
+    {
+      "file": "qa/fixtures/pose.jpg",
+      "source": "https://storage.googleapis.com/mediapipe-assets/pose.jpg",
+      "bytes": 44100,
+      "sha256": "c8a830ed683c0276d713dd5aeda28f415f10cd6291972084a40d0d8b934ed62b"
+    }
+  ]
+}

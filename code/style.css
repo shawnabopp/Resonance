@@ -18,14 +18,28 @@
 .connection-card{max-width:440px;width:100%;display:grid;gap:24px}
 #connection-title:focus{outline:none}
 .camera-box{position:relative;width:160px;height:120px;margin:0 auto;background:#151a17;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-#camera{display:block;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#camera{display:block;width:100%;height:100%;object-fit:contain;transform:scaleX(-1)}
 #camera.preview-hidden{opacity:0}
 #preview-placeholder{position:absolute;inset:0;display:grid;place-items:center;padding:15px;text-align:center;font-size:11px;line-height:1.6;color:#a7ada9}
 #toggle-preview{display:block;margin:0 auto 10px}
 .live-readings{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--particle);margin-bottom:22px}
+.expression-debug{border-top:1px solid var(--line);margin:12px 0 24px;font-size:10px;color:#adb1b5;overflow-wrap:anywhere}
+.expression-debug summary{cursor:pointer;min-height:44px;padding:14px 0;color:#d1d4d1}
+.expression-debug summary:focus-visible{outline:2px solid var(--particle);outline-offset:3px}
+.expression-debug table{width:100%;border-collapse:collapse;font-size:10px;font-variant-numeric:tabular-nums}
+.expression-debug caption{text-align:left;margin:8px 0;color:var(--particle)}
+.expression-debug th,.expression-debug td{padding:5px 0;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
+.expression-debug th:last-child,.expression-debug td:last-child{text-align:right;padding-left:8px}
+.expression-debug .button-row{flex-wrap:wrap}
+.expression-debug .button-row button{min-height:44px;flex-basis:95px}
+.expression-debug select,.expression-debug textarea{width:100%;max-width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;background:#111512;color:#d1d4d1;font:inherit;min-height:44px}
+.expression-debug textarea{resize:vertical;font-family:monospace;font-size:10px;margin:8px 0}
+.expression-debug select:focus-visible,.expression-debug textarea:focus-visible{outline:2px solid var(--particle);outline-offset:3px}
 #live-controls h2{font-size:30px}
 #live-controls .hint{margin:12px 0}
 #live-controls #exit{margin-top:22px;width:100%}
+.body-phone-hint{display:none}
+@media(max-width:767px),(pointer:coarse){.body-desktop-hint{display:none}.body-phone-hint{display:block}}
 #mic-meter{display:block;width:100%;height:10px;accent-color:var(--accent);margin:8px 0}
 #mic-meter::-webkit-meter-bar{background:#202620;border:0}
 #mic-meter::-webkit-meter-optimum-value{background:var(--accent)}

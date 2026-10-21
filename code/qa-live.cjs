@@ -63,7 +63,8 @@ async function main() {
     assert.equal((await snap()).stage, 'live', await run('document.querySelector("#connection-message").textContent'));
     await waitFor('resonanceDemo.snapshot().live.frames >= 3');
     let live = await snap(); report.initialLive = live;
-    assert.equal(await run('__media.calls'), 1); assert.equal(await run('__media.workers'), 1);
+    await waitFor('resonanceDemo.snapshot().live.body.frames >= 2');
+    assert.equal(await run('__media.calls'), 1); assert.equal(await run('__media.workers'), 3);
     assert(live.live.modelReady && live.live.active && live.live.tracks.length === 2);
     assert.equal(live.signals.bodyMotion, 0); assert.equal(live.signals.handPresent, false);
     pass('Real local MediaPipe initializes and infers on fake-camera frames; repeated Start creates one session');

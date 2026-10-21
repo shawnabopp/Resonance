@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <meta name="description" content="RESONANCE — a little life that responds to your voice and expressions.">
+  <meta name="description" content="RESONANCE — a little life that responds to your voice, expressions and hand gestures.">
   <title>RESONANCE</title>
   <link rel="icon" href="data:,">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,7 +17,7 @@
   <a class="skip-link" href="#demo-controls">Skip to Demo controls</a>
   <main id="app">
     <div id="stage" class="creature-stage">
-      <canvas id="creature" aria-label="A glowing particle creature responding to sound and facial movements"></canvas>
+      <canvas id="creature" aria-label="A glowing particle creature responding to sound, facial movements and hand gestures"></canvas>
       <span id="hand-marker" hidden>＋</span>
     </div>
     <button id="home" class="home pill" hidden>← Home</button>
@@ -35,7 +35,7 @@
         <h2 id="prep-title" tabindex="-1">Choose its form</h2>
         <div class="shape-picker" data-shape-picker></div>
         <div><p class="eyebrow">COLOUR</p><div class="theme-picker" data-theme-picker></div></div>
-        <p class="description">A little light. A little patience.<br>Let it get to know your voice and expressions.</p>
+        <p class="description">A little light. A little patience.<br>Let it get to know your voice, expressions and gestures.</p>
         <p class="description">Start with your camera and microphone. Processing stays on this device. Nothing is recorded or uploaded.</p>
         <div class="prep-actions"><button id="start" class="primary">Start interaction <span aria-hidden="true">→</span></button><button id="try-demo" class="pill">Try demo</button></div>
         <p class="hint">Demo uses simulated inputs and needs no device access. Facial movements are approximate signals, not a reading of how you feel.</p>
@@ -51,6 +51,12 @@
       <aside id="demo-controls" class="controls" aria-labelledby="controls-title" tabindex="-1">
         <div class="panel-heading"><div><p class="eyebrow accent">DEMO PLAYGROUND</p><h2 id="controls-title">A little give & take.</h2></div><button id="reset" class="text-button" title="Clear simulated inputs and keep familiarity">Reset</button></div>
         <p class="panel-intro">Give it a signal. See how it responds.<br>Try combining different inputs.</p>
+        <fieldset><legend>Presence · Demo only</legend>
+          <div class="button-row"><button id="demo-presence" aria-pressed="true">Face in view · On</button></div>
+          <label class="slider-label" for="face-position">Face position <span>Left ↔ Right</span></label><input id="face-position" type="range" min="0" max="1" step="0.01" value="0.5">
+          <p class="hint">No smile needed. Stay for a minute or two, then move the face position to compare its willingness to follow. Turn presence off to test waiting and rest.</p>
+          <p class="hint presence-note" role="status">Your company builds familiarity.</p>
+        </fieldset>
         <fieldset><legend><span>01</span> Expression</legend>
           <div class="expression-buttons"><button data-expression="smile" aria-pressed="false">☺ Smile</button><button data-expression="sad" aria-pressed="false">☾ Sad look</button><button data-expression="surprise" aria-pressed="false">✧ Surprise</button></div>
           <label class="slider-label" for="expression">Intensity <output for="expression" id="expression-value">85%</output></label><input id="expression" type="range" min="0" max="1" step="0.01" value="0.85">
@@ -68,6 +74,9 @@
         </fieldset>
         <fieldset><legend><span>04</span> Body · Demo only</legend>
           <label class="slider-label" for="body">Movement <output for="body" id="body-value">0%</output></label><input id="body" type="range" min="0" max="1" step="0.01" value="0">
+          <label class="slider-label" for="body-lean">Lean <span>Left ↔ Right</span></label><input id="body-lean" type="range" min="-1" max="1" step="0.01" value="0">
+          <label class="slider-label" for="body-arms">Arms <span>Resting ↔ Open / raised</span></label><input id="body-arms" type="range" min="0" max="1" step="0.01" value="0">
+          <p class="hint">Movement adds a steady sway and flow. Lower it to settle. Try open arms with a closed hand to compare their effects.</p>
         </fieldset>
         <div class="control-footer"><span class="status-dot"></span>All Demo inputs are simulated.</div>
       </aside>
@@ -77,6 +86,36 @@
         <div class="camera-box"><video id="camera" autoplay playsinline muted aria-label="Mirrored camera preview"></video><span id="preview-placeholder" hidden>Preview hidden. Tracking is still on.</span></div>
         <button id="toggle-preview" class="text-button" aria-pressed="false">Hide preview</button>
         <div class="live-readings"><span id="face-status">Looking for a face</span><span id="expression-status">Neutral</span></div>
+        <p class="hint presence-note" role="status">Your company builds familiarity.</p>
+        <p class="hint">For subtle expressions, open Expression diagnostics and calibrate your neutral face once.</p>
+        <details id="expression-debug" class="expression-debug">
+          <summary>Expression diagnostics</summary>
+          <p class="hint">Live facial movement scores, not feelings or an emotion diagnosis. A sad-looking expression is only a visual cue. Scores vary between faces.</p>
+          <p class="hint">Relax your face and close your mouth for two seconds. Calibration enables subtle sad-looking and surprised cues; smile detection stays the same. Recalibrate if your lighting or camera angle changes. Calibration lasts until you leave Live.</p>
+          <div class="button-row"><button id="calibrate-expression">Calibrate neutral</button><button id="reset-expression-calibration">Reset calibration</button></div>
+          <p id="expression-calibration-status" class="hint" role="status"></p>
+          <p id="expression-decision" class="hint"></p>
+          <table><caption>Raw blendshape scores · 0–1</caption><thead><tr><th scope="col">Blendshape</th><th scope="col">Score</th></tr></thead><tbody id="expression-raw"></tbody></table>
+          <p id="expression-adjusted" class="hint"></p>
+          <p id="expression-filtered" class="hint"></p>
+          <p id="expression-surprise-reason" class="hint"></p>
+          <p id="expression-sad-reason" class="hint"></p>
+          <p id="expression-smile-reason" class="hint"></p>
+          <p id="expression-animation" class="hint"></p>
+          <p id="expression-thresholds" class="hint"></p>
+          <p id="expression-relative-thresholds" class="hint"></p>
+          <p id="expression-baseline" class="hint"></p>
+          <label class="slider-label" for="expression-sample-label">Expression you are trying</label>
+          <select id="expression-sample-label"><option value="neutral">Neutral</option><option value="sad">Slight sad-looking expression</option><option value="surprise">Surprise</option><option value="smile">Smile</option><option value="speaking">Speaking / singing</option></select>
+          <p class="hint">Choose a label, then hold that expression while sampling. Labels describe what you intend, not what the model detected. Capture neutral first so changes can be compared.</p>
+          <button id="sample-expression" class="pill">Sample for 3 seconds</button>
+          <p id="expression-sample-status" class="hint" role="status">Samples stay in this tab. No images or audio are recorded. Home clears them.</p>
+          <div id="expression-sample-report" hidden>
+            <label class="slider-label" for="expression-sample-data">Diagnostic samples</label>
+            <textarea id="expression-sample-data" rows="6" readonly spellcheck="false"></textarea>
+            <button id="copy-expression-samples" class="text-button">Copy samples</button>
+          </div>
+        </details>
         <fieldset><legend>Microphone</legend>
           <p id="mic-status" class="hint" role="status">Stay quiet for a moment while the microphone settles.</p>
           <label class="slider-label" for="sensitivity">Sensitivity <output id="sensitivity-value" for="sensitivity">1.0×</output></label><input id="sensitivity" type="range" min="0.5" max="3" step="0.1" value="1">
@@ -84,7 +123,19 @@
           <button id="calibrate" class="text-button">Recalibrate room noise</button><button id="resume-audio" class="pill" hidden>Resume microphone</button>
         </fieldset>
         <p class="hint">Try a smile, a gentle frown, or raised brows with wide eyes. These are facial movement cues, not your emotions.</p>
-        <p class="hint">Hand and body tracking are not active. No generated audio is played.</p>
+        <fieldset><legend>Hand gestures · ml5 HandPose</legend>
+          <p id="hand-status" class="hint" role="status">Loading HandPose on this device…</p>
+          <button id="retry-hand" class="pill" hidden>Retry hand tracking</button>
+          <p class="hint">Keep one hand in view. Move slowly to guide it, open your palm to expand it, or close your hand to gather it. A quick wave makes it step back. Pause before waving again.</p>
+        </fieldset>
+        <fieldset><legend>Body movement</legend>
+          <p id="body-status" class="hint" role="status">Loading body tracking on this device…</p>
+          <button id="retry-body" class="pill" hidden>Retry body tracking</button>
+          <p class="hint body-desktop-hint">Step back so your upper body is visible.</p>
+          <p class="hint body-phone-hint">Place your phone somewhere stable and step back.</p>
+          <p class="hint">Sway gently, then raise or open both arms. Keep moving to add rotation and flow. Rest your arms to let it settle. Your hand still guides and gathers it.</p>
+        </fieldset>
+        <p class="hint">No generated audio is played.</p>
         <button id="exit" class="pill">End interaction</button>
       </aside>
       <nav class="toolbar" aria-label="Creature tools">
@@ -100,11 +151,14 @@
   <dialog id="theme-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>A colour of its own</h2><button class="close" aria-label="Close">×</button></div><div class="theme-picker" data-theme-picker></div><p class="hint">Expressions gently tint its colour. It returns to your theme when the signal settles.</p></dialog>
   <dialog id="help-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>Small gestures matter.</h2><button class="close" aria-label="Close">×</button></div>
     <span id="help-mode" class="badge">HOW TO CONNECT</span>
-    <ul class="help-list"><li><b>Smile</b> · It warms, opens up and comes closer.</li><li><b>Sad look</b> · It turns blue, slows and gathers.</li><li><b>Surprise</b> · It turns purple, opens outward and settles.</li><li><b>Sound</b> · Your volume creates ripples. A sudden loud sound scatters it once, then it gathers again.</li><li><b>Demo gestures</b> · Slow movement invites it to follow. Open to expand, close to gather, move quickly to startle it.</li><li><b>Demo body movement</b> · More movement brings a bigger sway.</li></ul>
-    <p class="description">Gentle interaction builds familiarity. Reset clears Demo inputs. Start fresh resets familiarity.</p>
+    <ul class="help-list"><li><b>Smile</b> · It warms, opens up and comes closer.</li><li><b>Sad look</b> · It turns blue, slows and gathers.</li><li><b>Surprise</b> · It turns purple, opens outward and settles.</li><li><b>Sound</b> · Your volume creates ripples. A sudden loud sound scatters it once, then it gathers again.</li><li><b>Hand gestures</b> · Move slowly to guide it. Open your palm to expand, close your hand to gather, or wave quickly to startle it. Pause before waving again.</li><li><b>Body movement</b> · Sway from side to side, or raise and open both arms to help it float and expand. Moving adds rotation and flow; pausing lets it settle. Body movement alone never startles it.</li></ul>
+    <p class="description">Simply stay in view. A quiet minute or two brings it closer; smiles and gentle sounds help it warm up sooner. A neutral or sad look never reduces familiarity. A loud sound may startle it, but does not undo your bond.</p>
+    <p class="hint">If your face leaves the frame, growth pauses and your progress stays. After about eight seconds away it gradually rests. Growth pauses in background tabs. Demo presence uses the same timing. Reset clears Demo inputs; Start fresh and Home reset familiarity.</p>
     <button id="restart" class="pill">Start fresh</button>
     <p class="hint">Live uses your microphone and MediaPipe Face Landmarker on this device. Facial movements are approximate cues, not a measure of your feelings. Hiding the preview keeps tracking on. Home or End interaction stops both devices.</p>
-    <p class="hint">Demo is fully simulated. Hand and body tracking and ElevenLabs are not connected. Capture saves only the particle image, never the camera.</p>
+    <p class="hint">Live hand gestures use ml5 HandPose and the same camera as face tracking. Follow the mirrored preview. When your hand leaves, it gently returns to floating. Familiarity makes it more willing to follow.</p>
+    <p class="hint">Body tracking shares the same camera. Keep your shoulders and arms in view; if they leave the frame, it settles gently. Face and sound still work when only your face is visible.</p>
+    <p class="hint">Demo is fully simulated. No generated audio is connected. Capture saves only the particle image, never the camera.</p>
   </dialog>
   <div id="toast" role="status" hidden></div>
 </body>

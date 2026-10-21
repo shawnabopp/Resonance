@@ -1,0 +1,11 @@
+{
+  "source": "User-provided diagnostic screenshots, 2026-10-19. Manually transcribed three-decimal scores. Single frames, NOT recorded motion or a post-fix human test.",
+  "names": ["browInnerUp", "mouthFrownLeft", "mouthFrownRight", "mouthSmileLeft", "mouthSmileRight", "browOuterUpLeft", "browOuterUpRight", "eyeWideLeft", "eyeWideRight", "jawOpen", "browDownLeft", "browDownRight"],
+  "frames": {
+    "neutral": [0.030, 0.002, 0.002, 0.000, 0.000, 0.096, 0.049, 0.014, 0.009, 0.007, 0.025, 0.025],
+    "sad": [0.063, 0.012, 0.008, 0.000, 0.000, 0.038, 0.025, 0.012, 0.008, 0.005, 0.048, 0.044],
+    "surprise": [0.100, 0.000, 0.000, 0.000, 0.000, 0.163, 0.088, 0.030, 0.030, 0.393, 0.010, 0.009],
+    "smile": [0.028, 0.000, 0.000, 0.270, 0.465, 0.072, 0.028, 0.007, 0.004, 0.001, 0.031, 0.043],
+    "speaking": [0.071, 0.001, 0.001, 0.001, 0.001, 0.113, 0.084, 0.017, 0.012, 0.189, 0.016, 0.011]
+  }
+}

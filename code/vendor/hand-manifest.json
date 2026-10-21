@@ -1,0 +1,88 @@
+{
+  "package": "ml5",
+  "version": "1.4.0",
+  "integrity": "sha512-gjWRlas0Bp+1eWTht+XrpJdOmdwqOrh5ACBY162PGfLqOt/IqZEtwiZgVhD7khOgO0HApJUCFGFuaiLjSg5BMg==",
+  "wasmVersion": "4.22.0",
+  "wasmIntegrity": "sha512-/IYhReRIp4jg/wYW0OwbbJZG8ON87mbz0PgkiP3CdcACRSvUN0h8rvC0O3YcDtkTQtFWF/tcXq/KlVDyV49wmA==",
+  "modelVersion": "lite/1",
+  "files": [
+    {
+      "file": "vendor/ml5-1.4.0/ml5.min.js",
+      "bytes": 4512403,
+      "sha256": "5facbc15115a5f0277f0e99e634ffe606f5382c9efd72d5092d9701aaaf680c5",
+      "source": "https://registry.npmjs.org/ml5/-/ml5-1.4.0.tgz"
+    },
+    {
+      "file": "vendor/ml5-1.4.0/package.json",
+      "bytes": 2656,
+      "sha256": "ff64648d65a85c1180e649dacf432e1cee5cb65099b187b985e9cc6bdec6b0a9",
+      "source": "https://registry.npmjs.org/ml5/-/ml5-1.4.0.tgz"
+    },
+    {
+      "file": "vendor/ml5-1.4.0/LICENSE.md",
+      "bytes": 3123,
+      "sha256": "0dad7e2f08ff78e71e4e55f52a9b5779bb5047d94240479d877f3d2ade42f2d2",
+      "source": "https://registry.npmjs.org/ml5/-/ml5-1.4.0.tgz"
+    },
+    {
+      "file": "vendor/tfjs-wasm-4.22.0/tf-backend-wasm.es2017.js",
+      "bytes": 450018,
+      "sha256": "117d57c2aa942b545d98daf9ef5486f72cb0abb6573d5d08e742502d4ccb5034",
+      "source": "https://registry.npmjs.org/@tensorflow/tfjs-backend-wasm/-/tfjs-backend-wasm-4.22.0.tgz"
+    },
+    {
+      "file": "vendor/tfjs-wasm-4.22.0/tf-backend-wasm.es2017.min.js",
+      "bytes": 144402,
+      "sha256": "bdd8c3c1fb0b37601bc2a122efa20b8d78e2936d104b03a44591be4188c63f65",
+      "source": "https://registry.npmjs.org/@tensorflow/tfjs-backend-wasm/-/tfjs-backend-wasm-4.22.0.tgz"
+    },
+    {
+      "file": "vendor/tfjs-wasm-4.22.0/tf-backend-wasm.min.js",
+      "bytes": 149861,
+      "sha256": "691bbec0ef8b5a7f17f212e9c5d85832030f90d030b46e99acb4dea1fb16f009",
+      "source": "https://registry.npmjs.org/@tensorflow/tfjs-backend-wasm/-/tfjs-backend-wasm-4.22.0.tgz"
+    },
+    {
+      "file": "vendor/tfjs-wasm-4.22.0/tfjs-backend-wasm-simd.wasm",
+      "bytes": 424594,
+      "sha256": "77ebb28a6d34f371dbbf2086b7f2de8994acd8ea5a3cf1fa24d2c26c840cac7b",
+      "source": "https://registry.npmjs.org/@tensorflow/tfjs-backend-wasm/-/tfjs-backend-wasm-4.22.0.tgz"
+    },
+    {
+      "file": "vendor/tfjs-wasm-4.22.0/tfjs-backend-wasm-threaded-simd.wasm",
+      "bytes": 435643,
+      "sha256": "c052228d4bef185c27bbe59a9e029570c78bbb9f08b3cb46b597851650373de2",
+      "source": "https://registry.npmjs.org/@tensorflow/tfjs-backend-wasm/-/tfjs-backend-wasm-4.22.0.tgz"
+    },
+    {
+      "file": "vendor/tfjs-wasm-4.22.0/tfjs-backend-wasm.wasm",
+      "bytes": 311123,
+      "sha256": "70a5d516060464e5269f01c74bac1772d6b8ab6cb612acf16b5cdaf61f78d892",
+      "source": "https://registry.npmjs.org/@tensorflow/tfjs-backend-wasm/-/tfjs-backend-wasm-4.22.0.tgz"
+    },
+    {
+      "file": "models/handpose-detector/model.json",
+      "bytes": 108902,
+      "sha256": "2de2e139e240169c9794c21676b8ca94da2bbc0146a3e0664133ce66e021b1a5",
+      "source": "https://tfhub.dev/mediapipe/tfjs-model/handpose_3d/detector/lite/1/model.json?tfjs-format=file"
+    },
+    {
+      "file": "models/handpose-detector/group1-shard1of1.bin",
+      "bytes": 1919420,
+      "sha256": "8ba46d2152f48320cdb8835854f53d469dc6a33933099ff89929755ca1a88d51",
+      "source": "https://tfhub.dev/mediapipe/tfjs-model/handpose_3d/detector/lite/1/group1-shard1of1.bin?tfjs-format=file"
+    },
+    {
+      "file": "models/handpose-landmark/model.json",
+      "bytes": 81452,
+      "sha256": "2d6bd4d3b34a684e96293ff71e31f9fbc1b4922e0a88d82184cb584055ff3783",
+      "source": "https://tfhub.dev/mediapipe/tfjs-model/handpose_3d/landmark/lite/1/model.json?tfjs-format=file"
+    },
+    {
+      "file": "models/handpose-landmark/group1-shard1of1.bin",
+      "bytes": 2023432,
+      "sha256": "444bee1c7d6d330991bd3ce840a95d0c0afcc3a3fcec47c0c3b7f66a3f3533b0",
+      "source": "https://tfhub.dev/mediapipe/tfjs-model/handpose_3d/landmark/lite/1/group1-shard1of1.bin?tfjs-format=file"
+    }
+  ]
+}

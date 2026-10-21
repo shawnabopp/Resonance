@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>RESONANCE — Sound studio</title>
+  <style>
+    :root{color-scheme:dark;--bg:#030504;--panel:#0c100e;--ink:#f0f3ef;--muted:#a0aca4;--green:#a8c3ad;--line:#29372d}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,sans-serif}
+    main{max-width:980px;margin:auto;padding:30px 28px 50px}a{color:var(--ink);text-decoration:none}header{display:flex;justify-content:space-between;align-items:center;gap:20px}
+    .home{border:1px solid var(--line);border-radius:24px;padding:10px 18px;min-height:44px}.wordmark{font-size:10px;letter-spacing:.26em;color:var(--muted)}
+    .intro{text-align:center;margin:45px auto 28px;max-width:620px}.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--green);text-transform:uppercase}
+    h1{font:normal clamp(35px,5vw,53px)/1.15 Georgia,serif;letter-spacing:-.025em;margin:14px 0}p{margin:8px 0}.intro>p:last-child{color:var(--muted);font-size:13px}
+    .orb{width:76px;height:76px;margin:25px auto 20px;border-radius:50%;position:relative;background:radial-gradient(circle,#c8dfcddd 0,#92b49c33 15%,#92b49c0a 42%,transparent 68%)}
+    .orb::before,.orb::after{content:"";position:absolute;inset:4px;border:1px solid #8ba99435;border-radius:50%;transform:scaleX(1.6) rotate(-20deg)}
+    .orb::after{inset:16px;transform:scaleX(2.1) rotate(25deg)}body.playing .orb{animation:bloom 1.8s ease-in-out infinite}body.playing .orb::before{animation:ripple 1.8s ease-out infinite}
+    @keyframes bloom{50%{filter:brightness(1.5);transform:scale(1.07)}}@keyframes ripple{to{transform:scale(2.3,.9) rotate(-20deg);opacity:0}}
+    .versions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.version{position:relative;text-align:left;padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--panel);color:var(--ink);font:inherit;cursor:pointer;min-height:165px}
+    button{touch-action:manipulation}.version:hover{background:#131b16;border-color:#647b69}.version[aria-pressed=true]{border-color:var(--green);background:#142019}
+    .version .number{font-size:10px;color:var(--green);letter-spacing:.1em}.version strong{display:block;font-size:19px;font-weight:400;margin:10px 0 5px}.version small{display:block;color:var(--muted);font-size:12px;line-height:1.7;max-width:230px}.play-icon{position:absolute;right:20px;top:20px;color:var(--green);font-size:12px}
+    .workspace{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:25px;margin-top:20px}.panel-top{display:flex;justify-content:space-between;align-items:center;gap:16px}.panel-top h2{font-size:17px;font-weight:400;margin:0}.panel-top p{font-size:12px;color:var(--muted);margin:3px 0}
+    .recordings{margin-top:30px}.recordings h2{font-size:19px;font-weight:400;margin:0}.section-note{font-size:12px;color:var(--muted);margin:7px 0 15px}.recording-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.recording-card{padding:20px;border:1px solid var(--line);border-radius:17px;background:var(--panel);min-width:0}.recording-card h3{font-size:17px;font-weight:400;margin:0 0 5px}.recording-card p{font-size:12px;color:var(--muted)}.compare-buttons{display:flex;gap:9px;flex-wrap:wrap;margin:15px 0}.compare-buttons button[aria-pressed=true]{border-color:var(--green);background:#294431}.recording-card .processing{font-size:11px;overflow-wrap:anywhere}.control input:disabled{opacity:.35;cursor:default}#scope-note{font-size:12px;color:var(--green);margin-top:14px}
+    .text-button{background:none;border:0;color:var(--green);min-height:44px;padding:10px;cursor:pointer;font:inherit;font-size:12px}.sliders{display:grid;grid-template-columns:1fr 1fr;gap:25px 32px;margin-top:24px}
+    .control label{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px}.control output{color:var(--green);font-variant-numeric:tabular-nums;white-space:nowrap}.control p{font-size:11px;color:var(--muted);margin:2px 0 0}
+    input[type=range]{display:block;width:100%;height:30px;margin:6px 0 0;accent-color:var(--green);cursor:pointer}.control:last-child{grid-column:1/-1;max-width:calc(50% - 16px)}
+    .transport{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding-top:22px;margin-top:24px;flex-wrap:wrap}.pill{min-height:45px;padding:10px 22px;border:1px solid #647b69;border-radius:30px;background:#1d3225;color:var(--ink);font:inherit;font-size:12px;cursor:pointer}.pill:hover{background:#294431}.pill.secondary{background:transparent;color:var(--green)}button:disabled{opacity:.4;cursor:default}
+    #status{flex:1;min-width:180px;color:var(--muted);font-size:12px;margin:0 0 0 8px}footer{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin:24px 5px 0;font-size:12px;color:var(--muted)}footer strong{color:#d1dcd3;font-weight:500}footer p{margin:5px 0}.footnote{grid-column:1/-1;font-size:10px;color:#7e8f83;margin-top:-8px}
+    :focus-visible{outline:2px solid var(--green);outline-offset:5px}@media(max-width:600px){main{padding:20px 18px 35px}.intro{margin-top:34px}.versions{grid-template-columns:1fr;gap:9px}.version{min-height:0;padding:16px 20px}.version strong{margin:3px 0}.version small{max-width:none;padding-right:15px}.version .number{font-size:9px}.workspace{padding:20px}.sliders{grid-template-columns:1fr;gap:20px}.control:last-child{max-width:none}.transport #status{flex-basis:100%;margin:5px 0 0}footer{grid-template-columns:1fr;gap:14px}.footnote{margin-top:0}.wordmark{font-size:9px}.orb{margin:18px auto}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
+    @media(max-width:600px){.recording-grid{grid-template-columns:1fr}.compare-buttons .pill{flex:1;padding:10px 14px}}
+  </style>
+</head>
+<body>
+  <main>
+    <header><a class="home" href="./index.html">← Home</a><span class="wordmark">RESONANCE / SOUND STUDIO</span></header>
+    <section class="intro" aria-labelledby="title">
+      <div class="eyebrow">Wake · Curious · Happy · Afraid</div>
+      <h1 id="title">A little life, waking up.</h1>
+      <div class="orb" aria-hidden="true"></div>
+      <p>Four small expressions of a digital life.<br>Choose a sound to listen. Nothing plays automatically.</p>
+    </section>
+    <div class="versions" role="group" aria-label="Choose and play a sound">
+      <button class="version" data-version="curious" aria-pressed="true"><span class="number">01 / PLAY</span><span class="play-icon" aria-hidden="true">▷</span><strong>Curious</strong><small>The chosen Pure tone. Rounded, intimate and softly rising, with the same settings.</small></button>
+      <button class="version" data-version="happy" aria-pressed="false"><span class="number">02 / PLAY</span><span class="play-icon" aria-hidden="true">▷</span><strong>Happy</strong><small>A warm, playful hum with two connected, gentle rises. The second reaches a little higher.</small></button>
+    </div>
+    <section class="recordings" aria-labelledby="recordings-title">
+      <h2 id="recordings-title">Afraid &amp; Wake · Original / Adjusted</h2>
+      <p class="section-note">Your original files, with a light alternative to compare. All sounds share the Volume slider. Original preserves the file's attack, timing and level; Adjusted softens the edges and balances the level. Playback speed stays unchanged.</p>
+      <div class="recording-grid">
+        <article class="recording-card">
+          <h3>Afraid</h3><p>A short response for a small retreat.</p>
+          <div class="compare-buttons" role="group" aria-label="Compare Afraid versions"><button class="pill secondary" data-recording="afraid-original" aria-pressed="false">Original</button><button class="pill" data-recording="afraid-adjusted" aria-pressed="false">Adjusted</button></div>
+          <p>Source: afraid.mp3 · about 0.50 s</p>
+          <p id="afraid-processing" class="processing">Adjusted: an 8 ms fade-in, a 35 ms fade-out and gentle peak control. The short quiet tail is retained.</p>
+        </article>
+        <article class="recording-card">
+          <h3>Wake</h3><p>A gentle arrival as the creature unfolds.</p>
+          <div class="compare-buttons" role="group" aria-label="Compare Wake versions"><button class="pill secondary" data-recording="wake-original" aria-pressed="false">Original</button><button class="pill" data-recording="wake-adjusted" aria-pressed="false">Adjusted</button></div>
+          <p>Source: wake.mp3 · about 0.61 s</p>
+          <p id="wake-processing" class="processing">Adjusted: a 28 ms fade-in, a 55 ms fade-out and gentle peak control. The short quiet tail is retained.</p>
+        </article>
+      </div>
+      <p class="section-note">Adjusted versions were prepared from decoded audio measurements, not a listening evaluation. Please compare their character and loudness by ear. The original files are never overwritten.</p>
+    </section>
+    <section class="workspace" aria-labelledby="tuning-title">
+      <div class="panel-top"><div><h2 id="tuning-title">Shape the sound</h2><p>Curious and Happy keep their own tuning. Volume is shared. Changes apply on the next play.</p></div><button class="text-button" id="reset">Reset</button></div>
+      <p id="scope-note">Curious keeps the chosen Pure settings. Volume applies to every sound.</p>
+      <div class="sliders">
+        <div class="control"><label for="volume">Volume <output id="volume-value" for="volume">30%</output></label><input id="volume" type="range" min="0" max="0.6" step="0.01" value="0.3"><p>A quiet starting level, with room to adjust.</p></div>
+        <div class="control"><label for="pitch">Starting pitch <output id="pitch-value" for="pitch">280 Hz</output></label><input id="pitch" type="range" min="180" max="440" step="5" value="280"><p>Lower for warmth; higher for a smaller, lighter voice.</p></div>
+        <div class="control"><label for="rise">Pitch lift <output id="rise-value" for="rise">2.0 semitones</output></label><input id="rise" type="range" min="0" max="4" step="0.1" value="2"><p>A gentle tail rise in Curious; two connected rises in Happy.</p></div>
+        <div class="control"><label for="depth">Ripple depth <output id="depth-value" for="depth">30%</output></label><input id="depth" type="range" min="0" max="1" step="0.01" value="0.3"><p>Very subtle in Curious; a little more warmth and movement in Happy.</p></div>
+        <div class="control"><label for="duration">Duration <output id="duration-value" for="duration">1.20 s</output></label><input id="duration" type="range" min="1" max="1.5" step="0.05" value="1.2"><p>Includes the fading tail.</p></div>
+      </div>
+      <div class="transport"><button class="pill" id="replay">Replay · Curious</button><button class="pill secondary" id="stop" disabled>Stop</button><p id="status" role="status" aria-live="polite">Ready. Choose a sound or press Replay.</p></div>
+    </section>
+    <footer>
+      <div><strong>Make it softer</strong><p>Lower the volume and starting pitch. Keep the tail rise around 1–2 semitones, with a duration close to 1.5 seconds.</p></div>
+      <div><strong>A little happiness</strong><p>Happy hums in two soft, connected waves, with the second a little higher. Try its 1.8-second default and let the tail settle naturally.</p></div>
+      <p class="footnote">An independent listening sketch. Curious and Happy are synthesized in your browser; Afraid and Wake use your local MP3 files. No microphone access or background audio. Please listen to confirm the character of Happy.</p>
+    </footer>
+  </main>
+  <script>
+    'use strict';
+    // Parameter curves: https://developer.mozilla.org/en-US/docs/Web/API/AudioParam/setValueCurveAtTime
+    // Offline rendering keeps a single bounded-duration source on the live context.
+    const defaults = Object.freeze({ volume: .3, pitch: 280, rise: 2, depth: .3, duration: 1.2 });
+    const toneDefaults = Object.freeze({ curious: defaults, happy: Object.freeze({ ...defaults, duration: 1.8 }) });
+    const toneSettings = { curious: { ...toneDefaults.curious }, happy: { ...toneDefaults.happy } };
+    const versions = Object.freeze({
+      curious: { name: 'Curious', harmonic: 0, wet: .025, cutoff: 1700, attack: .14,
+        filterMotion: .14, releasePower: 1.2, pitchLift: 1, riseExtra: 0, glideStart: .4, glideSpan: .48, harmonicGain: 0, harmonicMotion: 0 },
+      happy: { name: 'Happy', harmonic: 2, wet: .04, cutoff: 1550, attack: .17,
+        filterMotion: .18, releasePower: 1.1, pitchLift: 2 ** (1 / 12), riseExtra: .7, harmonicGain: .12, harmonicMotion: .05 }
+    });
+    const recordings = Object.freeze({
+      afraid: { name: 'Afraid', url: './sounds/afraid.mp3', fadeIn: .008, fadeOut: .035 },
+      wake: { name: 'Wake', url: './sounds/wake.mp3', fadeIn: .028, fadeOut: .055 }
+    });
+    const recordingCache = new Map();
+    // Retain the previously balanced MP3 listening level when removing the old candidates.
+    const recordingReferenceRms = .10540948218557217;
+    const soundName = key => versions[key]?.name || `${recordings[key.split('-')[0]].name} · ${key.endsWith('-original') ? 'Original' : 'Adjusted'}`;
+    const $ = selector => document.querySelector(selector);
+    const smooth = x => { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); };
+    const curve = fn => Float32Array.from({ length: 256 }, (_, i) => fn(i / 255));
+    // Two broad pitch gestures connected by a shallow dip, with no notes or silence gaps.
+    function happyContour(u) {
+      const knots = [[0, 0], [.12, .12], [.28, .75], [.43, .2], [.65, 1], [.84, .52], [1, .42]];
+      for (let i = 1; i < knots.length; i++) {
+        if (u <= knots[i][0]) {
+          const [a, x] = knots[i - 1], [b, y] = knots[i];
+          return x + (y - x) * smooth((u - a) / (b - a));
+        }
+      }
+      return knots.at(-1)[1];
+    }
+    let selected = 'curious', lastTone = 'curious', context = null, voice = null, generation = 0, queue = Promise.resolve(), busy = false;
+    const retiring = new Set();
+    function settings() { return Object.fromEntries(Object.keys(defaults).map(k => [k, +$('#' + k).value])); }
+    function setDurationRange(tone) {
+      $('#duration').min = tone === 'happy' ? '1.5' : '1';
+      $('#duration').max = tone === 'happy' ? '2' : '1.5';
+    }
+    function sync() {
+      setDurationRange(lastTone);
+      const s = settings();
+      $('#volume-value').value = `${Math.round(s.volume * 100)}%`;
+      $('#pitch-value').value = `${s.pitch} Hz`;
+      $('#rise-value').value = `${s.rise.toFixed(1)} semitones`;
+      $('#depth-value').value = `${Math.round(s.depth * 100)}%`;
+      $('#duration-value').value = `${s.duration.toFixed(2)} s`;
+      for (const button of document.querySelectorAll('[data-version]')) button.setAttribute('aria-pressed', String(button.dataset.version === selected));
+      for (const button of document.querySelectorAll('[data-recording]')) button.setAttribute('aria-pressed', String(button.dataset.recording === selected));
+      const isRecording = !versions[selected];
+      for (const key of ['pitch', 'rise', 'depth', 'duration']) $('#' + key).disabled = isRecording;
+      $('#scope-note').textContent = isRecording ? 'Volume applies to this recording. The other sliders are for Curious and Happy; their settings are kept.' : selected === 'happy' ? 'Happy: 1.5–2 seconds, with two gentle pitch waves and a slightly higher second rise. These base settings keep their subtle upward lift and warmth. Curious tuning stays intact.' : 'Curious keeps the chosen Pure settings. Volume applies to every sound.';
+      $('#replay').textContent = `Replay · ${soundName(selected)}`;
+    }
+    async function renderTone(version, s) {
+      const profile = versions[version];
+      const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      const offline = new Offline(2, Math.round(48000 * s.duration), 48000);
+      // Rebuild the curves for the shorter duration instead of truncating a longer sound.
+      // Keep each version's soft attack in seconds and reserve 160 ms for the reflections.
+      // The normalized hold, timbre wave and rising release compress with bodyTime.
+      const bodyTime = s.duration - .16;
+      const filter = offline.createBiquadFilter(); filter.type = 'lowpass'; filter.Q.value = .45;
+      // One slow timbral cycle, not a pitch LFO or a repeated series of notes.
+      const wave = u => Math.sin(Math.PI * (version === 'happy' ? 2 : 1.25) * u) ** 2 * Math.sin(Math.PI * u);
+      filter.frequency.setValueCurveAtTime(curve(u => profile.cutoff * (1 + profile.filterMotion * s.depth * wave(u))), 0, bodyTime);
+      const envelope = offline.createGain();
+      const releaseStart = version === 'happy' ? .48 : .38;
+      envelope.gain.setValueCurveAtTime(curve(u => smooth(u * bodyTime / profile.attack) * Math.pow(1 - smooth((u - releaseStart) / (1 - releaseStart)), profile.releasePower)), 0, bodyTime);
+      filter.connect(envelope);
+      const pitchCurve = curve(u => s.pitch * profile.pitchLift * 2 ** ((s.rise + profile.riseExtra) / 12 * (version === 'happy' ? happyContour(u) : smooth((u - profile.glideStart) / profile.glideSpan))));
+      const fundamental = offline.createOscillator(); fundamental.type = 'sine';
+      fundamental.frequency.setValueCurveAtTime(pitchCurve, 0, bodyTime);
+      const fundamentalGain = offline.createGain();
+      fundamentalGain.gain.setValueCurveAtTime(curve(u => .85 * (1 - .035 * s.depth * wave(u))), 0, bodyTime);
+      fundamental.connect(fundamentalGain).connect(filter); fundamental.start(0); fundamental.stop(bodyTime);
+      if (profile.harmonic) {
+        const overtone = offline.createOscillator(); overtone.type = 'sine';
+        overtone.frequency.setValueCurveAtTime(Float32Array.from(pitchCurve, f => f * profile.harmonic), 0, bodyTime);
+        const amount = offline.createGain();
+        amount.gain.setValueCurveAtTime(curve(u => profile.harmonicGain + profile.harmonicMotion * s.depth * wave(u)), 0, bodyTime);
+        overtone.connect(amount).connect(filter); overtone.start(0); overtone.stop(bodyTime);
+      }
+      const master = offline.createGain();
+      master.gain.setValueCurveAtTime(curve(u => smooth(u * s.duration / .025) * smooth((1 - u) * s.duration / .16)), 0, s.duration);
+      master.connect(offline.destination);
+      const dry = offline.createGain(); dry.gain.value = 1 - profile.wet * .6; envelope.connect(dry).connect(master);
+      // Two quiet, filtered early reflections. No feedback, noise or convolution hiss.
+      for (const [delayTime, pan, level] of [[.061, -.8, 1], [.113, .8, .7]]) {
+        const delay = offline.createDelay(.2); delay.delayTime.value = delayTime;
+        const damp = offline.createBiquadFilter(); damp.type = 'lowpass'; damp.frequency.value = 1100; damp.Q.value = .4;
+        const wet = offline.createGain(); wet.gain.value = profile.wet * level;
+        const panner = offline.createStereoPanner(); panner.pan.value = version === 'curious' ? 0 : pan * .35;
+        envelope.connect(delay).connect(damp).connect(wet).connect(panner).connect(master);
+      }
+      const buffer = await offline.startRendering();
+      let peak = 0;
+      for (let channel = 0; channel < buffer.numberOfChannels; channel++) for (const sample of buffer.getChannelData(channel)) peak = Math.max(peak, Math.abs(sample));
+      // Match peak levels between versions; even maximum volume stays below 0.42 peak.
+      const gain = peak ? .7 * s.volume / peak : 0;
+      for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+        const data = buffer.getChannelData(channel);
+        for (let i = 0; i < data.length; i++) data[i] *= gain;
+        data[0] = data[data.length - 1] = 0;
+      }
+      return buffer;
+    }
+    function measureRecording(buffer) {
+      const step = Math.max(1, Math.round(buffer.sampleRate * .01)), windows = [];
+      let peak = 0, total = 0;
+      for (let start = 0; start < buffer.length; start += step) {
+        const end = Math.min(buffer.length, start + step); let energy = 0;
+        for (let c = 0; c < buffer.numberOfChannels; c++) {
+          const data = buffer.getChannelData(c);
+          for (let i = start; i < end; i++) { energy += data[i] ** 2; peak = Math.max(peak, Math.abs(data[i])); }
+        }
+        total += energy;
+        windows.push({ start, end, rms: Math.sqrt(energy / ((end - start) * buffer.numberOfChannels)) });
+      }
+      const top = Math.max(0, ...windows.map(w => w.rms));
+      const active = windows.filter(w => top > 0 && w.rms > top * .1);
+      const audible = windows.filter(w => top > 0 && w.rms > top * .01);
+      return { duration: buffer.duration, peak, rms: Math.sqrt(total / (buffer.length * buffer.numberOfChannels)),
+        activeRms: active.length ? Math.sqrt(active.reduce((sum, w) => sum + w.rms ** 2, 0) / active.length) : 0,
+        leadingQuiet: audible.length ? audible[0].start / buffer.sampleRate : 0,
+        trailingQuiet: audible.length ? (buffer.length - audible.at(-1).end) / buffer.sampleRate : 0 };
+    }
+    async function prepareRecording(original, name) {
+      const profile = recordings[name], before = measureRecording(original), sr = original.sampleRate;
+      // Only trim extended edge silence, never pauses or quiet phrases inside the recording.
+      // These two originals have no leading silence and < 40 ms of quiet tail: keep both.
+      const trimStart = before.leadingQuiet > .06 ? Math.max(0, before.leadingQuiet - .02) : 0;
+      const trimEnd = before.trailingQuiet > .06 ? Math.max(0, before.trailingQuiet - .03) : 0;
+      const start = Math.round(trimStart * sr), length = original.length - start - Math.round(trimEnd * sr);
+      const adjusted = new AudioBuffer({ numberOfChannels: original.numberOfChannels, length, sampleRate: sr });
+      const attack = 1 - Math.exp(-1 / (sr * .0015)), release = 1 - Math.exp(-1 / (sr * .045));
+      let detector = 0, peakGain = 1, minimumGain = 1;
+      for (let i = 0; i < length; i++) {
+        let samplePeak = 0;
+        for (let c = 0; c < original.numberOfChannels; c++) samplePeak = Math.max(samplePeak, Math.abs(original.getChannelData(c)[start + i]));
+        detector += (samplePeak > detector ? attack : release) * (samplePeak - detector);
+        // A linked stereo envelope only rounds strong peaks: 2:1 above 0.18,
+        // capped at 4 dB reduction. No clipping, gate, EQ, pitch shift or new layers.
+        const target = Math.max(10 ** (-4 / 20), Math.min(1, Math.sqrt(.18 / Math.max(detector, .18))));
+        const smoothing = 1 - Math.exp(-1 / (sr * (target < peakGain ? .003 : .06)));
+        peakGain += smoothing * (target - peakGain); minimumGain = Math.min(minimumGain, peakGain);
+        const t = i / sr;
+        const fade = smooth(t / profile.fadeIn) * smooth((length - 1 - i) / sr / profile.fadeOut);
+        for (let c = 0; c < original.numberOfChannels; c++) adjusted.getChannelData(c)[i] = original.getChannelData(c)[start + i] * peakGain * fade;
+      }
+      // Keep the previously approved MP3 reference level; do not retune these recordings.
+      // It is an approximate level match, NOT perceptual LUFS matching or a listening test.
+      const targetRms = recordingReferenceRms, shaped = measureRecording(adjusted);
+      // Store the adjusted buffer at the shared 30% reference listening level.
+      // Keep some transient headroom rather than flattening the original recording.
+      // 0.45 at 30% leaves headroom up to the slider's 60% maximum (0.90 peak).
+      const gain = shaped.activeRms > 0 ? Math.min(targetRms / shaped.activeRms, .45 / Math.max(shaped.peak, .000001)) : 1;
+      for (let c = 0; c < adjusted.numberOfChannels; c++) {
+        const data = adjusted.getChannelData(c);
+        for (let i = 0; i < length; i++) data[i] *= gain;
+      }
+      return { original, adjusted, report: { name, before, after: measureRecording(adjusted),
+        trimStart, trimEnd, fadeIn: profile.fadeIn, fadeOut: profile.fadeOut, playbackRate: 1,
+        referenceVolume: defaults.volume, referenceActiveRms: targetRms, gainDb: 20 * Math.log10(gain / defaults.volume), maxPeakReductionDb: -20 * Math.log10(minimumGain) } };
+    }
+    function loadRecording(name) {
+      if (!recordingCache.has(name)) {
+        const pending = (async () => {
+          const controller = new AbortController(), timeout = setTimeout(() => controller.abort(), 15000);
+          try {
+            const response = await fetch(recordings[name].url, { signal: controller.signal });
+            if (!response.ok) throw new Error('File not found');
+            const bytes = await response.arrayBuffer();
+            const Offline = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            const decoder = new Offline(2, 1, 48000);
+            const original = await decoder.decodeAudioData(bytes);
+            return await prepareRecording(original, name);
+          } finally { clearTimeout(timeout); }
+        })().catch(error => { recordingCache.delete(name); throw error; });
+        recordingCache.set(name, pending);
+      }
+      return recordingCache.get(name);
+    }
+    async function renderRecording(key, s) {
+      const [name, edition] = key.split('-'), pair = await loadRecording(name);
+      const buffer = pair[edition], report = pair.report;
+      $('#' + name + '-processing').textContent = `Original ${report.before.duration.toFixed(3)} s → Adjusted ${report.after.duration.toFixed(3)} s. Fade-in ${Math.round(report.fadeIn * 1000)} ms / fade-out ${Math.round(report.fadeOut * 1000)} ms. Trimmed ${Math.round((report.trimStart + report.trimEnd) * 1000)} ms. Speed 1.00×. Peaks softened by up to ${report.maxPeakReductionDb.toFixed(1)} dB, then level-balanced with a peak limit.`;
+      const output = new AudioBuffer({ numberOfChannels: buffer.numberOfChannels, length: buffer.length, sampleRate: buffer.sampleRate });
+      const volumeGain = edition === 'original' ? s.volume : s.volume / report.referenceVolume;
+      for (let c = 0; c < buffer.numberOfChannels; c++) {
+        const input = buffer.getChannelData(c), data = output.getChannelData(c);
+        for (let i = 0; i < input.length; i++) data[i] = input[i] * volumeGain;
+      }
+      return output;
+    }
+    function releaseVoice() {
+      if (!voice) return;
+      const old = voice; voice = null; retiring.add(old);
+      const now = old.context.currentTime;
+      old.gate.gain.cancelScheduledValues(now); old.gate.gain.setValueAtTime(1, now);
+      old.gate.gain.linearRampToValueAtTime(0, now + .025);
+      old.source.stop(now + .03);
+      old.silentAt = now + .03;
+    }
+    function stop(message = 'Stopped. Ready when you are.') {
+      generation++; busy = false; releaseVoice();
+      document.body.classList.remove('playing'); $('#stop').disabled = true; $('#status').textContent = message;
+    }
+    function play(version = selected) {
+      selected = version;
+      if (versions[selected]) {
+        lastTone = selected;
+        setDurationRange(selected);
+        for (const key of ['pitch', 'rise', 'depth', 'duration']) $('#' + key).value = toneSettings[selected][key];
+      }
+      sync();
+      const request = ++generation, s = settings(); releaseVoice(); busy = true;
+      document.body.classList.remove('playing'); $('#stop').disabled = false; $('#status').textContent = `Preparing ${soundName(version)}…`;
+      let resume;
+      try {
+        const Audio = window.AudioContext || window.webkitAudioContext;
+        if (!Audio || !(window.OfflineAudioContext || window.webkitOfflineAudioContext)) throw new Error('unsupported');
+        if (!context || context.state === 'closed') context = new Audio({ latencyHint: 'interactive' });
+        resume = context.resume(); // Called directly inside the explicit click gesture.
+      } catch { stop('Audio is unavailable. Try a current browser and press Replay.'); return; }
+      const activeContext = context;
+      // Serialize offline work and discard outdated clicks; never build a queue of sounds.
+      const resumed = resume.then(() => true, () => false);
+      queue = queue.catch(() => {}).then(async () => {
+        if (request !== generation) return;
+        if (!await resumed) throw new Error('resume');
+        const buffer = versions[version] ? await renderTone(version, s) : await renderRecording(version, s);
+        if (request !== generation || document.hidden || activeContext.state === 'closed') return;
+        if (activeContext.state !== 'running') throw new Error('suspended');
+        const source = activeContext.createBufferSource(), gate = activeContext.createGain();
+        source.buffer = buffer; gate.gain.value = 1; source.connect(gate).connect(activeContext.destination);
+        const current = { source, gate, context: activeContext, silentAt: 0 }; voice = current; busy = false;
+        source.onended = () => {
+          source.disconnect(); gate.disconnect(); retiring.delete(current);
+          if (voice === current) {
+            voice = null; document.body.classList.remove('playing'); $('#stop').disabled = true;
+            $('#status').textContent = `${soundName(version)} finished. Adjust a setting, then Replay.`;
+          }
+        };
+        const previousEnd = Math.max(0, ...Array.from(retiring, v => v.silentAt));
+        source.start(Math.max(activeContext.currentTime + .008, previousEnd + .005));
+        document.body.classList.add('playing');
+        $('#status').textContent = `Playing ${soundName(version)} · ${buffer.duration.toFixed(2)} s${s.volume === 0 ? ' · volume is zero' : ''}`;
+      }).catch(() => { if (request === generation) stop(versions[version] ? 'Could not play audio. Press Replay to try again.' : 'Could not load this MP3. Open this page with Live Server, check the sounds folder, then press Replay to retry.'); });
+    }
+    for (const button of document.querySelectorAll('[data-version]')) button.addEventListener('click', () => play(button.dataset.version));
+    for (const button of document.querySelectorAll('[data-recording]')) button.addEventListener('click', () => play(button.dataset.recording));
+    for (const key of Object.keys(defaults)) $('#' + key).addEventListener('input', () => {
+      if (key !== 'volume' && versions[selected]) toneSettings[selected][key] = +$('#' + key).value;
+      sync();
+    });
+    $('#replay').addEventListener('click', () => play());
+    $('#stop').addEventListener('click', () => stop());
+    $('#reset').addEventListener('click', () => {
+      stop('Settings reset. Choose a sound or press Replay.');
+      toneSettings[lastTone] = { ...toneDefaults[lastTone] };
+      for (const [k, v] of Object.entries(toneDefaults[lastTone])) $('#' + k).value = v;
+      sync();
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stop('Paused while away. Press Replay to listen again.'); });
+    window.addEventListener('pagehide', () => { stop(); const old = context; context = null; old?.close().catch(() => {}); retiring.clear(); });
+    sync();
+  </script>
+</body>
+</html>

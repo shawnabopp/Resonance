@@ -1,0 +1,21 @@
+{
+  "input": "Synthetic sequences plus replay of single-frame user screenshot values; not a post-fix human or motion accuracy test",
+  "checks": [
+    "Moderate asymmetric frown with inner brows enters sad-looking; raw names and animation output are connected",
+    "Stronger bilateral frown works without requiring raised brows; a single mouth corner does not",
+    "Neutral, absent smiles, raised inner brows, blinking and lowered gaze alone do not imply sadness",
+    "Smile is preserved and does not lock out a later sustained sad-looking cue",
+    "Open-mouth singing, raised brows without wide eyes and speech-like mild frowns are rejected; full surprise works",
+    "Transient cues and threshold noise do not cause flicker; face loss clears stale expression immediately",
+    "Elapsed-time smoothing and dwell give comparable results at 10 and 30 Hz",
+    "Neutral calibration removes a personal resting offset without changing smile or losing a new frown",
+    "Calibration rejects smiling, movement and missing faces, and can be retried",
+    "Missing and non-finite scores cannot create positive evidence",
+    "Diagnostics separate feature gates, low combined score, competition, candidate dwell and stale data",
+    "Screenshot values replay after neutral calibration: neutral, subtle sad, surprise, smile, speaking",
+    "Relative surprise accepts slight jaw opening or a second supported feature route, never jaw alone",
+    "Subtle sad needs mouth, inner brow and brow shape together; neutral, blink, downward gaze and single features fail",
+    "Calibrated noise raises effective thresholds; sampled neutral noise cannot turn into a subtle cue",
+    "Screenshot neutral calibration is session-specific; missing brow-shape scores cannot enable relative cues"
+  ]
+}

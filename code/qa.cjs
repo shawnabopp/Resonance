@@ -40,7 +40,7 @@ async function main() {
     assert.equal(await evaluate('document.querySelectorAll("#prep [data-theme]").length'), 8);
     await shot('desktop-prepare'); await click('#try-demo'); await sleep(1600);
     const neutral = await snapshot(); report.snapshots.neutral = neutral; await shot('desktop-neutral');
-    assert(neutral.familiarity < .041);
+    assert(neutral.familiarity > .04 && neutral.familiarity < .07);
     passed('Home → preparation → Demo; eight original themes; Outfit weight 100');
     await click('[data-expression="smile"]'); await sleep(2200);
     const smile = await snapshot(); report.snapshots.smile = smile; await shot('desktop-smile');

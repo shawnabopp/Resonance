@@ -1,0 +1,146 @@
+{
+  "note": "Approved Pure before renaming to Curious; numeric render metrics at 48 kHz. Values captured before adding Happy.",
+  "defaults": {
+    "volume": 0.3,
+    "pitch": 280,
+    "rise": 2,
+    "depth": 0.3,
+    "duration": 1.2
+  },
+  "curious": {
+    "duration": 1.2,
+    "peak": 0.20999999344348907,
+    "rms": 0.0976332768602875,
+    "stereo": 0,
+    "maxStep": 0.007696782238781452,
+    "tailRms": 1.880856330097928e-21,
+    "edges": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "earlyHz": 279.4117647058823,
+    "lateHz": 307.29166666666674
+  },
+  "curiousShort": {
+    "duration": 1,
+    "peak": 0.20999999344348907,
+    "rms": 0.09430860786559438,
+    "stereo": 0,
+    "maxStep": 0.007696684915572405,
+    "tailRms": 1.8135775866931377e-21,
+    "edges": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "earlyHz": 282.35294117647055,
+    "lateHz": 312.49999999999994
+  },
+  "curiousMax": {
+    "duration": 1.5,
+    "peak": 0.41999998688697815,
+    "rms": 0.19939049763494238,
+    "stereo": 0,
+    "maxStep": 0.02418761793524027,
+    "tailRms": 1.981848323170462e-21,
+    "edges": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "earlyHz": 443.1372549019608,
+    "lateHz": 533.3333333333329
+  },
+  "recordings": {
+    "afraid": {
+      "name": "afraid",
+      "before": {
+        "duration": 0.499,
+        "peak": 0.8494340181350708,
+        "rms": 0.129856034697738,
+        "activeRms": 0.19518316695042434,
+        "leadingQuiet": 0,
+        "trailingQuiet": 0.039
+      },
+      "after": {
+        "duration": 0.499,
+        "peak": 0.44999998807907104,
+        "rms": 0.05420539881753743,
+        "activeRms": 0.07974654123375213,
+        "leadingQuiet": 0,
+        "trailingQuiet": 0.039
+      },
+      "trimStart": 0,
+      "trimEnd": 0,
+      "fadeIn": 0.008,
+      "fadeOut": 0.035,
+      "playbackRate": 1,
+      "referenceVolume": 0.3,
+      "referenceActiveRms": 0.10540948218004904,
+      "gainDb": 6.26615009598003,
+      "maxPeakReductionDb": 3.9954176078356927,
+      "originalError": 0,
+      "endpoint": 0,
+      "finite": true,
+      "maxStep": 0.06693165563046932,
+      "correlation": 0.9589680418078472,
+      "preview": {
+        "duration": 0.499,
+        "peak": 0.44999998807907104,
+        "rms": 0.05420539881753743,
+        "activeRms": 0.07974654123375213,
+        "leadingQuiet": 0,
+        "trailingQuiet": 0.039
+      },
+      "maxVolumePeak": 0.8999999761581421,
+      "relativeActiveDb": -2.4233564792240747
+    },
+    "wake": {
+      "name": "wake",
+      "before": {
+        "duration": 0.6139791666666666,
+        "peak": 0.848026692867279,
+        "rms": 0.1775893537529616,
+        "activeRms": 0.23120250636144668,
+        "leadingQuiet": 0,
+        "trailingQuiet": 0.033979166666666664
+      },
+      "after": {
+        "duration": 0.6139791666666666,
+        "peak": 0.44999998807907104,
+        "rms": 0.08214094876792315,
+        "activeRms": 0.10410088531423486,
+        "leadingQuiet": 0,
+        "trailingQuiet": 0.033979166666666664
+      },
+      "trimStart": 0,
+      "trimEnd": 0,
+      "fadeIn": 0.028,
+      "fadeOut": 0.055,
+      "playbackRate": 1,
+      "referenceVolume": 0.3,
+      "referenceActiveRms": 0.10540948218004904,
+      "gainDb": 7.036932187056692,
+      "maxPeakReductionDb": 3.999999966839765,
+      "originalError": 0,
+      "endpoint": 0,
+      "finite": true,
+      "maxStep": 0.014671757817268372,
+      "correlation": 0.9924974907105414,
+      "preview": {
+        "duration": 0.6139791666666666,
+        "peak": 0.44999998807907104,
+        "rms": 0.08214094876792315,
+        "activeRms": 0.10410088531423486,
+        "leadingQuiet": 0,
+        "trailingQuiet": 0.033979166666666664
+      },
+      "maxVolumePeak": 0.8999999761581421,
+      "relativeActiveDb": -0.10850513895956912
+    }
+  }
+}

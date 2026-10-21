@@ -29,7 +29,11 @@
       "muted": false,
       "hand": false,
       "openness": 0.5,
-      "body": 0
+      "body": 0,
+      "bodyLean": 0,
+      "arms": 0,
+      "present": true,
+      "faceX": 0.5
     },
     "signals": {
       "smile": 0,
@@ -37,38 +41,56 @@
       "surprise": 0,
       "level": 0,
       "spike": 0,
+      "facePresent": false,
+      "faceX": 0.5,
+      "faceY": 0.5,
+      "presenceSince": 0,
+      "presenceUntil": 2660.9,
       "handPresent": false,
       "handX": 0.5,
       "handY": 0.5,
       "handOpen": 0.5,
       "handSpeed": 0,
-      "bodyMotion": 0
+      "bodyPresent": false,
+      "bodyMotion": 0,
+      "bodySway": 0,
+      "bodyLift": 0,
+      "bodySpread": 0
     },
     "color": [
-      182,
-      211,
-      158
+      195,
+      212,
+      150
     ],
     "center": [
-      545.766436639161,
-      312.22355977507186
+      545.6219148362811,
+      311.08217674553396
     ],
     "radius": 152.145,
-    "expansion": 1.0171844436330864,
-    "scale": 1.035739897501437,
+    "expansion": 1.037588101273937,
+    "scale": 1.0571852589771409,
     "level": 0,
-    "speed": 1.013007009977389,
-    "rotation": 0.27500604484819774,
+    "speed": 1.0381758446150453,
+    "rotation": 0.27395395618266116,
     "sway": 0,
     "clap": 0,
     "retreat": 0,
     "surprise": 0,
-    "familiarity": 0.04019381817479607,
+    "body": {
+      "sway": 0,
+      "lift": 0,
+      "spread": 0,
+      "motion": 0
+    },
+    "familiarity": 0.04,
+    "rest": 0,
+    "absenceSeconds": 0.21659999999999993,
+    "followRate": 1.6238616843156315,
     "bounds": [
-      367.87218597798085,
-      135.52828934447578,
-      724.5917879940534,
-      481.2709911841951
+      362.703478328737,
+      116.24059087954132,
+      742.7059061288414,
+      487.092522957455
     ],
     "viewport": [
       1092,
@@ -84,9 +106,99 @@
       "starting": false,
       "modelReady": true,
       "worker": true,
-      "frames": 4,
+      "frames": 3,
       "facePresent": false,
       "expression": null,
+      "expressionDebug": {
+        "raw": {},
+        "adjusted": {},
+        "scores": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "output": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "active": null,
+        "candidate": null,
+        "heldMs": 0,
+        "reason": "No face scores",
+        "breakdown": {},
+        "reasons": {
+          "smile": "No fresh face scores. Expression output cleared.",
+          "sad": "No fresh face scores. Expression output cleared.",
+          "surprise": "No fresh face scores. Expression output cleared."
+        },
+        "relative": null,
+        "noise": {},
+        "thresholds": {
+          "enter": {
+            "smile": 0.32,
+            "sad": 0.28,
+            "surprise": 0.32
+          },
+          "exit": 0.18,
+          "margin": 0.08,
+          "dwell": {
+            "smile": 300,
+            "sad": 650,
+            "surprise": 400,
+            "neutral": 400
+          },
+          "smoothing": 6,
+          "frownMean": 0.11,
+          "frownBoth": 0.055,
+          "innerBrow": 0.13,
+          "strongFrown": 0.24,
+          "strongBoth": 0.1,
+          "openJaw": 0.45,
+          "speechFrown": 0.2,
+          "speechBrow": 0.23,
+          "outerBrowFloor": 0.22,
+          "outerBrowRange": 0.45,
+          "eyeWideFloor": 0.15,
+          "eyeWideRange": 0.4,
+          "relative": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.01,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.012,
+            "eyeSide": 0.007,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.018,
+            "supportedEye": 0.008,
+            "jaw": 0.12,
+            "noiseMultiplier": 4
+          }
+        },
+        "baseline": null,
+        "calibrating": false,
+        "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+      },
+      "hands": {
+        "state": "loading",
+        "active": true,
+        "worker": true,
+        "error": null,
+        "busy": false,
+        "frames": 0,
+        "interval": 125
+      },
+      "body": {
+        "state": "waiting",
+        "worker": false,
+        "error": null,
+        "busy": false,
+        "frames": 0,
+        "interval": 167
+      },
       "tracks": [
         {
           "kind": "audio",
