@@ -7,6 +7,8 @@
     "Synthetic 3-second samples export raw ranges, neutral deltas, decisions and animation delivery; clipboard fallback and face-loss cancellation work",
     "Optional calibration works in UI, survives visibility pauses, cancels on face loss and resets on request",
     "User screenshot values replay through neutral calibration, subtle sad blue/sink/gather, surprise purple, preserved smile and neutral speaking; this is NOT post-fix human testing",
+    "Supplied live means with falling inner brows reach a gradual response and a separate full lowered-brow state; sampled-neutral drift is visible",
+    "Below-state joint evidence visibly blues/slows/gathers the renderer, stronger evidence confirms later, and mouth-only input returns to neutral",
     "Expanded diagnostics fit 320 / 390 px layouts and calibration buttons remain reachable",
     "Single device request, Home cleanup and no uncaught browser errors"
   ],

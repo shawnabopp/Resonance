@@ -1,0 +1,1157 @@
+{
+  "input": "User-pasted Live diagnostic summaries, 2026-10-22. Aggregates from 12 frames per label, not raw ordered frames. Intended labels are user supplied; replayed means are not new human validation.",
+  "limitation": "Decision tests using repeated supplied aggregates/last frames and synthetic perturbations. No post-change real camera accuracy or real head-motion test.",
+  "audit": {
+    "source": "User-pasted Live diagnostic summaries, 2026-10-22. Aggregates from 12 frames per label, not raw ordered frames. Intended labels are user supplied; replayed means are not new human validation.",
+    "neutralMean": {
+      "browInnerUp": 0.0238,
+      "mouthFrownLeft": 0.0046,
+      "mouthFrownRight": 0.004,
+      "mouthSmileLeft": 0,
+      "mouthSmileRight": 0,
+      "browOuterUpLeft": 0.0669,
+      "browOuterUpRight": 0.0627,
+      "eyeWideLeft": 0.0056,
+      "eyeWideRight": 0.0044,
+      "jawOpen": 0.0085,
+      "browDownLeft": 0.0508,
+      "browDownRight": 0.0359
+    },
+    "sadMean": {
+      "browInnerUp": 0.0204,
+      "mouthFrownLeft": 0.0296,
+      "mouthFrownRight": 0.0273,
+      "mouthSmileLeft": 0,
+      "mouthSmileRight": 0,
+      "browOuterUpLeft": 0.057,
+      "browOuterUpRight": 0.0586,
+      "eyeWideLeft": 0.0062,
+      "eyeWideRight": 0.0037,
+      "jawOpen": 0.006,
+      "browDownLeft": 0.0582,
+      "browDownRight": 0.0377
+    },
+    "sadChangesFromSampledNeutral": {
+      "browInnerUp": -0.0034000000000000002,
+      "mouthFrownLeft": 0.025,
+      "mouthFrownRight": 0.0233,
+      "mouthSmileLeft": 0,
+      "mouthSmileRight": 0,
+      "browOuterUpLeft": -0.009899999999999999,
+      "browOuterUpRight": -0.004100000000000006,
+      "eyeWideLeft": 0.0005999999999999998,
+      "eyeWideRight": -0.0007000000000000001,
+      "jawOpen": -0.0025000000000000005,
+      "browDownLeft": 0.007400000000000004,
+      "browDownRight": 0.001799999999999996
+    },
+    "sadChangesFromCalibration": {
+      "frown": 0.027070213998947296,
+      "weakerSide": 0.026009368170239033,
+      "inner": -0.019650506591796874,
+      "down": 0.021011840049922466,
+      "outer": -0.019676572245359417,
+      "contrast": 0.00002606565356254309
+    },
+    "neutralChangesFromCalibration": {
+      "frown": 0.0029202139989472926,
+      "weakerSide": 0.0027093681702390314,
+      "inner": -0.016250506591796873,
+      "down": 0.016411840049922466,
+      "outer": -0.012676572245359424,
+      "contrast": -0.003573934346437449
+    },
+    "previousRules": {
+      "raisedInnerRequired": 0.018,
+      "absoluteMeanFrownRequired": 0.11,
+      "sadEnter": 0.28,
+      "sadDwellMs": 650
+    },
+    "conclusion": "Both mouth-frown ranges are separated in these supplied windows. Inner-brow change is negative, so the previous mandatory raised-inner route scores zero before arbitration or dwell. Baseline and later Neutral also differ. Generalization/pose specificity cannot be inferred from aggregate windows.",
+    "calibrationReview": {
+      "status": "shifted",
+      "changes": {
+        "browInnerUp": -0.016250506591796873,
+        "mouthFrownLeft": 0.0031310598276555537,
+        "mouthFrownRight": 0.0027093681702390314,
+        "mouthSmileLeft": -0.000003856525381706888,
+        "mouthSmileRight": -0.0000041819871512416285,
+        "browOuterUpLeft": -0.014478325819969176,
+        "browOuterUpRight": -0.010874818670749659,
+        "eyeWideLeft": 0.00019641473367810244,
+        "eyeWideRight": -0.0008184029482305047,
+        "jawOpen": 0.000990659467875958,
+        "browDownLeft": 0.018701274561882017,
+        "browDownRight": 0.014122405537962915
+      },
+      "shifted": [
+        "browInnerUp",
+        "browOuterUpRight",
+        "browDownRight"
+      ],
+      "message": "Neutral differs from calibration. Relax your face and recalibrate, then capture both samples again. No baseline is changed automatically."
+    }
+  },
+  "slightAudit": {
+    "source": "Additional user-provided slight-sad summary; 12 frames over 2833 ms. Original ordered frames not supplied.",
+    "originalLogic": "pre-graded (continuousSad and timeline absent)",
+    "reportedResponse": 0,
+    "changesFromNeutral": {
+      "browInnerUp": 0.005599999999999997,
+      "mouthFrownLeft": 0.008,
+      "mouthFrownRight": 0.0066,
+      "mouthSmileLeft": 0,
+      "mouthSmileRight": 0.0001,
+      "browOuterUpLeft": -0.036199999999999996,
+      "browOuterUpRight": -0.024200000000000006,
+      "eyeWideLeft": 0.0005999999999999998,
+      "eyeWideRight": 0.0000999999999999994,
+      "jawOpen": -0.000700000000000001,
+      "browDownLeft": 0.0416,
+      "browDownRight": 0.014699999999999998
+    },
+    "currentLogicWithSuppliedCalibration": {
+      "raw": {
+        "browInnerUp": 0.0294,
+        "mouthFrownLeft": 0.0126,
+        "mouthFrownRight": 0.0106,
+        "mouthSmileLeft": 0,
+        "mouthSmileRight": 0.0001,
+        "browOuterUpLeft": 0.0307,
+        "browOuterUpRight": 0.0385,
+        "eyeWideLeft": 0.0062,
+        "eyeWideRight": 0.0045,
+        "jawOpen": 0.0078,
+        "browDownLeft": 0.0924,
+        "browDownRight": 0.0506
+      },
+      "adjusted": {
+        "frownMean": 0.010220213998947292,
+        "frownBoth": 0.009309368170239031,
+        "innerBrow": 0,
+        "outerBrowChange": -0.042876572245359415,
+        "eyeWideChange": 0.00003900589272379847,
+        "browDownChange": 0.04456184004992246,
+        "browContrast": 0.032226065653562536,
+        "jawChange": 0.00029065946787595713
+      },
+      "scores": {
+        "smile": 0,
+        "sad": 0.26052528146688153,
+        "surprise": 0
+      },
+      "output": {
+        "smile": 0,
+        "sad": 0.41995151931363817,
+        "surprise": 0
+      },
+      "active": null,
+      "candidate": null,
+      "heldMs": 4850,
+      "reason": "Gradual sad-looking response: bilateral mouth + lowered / settled brows",
+      "breakdown": {
+        "smile": {
+          "evidence": 0,
+          "beforeCompetition": 0,
+          "gates": {},
+          "missing": []
+        },
+        "sad": {
+          "evidence": 0.26052787748197476,
+          "beforeCompetition": 0.26052787748197476,
+          "gates": {
+            "combinedFrown": false,
+            "strongBilateralFrown": false,
+            "openMouthSafe": true,
+            "relativeSad": false,
+            "settledBrows": false,
+            "gradualSad": true
+          },
+          "missing": [],
+          "smileMultiplier": 1,
+          "surpriseMultiplier": 1
+        },
+        "surprise": {
+          "evidence": 0,
+          "beforeCompetition": 0,
+          "gates": {
+            "raisedOuterBrows": false,
+            "widenedEyes": false,
+            "expressiveEyes": false,
+            "supportedEyes": false
+          },
+          "missing": [],
+          "outerBrowMean": 0,
+          "eyeWideMean": 0.00003900589272379847,
+          "scaledBrows": 0,
+          "scaledEyes": 0,
+          "smileMultiplier": 1
+        }
+      },
+      "reasons": {
+        "smile": "Smoothed 0.000 < enter 0.32.",
+        "sad": "Continuous response 0.420; joint evidence 0.261, held 2.75 s; route: bilateral mouth + lowered / settled brows. Weak joint evidence is already reaching the animation; full state is not yet confirmed. Original stronger-frown routes are not active; calibrated gradual routes are checked separately. Raised-inner-brow route: mouth mean 0.010 ≥ 0.004, weaker mouth side 0.009 ≥ 0.003, inner brow -0.011 < 0.018; brow shape needs brow down 0.045 ≥ 0.020 OR inner–outer contrast 0.032 < 0.035; jaw raw < 0.25 and change < 0.1. Smoothed 0.261 < enter 0.28.",
+        "surprise": "Stronger route: outer brow mean 0.000 (baseline adjusted) must exceed 0.22. Stronger route: eye-wide mean 0.000 (baseline adjusted) must exceed 0.15. Relative route A: outer brow -0.043 < 0.025, eyes 0.000 < 0.012. Route B: inner brow -0.011 < 0.045, outer brow -0.043 < 0.022, eyes 0.000 < 0.008, jaw 0.000 < 0.120. Both routes require weaker outer side -0.051 < 0.022 and weaker eye side -0.001 < 0.008. Smoothed 0.000 < enter 0.32."
+      },
+      "relative": {
+        "ready": true,
+        "limits": {
+          "frown": 0.004,
+          "frownSide": 0.003,
+          "innerSad": 0.018,
+          "browDown": 0.020317155867815018,
+          "browContrast": 0.035,
+          "outer": 0.025,
+          "eye": 0.012,
+          "outerSide": 0.02239331603050232,
+          "eyeSide": 0.008396231103688478,
+          "innerSurprise": 0.045,
+          "supportedOuter": 0.02239331603050232,
+          "supportedEye": 0.008396231103688478,
+          "jaw": 0.12
+        },
+        "deltas": {
+          "frown": 0.010220213998947292,
+          "frownSide": 0.009309368170239031,
+          "inner": -0.010650506591796876,
+          "outer": -0.042876572245359415,
+          "outerBoth": -0.05067832581996917,
+          "eye": 0.00003900589272379847,
+          "eyeBoth": -0.0007184029482305053,
+          "down": 0.04456184004992246,
+          "contrast": 0.032226065653562536,
+          "jaw": 0.00029065946787595713
+        },
+        "routes": {
+          "expressiveEyes": false,
+          "supportedEyes": false,
+          "relativeSad": false
+        }
+      },
+      "noise": {
+        "browInnerUp": 0.0018102359026670456,
+        "mouthFrownLeft": 0.00016039685579016805,
+        "mouthFrownRight": 0.0001462266081944108,
+        "mouthSmileLeft": 4.1160865293932147e-7,
+        "mouthSmileRight": 3.6840378925262485e-7,
+        "browOuterUpLeft": 0.00559832900762558,
+        "browOuterUpRight": 0.001445043832063675,
+        "eyeWideLeft": 0.0014115124940872192,
+        "eyeWideRight": 0.0020990577759221196,
+        "jawOpen": 0.000738444970920682,
+        "browDownLeft": 0.005079288966953754,
+        "browDownRight": 0.003327443264424801
+      },
+      "continuousSad": {
+        "heldSeconds": 2.7499999999999982,
+        "evidence": 0.26052787748197476,
+        "previewEvidence": 0.26052787748197476,
+        "route": "bilateral mouth + lowered / settled brows",
+        "fullSettled": false,
+        "features": {
+          "mouth": 0.010220209271416347,
+          "side": 0.009309363896030938,
+          "inner": -0.010650510217852316,
+          "down": 0.04456182181963457,
+          "contrast": 0.032226042469758825,
+          "outerFall": 0.04287655268761115
+        },
+        "groups": {
+          "mouth": 1,
+          "raisedInner": 0,
+          "browShape": 1,
+          "settledMouth": 0.23445607063424145,
+          "loweredBrows": 1,
+          "outerFall": 1,
+          "settledShape": 1
+        },
+        "floors": {
+          "mouth": 0.0015,
+          "side": 0.00075,
+          "inner": 0.008,
+          "down": 0.007618933450430632,
+          "contrast": 0.012,
+          "settledMouth": 0.006,
+          "settledSide": 0.004,
+          "outerFall": 0.00839749351143837
+        },
+        "freshJoint": true,
+        "eligible": true
+      },
+      "groupNoise": {},
+      "thresholds": {
+        "enter": {
+          "smile": 0.32,
+          "sad": 0.28,
+          "surprise": 0.32
+        },
+        "exit": 0.18,
+        "margin": 0.08,
+        "dwell": {
+          "smile": 300,
+          "sad": 650,
+          "surprise": 400,
+          "neutral": 400
+        },
+        "smoothing": 6,
+        "frownMean": 0.11,
+        "frownBoth": 0.055,
+        "innerBrow": 0.13,
+        "strongFrown": 0.24,
+        "strongBoth": 0.1,
+        "openJaw": 0.45,
+        "speechFrown": 0.2,
+        "speechBrow": 0.23,
+        "outerBrowFloor": 0.22,
+        "outerBrowRange": 0.45,
+        "eyeWideFloor": 0.15,
+        "eyeWideRange": 0.4,
+        "continuousSad": {
+          "noiseMultiplier": 1.5,
+          "mouthFloor": 0.0015,
+          "sideFloor": 0.00075,
+          "innerFloor": 0.008,
+          "downFloor": 0.0025,
+          "contrastFloor": 0.012,
+          "settledMouthFloor": 0.006,
+          "settledSideFloor": 0.004,
+          "outerFallFloor": 0.0035,
+          "warmup": 0.35,
+          "fadeIn": 0.8,
+          "fullAfter": 1.4,
+          "maxPreview": 0.42,
+          "visualGain": 1.7,
+          "featureSmoothing": 5
+        },
+        "relative": {
+          "frown": 0.004,
+          "frownSide": 0.003,
+          "innerSad": 0.018,
+          "browDown": 0.01,
+          "browContrast": 0.035,
+          "outer": 0.025,
+          "eye": 0.012,
+          "outerSide": 0.012,
+          "eyeSide": 0.007,
+          "innerSurprise": 0.045,
+          "supportedOuter": 0.018,
+          "supportedEye": 0.008,
+          "jaw": 0.12,
+          "noiseMultiplier": 4
+        }
+      },
+      "baseline": {
+        "browInnerUp": 0.040050506591796875,
+        "mouthFrownLeft": 0.0014689401723444462,
+        "mouthFrownRight": 0.0012906318297609687,
+        "mouthSmileLeft": 0.000003856525381706888,
+        "mouthSmileRight": 0.0000041819871512416285,
+        "browOuterUpLeft": 0.08137832581996918,
+        "browOuterUpRight": 0.07357481867074966,
+        "eyeWideLeft": 0.0054035852663218975,
+        "eyeWideRight": 0.005218402948230505,
+        "jawOpen": 0.0075093405321240425,
+        "browDownLeft": 0.03209872543811798,
+        "browDownRight": 0.021777594462037086
+      },
+      "calibrating": false,
+      "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+    },
+    "currentLogicWithIdealizedNeutral": {
+      "response": 0.13520321217847336,
+      "active": null,
+      "route": "bilateral mouth + lowered / settled brows"
+    }
+  },
+  "checks": [
+    "Live data explains zero before competition: mouth changes, inner brow falls, and the neutral baseline has shifted",
+    "Replayed live mean scores give an early graded response, then a sustained lowered-brow state without raised inner brows",
+    "Replayed supplied last frames also separate sad-looking and neutral; this is not replay of original motion",
+    "Weak sustained joint changes stay graded below full state; stronger brow evidence can confirm later",
+    "Mouth only, brow only, one mouth corner, no smile, blinking and looking down are insufficient",
+    "Short repeated cues do not accumulate confirmation; release is smooth and finite",
+    "Synthetic values within the supplied neutral ranges never create a cue; ambiguous noise remains rejected",
+    "Singing/open-mouth guard, smile competition and later sad-looking recovery retain their behavior",
+    "Continuous support uses elapsed time at 4, 12 and 30 Hz, and clears on face loss or stale frames",
+    "Starting or aborting calibration cannot revive a stored continuous response",
+    "Additional slight-sad attachment is an old-logic sample; current logic supplies a graded response without forcing full state"
+  ],
+  "responseTrace": [
+    {
+      "timeMs": 50,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 100,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 150,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 200,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 250,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 300,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 350,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 400,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 450,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 500,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 550,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 600,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 650,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 700,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 750,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 800,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 850,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 900,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 950,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1000,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1050,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1100,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1150,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1200,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1250,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1300,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1350,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1400,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1450,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1500,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1550,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1600,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1650,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1700,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1750,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1800,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1850,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1900,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 1950,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 2000,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0,
+      "route": "none"
+    },
+    {
+      "timeMs": 2050,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.05,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2100,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.1,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2150,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.15000000000000002,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2200,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.2,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2250,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.25,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2300,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.3,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2350,
+      "active": null,
+      "score": 0,
+      "response": 0,
+      "heldSeconds": 0.35,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2400,
+      "active": null,
+      "score": 0.0007858978757649082,
+      "response": 0.00029552799099857483,
+      "heldSeconds": 0.39999999999999997,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2450,
+      "active": null,
+      "score": 0.003589121077583959,
+      "response": 0.0015798057429091375,
+      "heldSeconds": 0.44999999999999996,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2500,
+      "active": null,
+      "score": 0.009116916660922982,
+      "response": 0.004658667154217363,
+      "heldSeconds": 0.49999999999999994,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2550,
+      "active": null,
+      "score": 0.0176882092938385,
+      "response": 0.010279624303706013,
+      "heldSeconds": 0.5499999999999999,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2600,
+      "active": null,
+      "score": 0.029334247344295586,
+      "response": 0.019036590778377528,
+      "heldSeconds": 0.6,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2650,
+      "active": null,
+      "score": 0.043873163335493286,
+      "response": 0.03132371774099579,
+      "heldSeconds": 0.65,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2700,
+      "active": null,
+      "score": 0.06096520968971196,
+      "response": 0.047320212198923385,
+      "heldSeconds": 0.7000000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2750,
+      "active": null,
+      "score": 0.08015367837378834,
+      "response": 0.06699390082901494,
+      "heldSeconds": 0.7500000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2800,
+      "active": null,
+      "score": 0.10089521491806736,
+      "response": 0.09011540473056684,
+      "heldSeconds": 0.8000000000000002,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2850,
+      "active": null,
+      "score": 0.12258227559398358,
+      "response": 0.11627762350117651,
+      "heldSeconds": 0.8500000000000002,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2900,
+      "active": null,
+      "score": 0.14455976410039878,
+      "response": 0.14491716548766237,
+      "heldSeconds": 0.9000000000000002,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 2950,
+      "active": null,
+      "score": 0.1661373563239725,
+      "response": 0.1753356722687443,
+      "heldSeconds": 0.9500000000000003,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3000,
+      "active": null,
+      "score": 0.18659863074621008,
+      "response": 0.20671985956496583,
+      "heldSeconds": 1.0000000000000002,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3050,
+      "active": null,
+      "score": 0.2052078324153662,
+      "response": 0.23815966863002497,
+      "heldSeconds": 1.0500000000000003,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3100,
+      "active": null,
+      "score": 0.221214883820075,
+      "response": 0.268664286850806,
+      "heldSeconds": 1.1000000000000003,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3150,
+      "active": null,
+      "score": 0.2338590970358371,
+      "response": 0.2971760205138526,
+      "heldSeconds": 1.1500000000000004,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3200,
+      "active": null,
+      "score": 0.24322616057225824,
+      "response": 0.32290335911995716,
+      "heldSeconds": 1.2000000000000004,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3250,
+      "active": null,
+      "score": 0.2501654519143223,
+      "response": 0.34438106004901964,
+      "heldSeconds": 1.2500000000000004,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3300,
+      "active": null,
+      "score": 0.2553062053791423,
+      "response": 0.361107910351147,
+      "heldSeconds": 1.3000000000000005,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3350,
+      "active": null,
+      "score": 0.25911456921391357,
+      "response": 0.3741347944647619,
+      "heldSeconds": 1.3500000000000005,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3400,
+      "active": null,
+      "score": 0.299351340063426,
+      "response": 0.38428014201342564,
+      "heldSeconds": 1.4000000000000006,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3450,
+      "active": null,
+      "score": 0.329162181626897,
+      "response": 0.3921813466288565,
+      "heldSeconds": 1.4500000000000006,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3500,
+      "active": null,
+      "score": 0.3512487055551816,
+      "response": 0.39833481097056145,
+      "heldSeconds": 1.5000000000000007,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3550,
+      "active": null,
+      "score": 0.367612447584873,
+      "response": 0.40312713381848325,
+      "heldSeconds": 1.5500000000000007,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3600,
+      "active": null,
+      "score": 0.3797362851101071,
+      "response": 0.4068593986051757,
+      "heldSeconds": 1.6000000000000008,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3650,
+      "active": null,
+      "score": 0.38871884112451627,
+      "response": 0.40976608934368164,
+      "heldSeconds": 1.6500000000000008,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3700,
+      "active": null,
+      "score": 0.3953740581691279,
+      "response": 0.41202982236697644,
+      "heldSeconds": 1.7000000000000008,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3750,
+      "active": null,
+      "score": 0.4003049684653364,
+      "response": 0.4137928194181831,
+      "heldSeconds": 1.7500000000000009,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3800,
+      "active": null,
+      "score": 0.40395834723948076,
+      "response": 0.41516584290221537,
+      "heldSeconds": 1.800000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3850,
+      "active": null,
+      "score": 0.4066652032886322,
+      "response": 0.41623515466675515,
+      "heldSeconds": 1.850000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3900,
+      "active": null,
+      "score": 0.4086707769882055,
+      "response": 0.4170679355063262,
+      "heldSeconds": 1.900000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 3950,
+      "active": null,
+      "score": 0.41015676480991486,
+      "response": 0.417716505876311,
+      "heldSeconds": 1.950000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4000,
+      "active": null,
+      "score": 0.41125778477666614,
+      "response": 0.41822161298833205,
+      "heldSeconds": 2.000000000000001,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4050,
+      "active": "sad",
+      "score": 0.41207357524921023,
+      "response": 0.48066691836825515,
+      "heldSeconds": 2.0500000000000007,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4100,
+      "active": "sad",
+      "score": 0.4126780326930356,
+      "response": 0.5295266704697816,
+      "heldSeconds": 2.1000000000000005,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4150,
+      "active": "sad",
+      "score": 0.41312590755301165,
+      "response": 0.56774710193325,
+      "heldSeconds": 2.1500000000000004,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4200,
+      "active": "sad",
+      "score": 0.41345776509382937,
+      "response": 0.5976379951541994,
+      "heldSeconds": 2.2,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4250,
+      "active": "sad",
+      "score": 0.4137036608037924,
+      "response": 0.6210095124968114,
+      "heldSeconds": 2.25,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4300,
+      "active": "sad",
+      "score": 0.4138858634523061,
+      "response": 0.6392797837461995,
+      "heldSeconds": 2.3,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4350,
+      "active": "sad",
+      "score": 0.41402087257626125,
+      "response": 0.6535594539533951,
+      "heldSeconds": 2.3499999999999996,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4400,
+      "active": "sad",
+      "score": 0.41412091322317823,
+      "response": 0.6647180914444508,
+      "heldSeconds": 2.3999999999999995,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4450,
+      "active": "sad",
+      "score": 0.4141950434029067,
+      "response": 0.6734363228745963,
+      "heldSeconds": 2.4499999999999993,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4500,
+      "active": "sad",
+      "score": 0.4142499746004993,
+      "response": 0.6802467445938085,
+      "heldSeconds": 2.499999999999999,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4550,
+      "active": "sad",
+      "score": 0.41429067969911887,
+      "response": 0.6855660130528749,
+      "heldSeconds": 2.549999999999999,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4600,
+      "active": "sad",
+      "score": 0.41432084339649383,
+      "response": 0.6897200062107691,
+      "heldSeconds": 2.5999999999999988,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4650,
+      "active": "sad",
+      "score": 0.41434319592531704,
+      "response": 0.692963544750193,
+      "heldSeconds": 2.6499999999999986,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4700,
+      "active": "sad",
+      "score": 0.4143597603134171,
+      "response": 0.6954958439550688,
+      "heldSeconds": 2.6999999999999984,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4750,
+      "active": "sad",
+      "score": 0.414372035585093,
+      "response": 0.6974726165356171,
+      "heldSeconds": 2.7499999999999982,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4800,
+      "active": "sad",
+      "score": 0.4143811325006343,
+      "response": 0.6990155493613123,
+      "heldSeconds": 2.799999999999998,
+      "route": "bilateral mouth + lowered / settled brows"
+    },
+    {
+      "timeMs": 4850,
+      "active": "sad",
+      "score": 0.4143878741307004,
+      "response": 0.7002197217677857,
+      "heldSeconds": 2.849999999999998,
+      "route": "bilateral mouth + lowered / settled brows"
+    }
+  ]
+}

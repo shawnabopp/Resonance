@@ -8,6 +8,9 @@ const neutral = { browInnerUp: .035, mouthFrownLeft: .025, mouthFrownRight: .03,
 const sad = { ...neutral, mouthFrownLeft: .2, mouthFrownRight: .16, browInnerUp: .23 };
 const screenshotFixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'qa/fixtures/expression-screenshots.json'), 'utf8'));
 const screenshot = Object.fromEntries(Object.entries(screenshotFixture.frames).map(([key, values]) => [key, Object.fromEntries(screenshotFixture.names.map((name, i) => [name, values[i]]))]));
+const liveFixture = JSON.parse(fs.readFileSync(path.join(__dirname, 'qa/fixtures/expression-live-summaries.json'), 'utf8'));
+const liveFrame = values => Object.fromEntries(liveFixture.names.map((key, i) => [key, values[i]]));
+const liveMeans = Object.fromEntries(Object.entries(liveFixture.samples).map(([label, sample]) => [label, liveFrame(sample.mean)]));
 async function main() {
   const tab = await (await fetch('http://127.0.0.1:9227/json/new?about:blank', { method: 'PUT' })).json();
   const ws = new WebSocket(tab.webSocketDebuggerUrl); await new Promise(r => ws.addEventListener('open', r, { once: true }));
@@ -72,6 +75,8 @@ async function main() {
     let sample = await run('JSON.parse(document.querySelector("#expression-sample-data").value)');
     assert.equal(sample.samples[0].intended, 'neutral'); assert.equal(sample.samples[0].raw.browInnerUp.mean, neutral.browInnerUp);
     assert.equal(sample.samples[0].changeFromNeutral.browInnerUp, 0); assert(sample.samples[0].frames >= 6);
+    assert.equal(sample.samples[0].timeline.length, sample.samples[0].frames); assert.equal(sample.samples[0].timeline[0].timeMs, 0);
+    assert.equal(sample.samples[0].timeline[0].raw.browInnerUp, neutral.browInnerUp);
     await set(sad); await wait(async () => (await snap()).live.expression === 'sad');
     await run('document.querySelector("#expression-sample-label").value="sad"'); await click('#sample-expression');
     await wait(() => run('JSON.parse(document.querySelector("#expression-sample-data").value).samples.length===2'), 10000);
@@ -119,6 +124,35 @@ async function main() {
     await set(screenshot.neutral); await sleep(800); assert.equal((await snap()).live.expression, null);
     assert(await run('document.querySelector("#expression-relative-thresholds").textContent.includes("Effective change thresholds")'));
     pass('User screenshot values replay through neutral calibration, subtle sad blue/sink/gather, surprise purple, preserved smile and neutral speaking; this is NOT post-fix human testing');
+    // Supplied 2026-10-22 summaries have low/falling inner brows. Means are
+    // deliberately held here: the original 12-frame motion was not supplied.
+    await click('#reset-expression-calibration'); await set(liveFrame(liveFixture.baseline)); await sleep(500);
+    await click('#calibrate-expression'); await wait(async () => !!(await snap()).live.expressionDebug.baseline, 15000);
+    await set(liveMeans.neutral); await sleep(1800); assert.equal((await snap()).signals.sad, 0);
+    await run('document.querySelector("#expression-sample-label").value="neutral"'); await click('#sample-expression');
+    await wait(() => run('JSON.parse(document.querySelector("#expression-sample-data").value).calibrationReview.status==="shifted"'), 12000);
+    assert(await run('document.querySelector("#expression-calibration-review").textContent.includes("Neutral differs")'));
+    await set(liveMeans.sad); await wait(async () => { const s = await snap(); return s.signals.sad > .04 && s.live.expression === null; }, 10000);
+    assert((await snap()).signals.sad <= .42);
+    assert(await run('document.querySelector("#expression-continuous").textContent.includes("Gradual sad-look")'));
+    await wait(async () => (await snap()).live.expression === 'sad', 12000);
+    assert((await snap()).live.expressionDebug.continuousSad.fullSettled);
+    assert(!(await snap()).live.expressionDebug.relative.routes.relativeSad);
+    pass('Supplied live means with falling inner brows reach a gradual response and a separate full lowered-brow state; sampled-neutral drift is visible');
+    await click('#reset-expression-calibration'); await set(liveMeans.neutral); await sleep(500);
+    await click('#calibrate-expression'); await wait(async () => !!(await snap()).live.expressionDebug.baseline, 15000);
+    await sleep(1800); const weakBefore = await snap();
+    await set(liveMeans.sad); await sleep(3200); const weakAfter = await snap();
+    assert.equal(weakAfter.live.expression, null); assert(weakAfter.signals.sad > .05 && weakAfter.signals.sad <= .42);
+    assert(weakAfter.color[2] > weakBefore.color[2] + 10); assert(weakAfter.speed < weakBefore.speed * .97);
+    assert(weakAfter.expansion < weakBefore.expansion - .025);
+    await run('document.querySelector("#expression-debug").scrollIntoView({block:"start"})'); await shot('expression-continuous-weak');
+    await set({ ...liveMeans.sad, browDownLeft: .074, browDownRight: .059, browOuterUpLeft: .043, browOuterUpRight: .039 });
+    await wait(async () => (await snap()).live.expression === 'sad', 12000); await sleep(700);
+    assert((await snap()).signals.sad > weakAfter.signals.sad + .12);
+    await set({ ...liveMeans.neutral, mouthFrownLeft: liveMeans.sad.mouthFrownLeft, mouthFrownRight: liveMeans.sad.mouthFrownRight });
+    await sleep(2800); assert((await snap()).signals.sad < .01); assert.equal((await snap()).live.expression, null);
+    pass('Below-state joint evidence visibly blues/slows/gathers the renderer, stronger evidence confirms later, and mouth-only input returns to neutral');
     for (const [width, height] of [[320, 740], [390, 844]]) {
       await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: true });
       await run('document.querySelector("#expression-debug").scrollIntoView({block:"start"})'); await sleep(300);

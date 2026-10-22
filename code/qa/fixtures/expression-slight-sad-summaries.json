@@ -1,0 +1,637 @@
+{
+  "note": "Live score samples, not a recognition accuracy claim. Intended expressions are user labels. Changes from a sampled Neutral label are diagnostic only. The classifier uses the separate Calibrate neutral baseline and noise limits included in each decision.",
+  "samples": [
+    {
+      "intended": "neutral",
+      "frames": 12,
+      "durationMs": 2916,
+      "raw": {
+        "browInnerUp": {
+          "mean": 0.0238,
+          "min": 0.0228,
+          "max": 0.0255,
+          "count": 12
+        },
+        "mouthFrownLeft": {
+          "mean": 0.0046,
+          "min": 0.004,
+          "max": 0.0049,
+          "count": 12
+        },
+        "mouthFrownRight": {
+          "mean": 0.004,
+          "min": 0.0034,
+          "max": 0.0043,
+          "count": 12
+        },
+        "mouthSmileLeft": {
+          "mean": 0,
+          "min": 0,
+          "max": 0,
+          "count": 12
+        },
+        "mouthSmileRight": {
+          "mean": 0,
+          "min": 0,
+          "max": 0,
+          "count": 12
+        },
+        "browOuterUpLeft": {
+          "mean": 0.0669,
+          "min": 0.0636,
+          "max": 0.0708,
+          "count": 12
+        },
+        "browOuterUpRight": {
+          "mean": 0.0627,
+          "min": 0.0611,
+          "max": 0.0661,
+          "count": 12
+        },
+        "eyeWideLeft": {
+          "mean": 0.0056,
+          "min": 0.0053,
+          "max": 0.0061,
+          "count": 12
+        },
+        "eyeWideRight": {
+          "mean": 0.0044,
+          "min": 0.0037,
+          "max": 0.0047,
+          "count": 12
+        },
+        "jawOpen": {
+          "mean": 0.0085,
+          "min": 0.0075,
+          "max": 0.0092,
+          "count": 12
+        },
+        "browDownLeft": {
+          "mean": 0.0508,
+          "min": 0.0469,
+          "max": 0.0531,
+          "count": 12
+        },
+        "browDownRight": {
+          "mean": 0.0359,
+          "min": 0.0343,
+          "max": 0.0371,
+          "count": 12
+        }
+      },
+      "finalCounts": {
+        "neutral": 12
+      },
+      "lastDecision": {
+        "raw": {
+          "browInnerUp": 0.023381037637591362,
+          "mouthFrownLeft": 0.004392648581415415,
+          "mouthFrownRight": 0.003858958138152957,
+          "mouthSmileLeft": 0.000011814160643552896,
+          "mouthSmileRight": 0.000013208845302870031,
+          "browOuterUpLeft": 0.06619323790073395,
+          "browOuterUpRight": 0.06111729145050049,
+          "eyeWideLeft": 0.006064795423299074,
+          "eyeWideRight": 0.004629399161785841,
+          "jawOpen": 0.008471637964248657,
+          "browDownLeft": 0.05206218361854553,
+          "browDownRight": 0.037068549543619156
+        },
+        "adjusted": {
+          "frownMean": 0.0027460173587314785,
+          "frownBoth": 0.0025683263083919883,
+          "innerBrow": 0,
+          "outerBrowChange": -0.013821307569742203,
+          "eyeWideChange": 0.00003610318526625633,
+          "browDownChange": 0.01762720663100481,
+          "browContrast": -0.0028481613844633102,
+          "jawChange": 0.0009622974321246147
+        },
+        "scores": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "output": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "active": null,
+        "candidate": null,
+        "heldMs": 315300,
+        "reason": "Not enough frown evidence",
+        "breakdown": {
+          "smile": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {},
+            "missing": []
+          },
+          "sad": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {
+              "combinedFrown": false,
+              "strongBilateralFrown": false,
+              "openMouthSafe": true,
+              "relativeSad": false
+            },
+            "missing": [],
+            "smileMultiplier": 1,
+            "surpriseMultiplier": 1
+          },
+          "surprise": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {
+              "raisedOuterBrows": false,
+              "widenedEyes": false,
+              "expressiveEyes": false,
+              "supportedEyes": false
+            },
+            "missing": [],
+            "outerBrowMean": 0,
+            "eyeWideMean": 0.00003610318526625633,
+            "scaledBrows": 0,
+            "scaledEyes": 0,
+            "smileMultiplier": 1
+          }
+        },
+        "reasons": {
+          "smile": "Smoothed 0.000 < enter 0.32.",
+          "sad": "Neither stronger frown route passed (see relative checks). Relative checks: mouth mean 0.003 < 0.004, weaker mouth side 0.003 < 0.003, inner brow -0.017 < 0.018; brow shape needs brow down 0.018 < 0.020 OR inner–outer contrast -0.003 < 0.035; jaw raw < 0.25 and change < 0.1. Smoothed 0.000 < enter 0.28.",
+          "surprise": "Stronger route: outer brow mean 0.000 (baseline adjusted) must exceed 0.22. Stronger route: eye-wide mean 0.000 (baseline adjusted) must exceed 0.15. Relative route A: outer brow -0.014 < 0.025, eyes 0.000 < 0.012. Route B: inner brow -0.017 < 0.045, outer brow -0.014 < 0.022, eyes 0.000 < 0.008, jaw 0.001 < 0.120. Both routes require weaker outer side -0.015 < 0.022 and weaker eye side -0.001 < 0.008. Smoothed 0.000 < enter 0.32."
+        },
+        "relative": {
+          "ready": true,
+          "limits": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.020317155867815018,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.02239331603050232,
+            "eyeSide": 0.008396231103688478,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.02239331603050232,
+            "supportedEye": 0.008396231103688478,
+            "jaw": 0.12
+          },
+          "deltas": {
+            "frown": 0.0027460173587314785,
+            "frownSide": 0.0025683263083919883,
+            "inner": -0.016669468954205513,
+            "outer": -0.013821307569742203,
+            "outerBoth": -0.01518508791923523,
+            "eye": 0.00003610318526625633,
+            "eyeBoth": -0.000589003786444664,
+            "down": 0.01762720663100481,
+            "contrast": -0.0028481613844633102,
+            "jaw": 0.0009622974321246147
+          },
+          "routes": {
+            "expressiveEyes": false,
+            "supportedEyes": false,
+            "relativeSad": false
+          }
+        },
+        "noise": {
+          "browInnerUp": 0.0018102359026670456,
+          "mouthFrownLeft": 0.00016039685579016805,
+          "mouthFrownRight": 0.0001462266081944108,
+          "mouthSmileLeft": 4.1160865293932147e-7,
+          "mouthSmileRight": 3.6840378925262485e-7,
+          "browOuterUpLeft": 0.00559832900762558,
+          "browOuterUpRight": 0.001445043832063675,
+          "eyeWideLeft": 0.0014115124940872192,
+          "eyeWideRight": 0.0020990577759221196,
+          "jawOpen": 0.000738444970920682,
+          "browDownLeft": 0.005079288966953754,
+          "browDownRight": 0.003327443264424801
+        },
+        "thresholds": {
+          "enter": {
+            "smile": 0.32,
+            "sad": 0.28,
+            "surprise": 0.32
+          },
+          "exit": 0.18,
+          "margin": 0.08,
+          "dwell": {
+            "smile": 300,
+            "sad": 650,
+            "surprise": 400,
+            "neutral": 400
+          },
+          "smoothing": 6,
+          "frownMean": 0.11,
+          "frownBoth": 0.055,
+          "innerBrow": 0.13,
+          "strongFrown": 0.24,
+          "strongBoth": 0.1,
+          "openJaw": 0.45,
+          "speechFrown": 0.2,
+          "speechBrow": 0.23,
+          "outerBrowFloor": 0.22,
+          "outerBrowRange": 0.45,
+          "eyeWideFloor": 0.15,
+          "eyeWideRange": 0.4,
+          "relative": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.01,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.012,
+            "eyeSide": 0.007,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.018,
+            "supportedEye": 0.008,
+            "jaw": 0.12,
+            "noiseMultiplier": 4
+          }
+        },
+        "baseline": {
+          "browInnerUp": 0.040050506591796875,
+          "mouthFrownLeft": 0.0014689401723444462,
+          "mouthFrownRight": 0.0012906318297609687,
+          "mouthSmileLeft": 0.000003856525381706888,
+          "mouthSmileRight": 0.0000041819871512416285,
+          "browOuterUpLeft": 0.08137832581996918,
+          "browOuterUpRight": 0.07357481867074966,
+          "eyeWideLeft": 0.0054035852663218975,
+          "eyeWideRight": 0.005218402948230505,
+          "jawOpen": 0.0075093405321240425,
+          "browDownLeft": 0.03209872543811798,
+          "browDownRight": 0.021777594462037086
+        },
+        "calibrating": false,
+        "calibrationMessage": "Neutral calibrated for this session. Smile detection is unchanged."
+      },
+      "animation": {
+        "target": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "rendered": {
+          "smile": 5.465846662655762e-172,
+          "sad": 0,
+          "surprise": 0
+        },
+        "color": [
+          162,
+          211,
+          171
+        ],
+        "speed": 1.1145261011652454,
+        "expansion": 1.004894117076297,
+        "center": [
+          669.5654483977634,
+          307.33474118024543
+        ],
+        "radius": 151.655,
+        "otherInputs": {
+          "sound": 0.011864015197782475,
+          "hand": false,
+          "body": false
+        }
+      },
+      "changeFromNeutral": {
+        "browInnerUp": 0,
+        "mouthFrownLeft": 0,
+        "mouthFrownRight": 0,
+        "mouthSmileLeft": 0,
+        "mouthSmileRight": 0,
+        "browOuterUpLeft": 0,
+        "browOuterUpRight": 0,
+        "eyeWideLeft": 0,
+        "eyeWideRight": 0,
+        "jawOpen": 0,
+        "browDownLeft": 0,
+        "browDownRight": 0
+      }
+    },
+    {
+      "intended": "sad",
+      "frames": 12,
+      "durationMs": 2833,
+      "raw": {
+        "browInnerUp": {
+          "mean": 0.0294,
+          "min": 0.0232,
+          "max": 0.0379,
+          "count": 12
+        },
+        "mouthFrownLeft": {
+          "mean": 0.0126,
+          "min": 0.0117,
+          "max": 0.0132,
+          "count": 12
+        },
+        "mouthFrownRight": {
+          "mean": 0.0106,
+          "min": 0.0097,
+          "max": 0.0111,
+          "count": 12
+        },
+        "mouthSmileLeft": {
+          "mean": 0,
+          "min": 0,
+          "max": 0,
+          "count": 12
+        },
+        "mouthSmileRight": {
+          "mean": 0.0001,
+          "min": 0,
+          "max": 0.0001,
+          "count": 12
+        },
+        "browOuterUpLeft": {
+          "mean": 0.0307,
+          "min": 0.0271,
+          "max": 0.0361,
+          "count": 12
+        },
+        "browOuterUpRight": {
+          "mean": 0.0385,
+          "min": 0.0334,
+          "max": 0.0443,
+          "count": 12
+        },
+        "eyeWideLeft": {
+          "mean": 0.0062,
+          "min": 0.006,
+          "max": 0.0064,
+          "count": 12
+        },
+        "eyeWideRight": {
+          "mean": 0.0045,
+          "min": 0.0043,
+          "max": 0.0047,
+          "count": 12
+        },
+        "jawOpen": {
+          "mean": 0.0078,
+          "min": 0.0075,
+          "max": 0.0081,
+          "count": 12
+        },
+        "browDownLeft": {
+          "mean": 0.0924,
+          "min": 0.0782,
+          "max": 0.1043,
+          "count": 12
+        },
+        "browDownRight": {
+          "mean": 0.0506,
+          "min": 0.0421,
+          "max": 0.059,
+          "count": 12
+        }
+      },
+      "finalCounts": {
+        "neutral": 12
+      },
+      "lastDecision": {
+        "raw": {
+          "browInnerUp": 0.032365474849939346,
+          "mouthFrownLeft": 0.01231240201741457,
+          "mouthFrownRight": 0.01054637972265482,
+          "mouthSmileLeft": 0.000033809879823820665,
+          "mouthSmileRight": 0.00004963698665960692,
+          "browOuterUpLeft": 0.03240995481610298,
+          "browOuterUpRight": 0.04058142006397247,
+          "eyeWideLeft": 0.006131332367658615,
+          "eyeWideRight": 0.004493741784244776,
+          "jawOpen": 0.007771853357553482,
+          "browDownLeft": 0.087596595287323,
+          "browDownRight": 0.04687047749757767
+        },
+        "adjusted": {
+          "frownMean": 0.010049604868981987,
+          "frownBoth": 0.00925574789289385,
+          "innerBrow": 0,
+          "outerBrowChange": -0.04098088480532169,
+          "eyeWideChange": 0.000001542968675494194,
+          "browDownChange": 0.0402953764423728,
+          "browContrast": 0.033295853063464165,
+          "jawChange": 0.00026251282542943954
+        },
+        "scores": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "output": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "active": null,
+        "candidate": null,
+        "heldMs": 353878.1,
+        "reason": "Not enough frown evidence",
+        "breakdown": {
+          "smile": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {},
+            "missing": []
+          },
+          "sad": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {
+              "combinedFrown": false,
+              "strongBilateralFrown": false,
+              "openMouthSafe": true,
+              "relativeSad": false
+            },
+            "missing": [],
+            "smileMultiplier": 1,
+            "surpriseMultiplier": 1
+          },
+          "surprise": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {
+              "raisedOuterBrows": false,
+              "widenedEyes": false,
+              "expressiveEyes": false,
+              "supportedEyes": false
+            },
+            "missing": [],
+            "outerBrowMean": 0,
+            "eyeWideMean": 0.000001542968675494194,
+            "scaledBrows": 0,
+            "scaledEyes": 0,
+            "smileMultiplier": 1
+          }
+        },
+        "reasons": {
+          "smile": "Smoothed 0.000 < enter 0.32.",
+          "sad": "Neither stronger frown route passed (see relative checks). Relative checks: mouth mean 0.010 ≥ 0.004, weaker mouth side 0.009 ≥ 0.003, inner brow -0.008 < 0.018; brow shape needs brow down 0.040 ≥ 0.020 OR inner–outer contrast 0.033 < 0.035; jaw raw < 0.25 and change < 0.1. Smoothed 0.000 < enter 0.28.",
+          "surprise": "Stronger route: outer brow mean 0.000 (baseline adjusted) must exceed 0.22. Stronger route: eye-wide mean 0.000 (baseline adjusted) must exceed 0.15. Relative route A: outer brow -0.041 < 0.025, eyes 0.000 < 0.012. Route B: inner brow -0.008 < 0.045, outer brow -0.041 < 0.022, eyes 0.000 < 0.008, jaw 0.000 < 0.120. Both routes require weaker outer side -0.049 < 0.022 and weaker eye side -0.001 < 0.008. Smoothed 0.000 < enter 0.32."
+        },
+        "relative": {
+          "ready": true,
+          "limits": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.020317155867815018,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.02239331603050232,
+            "eyeSide": 0.008396231103688478,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.02239331603050232,
+            "supportedEye": 0.008396231103688478,
+            "jaw": 0.12
+          },
+          "deltas": {
+            "frown": 0.010049604868981987,
+            "frownSide": 0.00925574789289385,
+            "inner": -0.007685031741857529,
+            "outer": -0.04098088480532169,
+            "outerBoth": -0.048968371003866196,
+            "eye": 0.000001542968675494194,
+            "eyeBoth": -0.0007246611639857292,
+            "down": 0.0402953764423728,
+            "contrast": 0.033295853063464165,
+            "jaw": 0.00026251282542943954
+          },
+          "routes": {
+            "expressiveEyes": false,
+            "supportedEyes": false,
+            "relativeSad": false
+          }
+        },
+        "noise": {
+          "browInnerUp": 0.0018102359026670456,
+          "mouthFrownLeft": 0.00016039685579016805,
+          "mouthFrownRight": 0.0001462266081944108,
+          "mouthSmileLeft": 4.1160865293932147e-7,
+          "mouthSmileRight": 3.6840378925262485e-7,
+          "browOuterUpLeft": 0.00559832900762558,
+          "browOuterUpRight": 0.001445043832063675,
+          "eyeWideLeft": 0.0014115124940872192,
+          "eyeWideRight": 0.0020990577759221196,
+          "jawOpen": 0.000738444970920682,
+          "browDownLeft": 0.005079288966953754,
+          "browDownRight": 0.003327443264424801
+        },
+        "thresholds": {
+          "enter": {
+            "smile": 0.32,
+            "sad": 0.28,
+            "surprise": 0.32
+          },
+          "exit": 0.18,
+          "margin": 0.08,
+          "dwell": {
+            "smile": 300,
+            "sad": 650,
+            "surprise": 400,
+            "neutral": 400
+          },
+          "smoothing": 6,
+          "frownMean": 0.11,
+          "frownBoth": 0.055,
+          "innerBrow": 0.13,
+          "strongFrown": 0.24,
+          "strongBoth": 0.1,
+          "openJaw": 0.45,
+          "speechFrown": 0.2,
+          "speechBrow": 0.23,
+          "outerBrowFloor": 0.22,
+          "outerBrowRange": 0.45,
+          "eyeWideFloor": 0.15,
+          "eyeWideRange": 0.4,
+          "relative": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.01,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.012,
+            "eyeSide": 0.007,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.018,
+            "supportedEye": 0.008,
+            "jaw": 0.12,
+            "noiseMultiplier": 4
+          }
+        },
+        "baseline": {
+          "browInnerUp": 0.040050506591796875,
+          "mouthFrownLeft": 0.0014689401723444462,
+          "mouthFrownRight": 0.0012906318297609687,
+          "mouthSmileLeft": 0.000003856525381706888,
+          "mouthSmileRight": 0.0000041819871512416285,
+          "browOuterUpLeft": 0.08137832581996918,
+          "browOuterUpRight": 0.07357481867074966,
+          "eyeWideLeft": 0.0054035852663218975,
+          "eyeWideRight": 0.005218402948230505,
+          "jawOpen": 0.0075093405321240425,
+          "browDownLeft": 0.03209872543811798,
+          "browDownRight": 0.021777594462037086
+        },
+        "calibrating": false,
+        "calibrationMessage": "Neutral calibrated for this session. Smile detection is unchanged."
+      },
+      "animation": {
+        "target": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "rendered": {
+          "smile": 4.914157204711404e-239,
+          "sad": 0,
+          "surprise": 0
+        },
+        "color": [
+          162,
+          211,
+          171
+        ],
+        "speed": 1.1199999999999997,
+        "expansion": 1.0000000000000013,
+        "center": [
+          677.896254217993,
+          315.17824073935117
+        ],
+        "radius": 151.655,
+        "otherInputs": {
+          "sound": 5.449685790394084e-19,
+          "hand": false,
+          "body": false
+        }
+      },
+      "changeFromNeutral": {
+        "browInnerUp": 0.0056,
+        "mouthFrownLeft": 0.008,
+        "mouthFrownRight": 0.0066,
+        "mouthSmileLeft": 0,
+        "mouthSmileRight": 0.0001,
+        "browOuterUpLeft": -0.0362,
+        "browOuterUpRight": -0.0242,
+        "eyeWideLeft": 0.0006,
+        "eyeWideRight": 0.0001,
+        "jawOpen": -0.0007,
+        "browDownLeft": 0.0416,
+        "browDownRight": 0.0147
+      }
+    }
+  ]
+}

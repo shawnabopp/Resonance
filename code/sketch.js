@@ -119,26 +119,47 @@
         frownMean: .11, frownBoth: .055, innerBrow: .13, strongFrown: .24, strongBoth: .1,
         openJaw: .45, speechFrown: .2, speechBrow: .23,
         outerBrowFloor: .22, outerBrowRange: .45, eyeWideFloor: .15, eyeWideRange: .4,
+        continuousSad: { noiseMultiplier: 1.5, mouthFloor: .0015, sideFloor: .00075, innerFloor: .008,
+          downFloor: .0025, contrastFloor: .012, settledMouthFloor: .006, settledSideFloor: .004, outerFallFloor: .0035,
+          warmup: .35, fadeIn: .8, fullAfter: 1.4, maxPreview: .42, visualGain: 1.7, featureSmoothing: 5 },
         relative: { frown: .004, frownSide: .003, innerSad: .018, browDown: .01, browContrast: .035,
           outer: .025, eye: .012, outerSide: .012, eyeSide: .007,
           innerSurprise: .045, supportedOuter: .018, supportedEye: .008, jaw: .12, noiseMultiplier: 4 } };
       this.names = ['browInnerUp', 'mouthFrownLeft', 'mouthFrownRight', 'mouthSmileLeft', 'mouthSmileRight',
         'browOuterUpLeft', 'browOuterUpRight', 'eyeWideLeft', 'eyeWideRight', 'jawOpen', 'browDownLeft', 'browDownRight'];
-      this.baseline = null; this.noise = {}; this.calibration = null; this.calibrationMessage = 'For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds.';
+      this.baseline = null; this.noise = {}; this.groupNoise = {}; this.calibration = null; this.calibrationMessage = 'For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds.';
       this.clearTracking();
     }
     clearTracking() {
       this.scores = { smile: 0, sad: 0, surprise: 0 }; this.output = { ...this.scores };
       this.raw = {}; this.adjusted = {}; this.active = this.candidate = null; this.since = this.time = 0; this.present = false;
       this.reason = 'No face scores'; this.breakdown = {}; this.relative = null;
+      this.resetSadResponse();
       if (this.calibration) { this.calibration = null; this.calibrationMessage = 'Calibration interrupted. Keep your face in view and try again.'; }
+    }
+    resetSadResponse() {
+      this.sadVisual = 0;
+      this.continuousSad = { heldSeconds: 0, evidence: 0, previewEvidence: 0, route: 'none', fullSettled: false,
+        features: { mouth: 0, side: 0, inner: 0, down: 0, contrast: 0, outerFall: 0 }, groups: {}, floors: {} };
     }
     startCalibration(now) {
       if (!this.present) return;
+      this.resetSadResponse();
+      this.scores = { smile: 0, sad: 0, surprise: 0 }; this.output = { ...this.scores };
+      this.active = this.candidate = null; this.since = now;
       this.calibration = { start: now, samples: [], first: 0, last: 0 };
       this.calibrationMessage = 'Relax your face, close your mouth and hold still for two seconds.';
     }
-    resetCalibration() { this.baseline = null; this.noise = {}; this.clearTracking(); this.calibrationMessage = 'Neutral calibration cleared. Subtle cues need a new calibration.'; }
+    resetCalibration() { this.baseline = null; this.noise = {}; this.groupNoise = {}; this.clearTracking(); this.calibrationMessage = 'Neutral calibration cleared. Subtle cues need a new calibration.'; }
+    reviewNeutral(sample, sampleBaseline) {
+      if (!sample) return { status: 'waiting', message: 'Capture a Neutral sample to compare it with calibration.' };
+      if (!this.baseline) return { status: 'uncalibrated', message: 'Calibrate neutral before checking subtle cues.' };
+      if (!sampleBaseline || this.names.some(k => sampleBaseline[k] !== this.baseline[k])) return { status: 'changed', message: 'Calibration changed. Capture a new Neutral sample.' };
+      const changes = Object.fromEntries(this.names.map(k => [k, Number.isFinite(sample[k]?.mean) ? sample[k].mean - this.baseline[k] : null]));
+      const shifted = this.names.filter(k => changes[k] !== null && Math.abs(changes[k]) > Math.max(.008, 4 * (this.noise[k] || 0)));
+      return { status: shifted.length >= 2 ? 'shifted' : 'consistent', changes, shifted,
+        message: shifted.length >= 2 ? 'Neutral differs from calibration. Relax your face and recalibrate, then capture both samples again. No baseline is changed automatically.' : 'Neutral is close to calibration within the current noise limits.' };
+    }
     calibrate(b, now) {
       const c = this.calibration;
       if (!c) return;
@@ -168,14 +189,25 @@
           const spread = (values[Math.floor((values.length - 1) * .9)] - values[Math.floor((values.length - 1) * .1)]) / 2;
           return [k, Math.max(deviations[Math.floor(deviations.length / 2)], spread)];
         }));
+        // Measure paired signals directly; left/right noise need not move together.
+        const mean = (s, name) => (s[name + 'Left'] + s[name + 'Right']) / 2;
+        const metrics = { mouth: s => mean(s, 'mouthFrown'), down: s => mean(s, 'browDown'),
+          outer: s => mean(s, 'browOuterUp'), contrast: s => s.browInnerUp - mean(s, 'browOuterUp') };
+        this.groupNoise = Object.fromEntries(Object.entries(metrics).map(([key, get]) => {
+          const values = c.samples.map(get).sort((a, b) => a - b), median = values[Math.floor(values.length / 2)];
+          const deviations = values.map(v => Math.abs(v - median)).sort((a, b) => a - b);
+          return [key, Math.max(deviations[Math.floor(values.length / 2)], (values[Math.floor((values.length - 1) * .9)] - values[Math.floor((values.length - 1) * .1)]) / 2)];
+        }));
         this.calibration = null; this.clearTracking();
         this.calibrationMessage = 'Neutral calibrated for this session. Smile detection is unchanged.';
       }
     }
     update(categories, now, dt) {
+      if (this.time && now - this.time > 500) this.clearTracking();
+      const frameStep = this.time ? clamp((now - this.time) / 1000, 0, .5) : clamp(dt, 0, .2);
       this.present = !!categories?.length;
       if (!this.present) { this.clearTracking(); return { ...this.output }; }
-      const b = Object.fromEntries(categories.map(c => [c.categoryName, Number.isFinite(c.score) ? clamp(c.score) : 0]));
+      const b = Object.fromEntries(categories.filter(c => Number.isFinite(c.score)).map(c => [c.categoryName, clamp(c.score)]));
       this.raw = Object.fromEntries(this.names.map(k => [k, b[k] ?? null]));
       // Missing entries remain visible as missing in diagnostics, but never count as evidence.
       const val = name => b[name] || 0;
@@ -224,23 +256,59 @@
         innerChange >= limits.innerSad && (down >= limits.browDown || contrast >= limits.browContrast) && val('jawOpen') < .25 && delta('jawOpen') < .1;
       const relativeSadScore = relativeSad ? clamp(.35 * clamp(dp('mouthFrown') / .018) + .4 * clamp(innerChange / .06) +
         .25 * Math.max(clamp(down / .04), clamp(contrast / .08))) : 0;
+      // A graded, calibrated response precedes a full state. Inner-brow rise is one
+      // route, not a requirement for every sad-looking brow shape.
+      const soft = this.continuousSad, sr = r.continuousSad, step = frameStep;
+      const softEligible = relativeReady && val('jawOpen') < .25 && delta('jawOpen') < .1 && smile < r.enter.smile && surprise < r.enter.surprise;
+      const groupNoise = (key, fallback) => this.groupNoise[key] ?? fallback;
+      const softFloor = (floor, noise) => Math.max(floor, sr.noiseMultiplier * (noise || 0));
+      const floors = { mouth: softFloor(sr.mouthFloor, groupNoise('mouth', np('mouthFrown'))), side: softFloor(sr.sideFloor, np('mouthFrown')),
+        inner: softFloor(sr.innerFloor, this.noise.browInnerUp), down: softFloor(sr.downFloor, groupNoise('down', np('browDown'))),
+        contrast: softFloor(sr.contrastFloor, groupNoise('contrast', (this.noise.browInnerUp || 0) + np('browOuterUp'))),
+        settledMouth: softFloor(sr.settledMouthFloor, groupNoise('mouth', np('mouthFrown'))), settledSide: softFloor(sr.settledSideFloor, np('mouthFrown')),
+        outerFall: softFloor(sr.outerFallFloor, groupNoise('outer', np('browOuterUp'))) };
+      const features = { mouth: dp('mouthFrown'), side: Math.min(delta('mouthFrownLeft'), delta('mouthFrownRight')),
+        inner: innerChange, down, contrast, outerFall: -outer };
+      for (const key of Object.keys(features)) soft.features[key] = approach(soft.features[key], softEligible ? features[key] : 0, sr.featureSmoothing, step);
+      const ramp = (key, floor, goal) => clamp((soft.features[key] - floor) / (Math.max(goal, floor + .004) - floor));
+      const mouth = Math.min(ramp('mouth', floors.mouth, .008), ramp('side', floors.side, .006));
+      const raised = ramp('inner', floors.inner, .035), lowered = ramp('down', floors.down, .02);
+      const shaped = Math.max(lowered, ramp('contrast', floors.contrast, .06));
+      const settledMouth = Math.min(ramp('mouth', floors.settledMouth, .024), ramp('side', floors.settledSide, .018));
+      const outerFall = ramp('outerFall', floors.outerFall, .025), settledShape = Math.sqrt(lowered * outerFall);
+      // Coverage goes smoothly to zero if any required anatomical group is absent.
+      const joint = (values, weights) => Math.min(1, ...values.map(v => v / .2)) * values.reduce((sum, v, i) => sum + v * weights[i], 0);
+      const raisedScore = softEligible ? .45 * joint([mouth, raised, shaped], [.35, .35, .3]) : 0;
+      const settledScore = softEligible ? .45 * joint([settledMouth, settledShape], [.55, .45]) : 0;
+      const softScore = Math.max(raisedScore, settledScore);
+      const freshRaised = features.mouth > floors.mouth && features.side > floors.side && features.inner > floors.inner && (features.down > floors.down || features.contrast > floors.contrast);
+      const freshSettled = features.mouth > floors.settledMouth && features.side > floors.settledSide && features.down > floors.down && features.outerFall > floors.outerFall;
+      const freshJoint = softEligible && (freshRaised || freshSettled);
+      soft.heldSeconds = freshJoint && softScore > .025 ? Math.min(3, soft.heldSeconds + step) : Math.max(0, soft.heldSeconds - step * 3);
+      const progress = clamp((soft.heldSeconds - sr.warmup) / sr.fadeIn), fade = progress * progress * (3 - 2 * progress);
+      const fullSettled = softEligible && freshSettled && settledMouth >= .6 && settledShape >= .35 && settledScore >= r.enter.sad && soft.heldSeconds >= sr.fullAfter;
+      const previewEvidence = Math.min(r.enter.sad - .01, softScore) * fade;
+      Object.assign(soft, { evidence: softScore, previewEvidence, fullSettled, freshJoint, floors,
+        route: softScore <= .025 ? 'none' : raisedScore >= settledScore ? 'raised inner brow + mouth + brow shape' : 'bilateral mouth + lowered / settled brows',
+        groups: { mouth, raisedInner: raised, browShape: shaped, settledMouth, loweredBrows: lowered, outerFall, settledShape }, eligible: softEligible });
       this.adjusted = { frownMean: mean, frownBoth: both, innerBrow: inner, outerBrowChange: outer, eyeWideChange: eye,
         browDownChange: down, browContrast: contrast, jawChange: delta('jawOpen') };
       const combined = mean >= r.frownMean && both >= r.frownBoth && inner >= r.innerBrow;
       const strong = mean >= r.strongFrown && both >= r.strongBoth;
       const speechSafe = val('jawOpen') < r.openJaw || (combined && mean >= r.speechFrown && inner >= r.speechBrow);
-      const evidence = ((combined || strong) && speechSafe) || relativeSad;
+      const evidence = ((combined || strong) && speechSafe) || relativeSad || fullSettled;
       // Alternative evidence routes, not a product of several weak coefficients.
       // Neither absent smiles, head pose nor eye closure supplies sad-looking evidence.
-      const sadBase = Math.max((combined || strong) && speechSafe ? clamp(.7 * clamp((mean - .05) / .32) + .3 * clamp((inner - .07) / .38)) : 0, relativeSadScore);
+      const sadBase = Math.max((combined || strong) && speechSafe ? clamp(.7 * clamp((mean - .05) / .32) + .3 * clamp((inner - .07) / .38)) : 0,
+        relativeSadScore, fullSettled ? settledScore : 0, previewEvidence);
       const sad = sadBase * (1 - smile) * (1 - surprise);
-      this.reason = relativeSad ? 'Relative inner brow + mouth + brow shape' : !speechSafe ? 'Open-mouth guard' : combined ? 'Frown + inner brow' : strong ? 'Stronger bilateral frown' : 'Not enough frown evidence';
+      this.reason = relativeSad ? 'Relative inner brow + mouth + brow shape' : fullSettled ? 'Sustained mouth + lowered / settled brows' : previewEvidence > .005 ? 'Gradual sad-looking response: ' + soft.route : !speechSafe ? 'Open-mouth guard' : combined ? 'Frown + inner brow' : strong ? 'Stronger bilateral frown' : 'Not enough joint mouth and brow evidence';
       if (evidence && (smile > .32 || surprise > .32)) this.reason += ' · competing smile / surprise';
       const raw = { smile, sad, surprise };
       this.breakdown = {
         smile: { evidence: smile, beforeCompetition: smile, gates: {}, missing: ['mouthSmileLeft', 'mouthSmileRight'].filter(k => this.raw[k] === null) },
         sad: { evidence: sad, beforeCompetition: sadBase,
-          gates: { combinedFrown: combined, strongBilateralFrown: strong, openMouthSafe: speechSafe, relativeSad },
+          gates: { combinedFrown: combined, strongBilateralFrown: strong, openMouthSafe: speechSafe, relativeSad, settledBrows: fullSettled, gradualSad: previewEvidence > .005 },
           missing: ['mouthFrownLeft', 'mouthFrownRight', 'browInnerUp'].filter(k => this.raw[k] === null),
           smileMultiplier: 1 - smile, surpriseMultiplier: 1 - surprise },
         surprise: { evidence: surprise, beforeCompetition: surpriseBase,
@@ -259,8 +327,12 @@
       if (now - this.since >= delay) this.active = next;
       const result = { smile: 0, sad: 0, surprise: 0 };
       if (this.active) result[this.active] = this.scores[this.active];
-      // Make a sustained accepted cue visible; the renderer still eases colour and motion.
-      if (this.active === 'sad') result.sad = clamp(this.scores.sad / r.exit) * (.5 + .5 * clamp((this.scores.sad - r.exit) / (1 - r.exit)));
+      // A neutral categorical label does not suppress a valid, gradual visual cue.
+      const preview = softEligible && soft.heldSeconds > sr.warmup ? Math.min(sr.maxPreview, this.scores.sad * sr.visualGain) : 0;
+      const target = this.active === 'sad' ? clamp(this.scores.sad * sr.visualGain) : preview;
+      this.sadVisual = approach(this.sadVisual, target, 5, step);
+      if (!target && this.sadVisual < .002) this.sadVisual = 0;
+      result.sad = this.sadVisual;
       this.output = result;
       return { ...result };
     }
@@ -279,15 +351,19 @@
         }
       }
       if (key === 'sad') {
+        const soft = this.continuousSad;
+        notes.push(`Continuous response ${this.output.sad.toFixed(3)}; joint evidence ${soft.evidence.toFixed(3)}, held ${soft.heldSeconds.toFixed(2)} s; route: ${soft.route}`);
+        if (soft.fullSettled) notes.push('Sustained bilateral mouth + lowered / settled brows passed; inner-brow rise is optional on this route');
+        else if (soft.previewEvidence > .005) notes.push('Weak joint evidence is already reaching the animation; full state is not yet confirmed');
         if (b.gates.relativeSad) notes.push('Relative mouth + inner brow + brow shape passed');
-        else if (!b.gates.combinedFrown && !b.gates.strongBilateralFrown) notes.push('Neither stronger frown route passed (see relative checks)');
+        else if (!b.gates.combinedFrown && !b.gates.strongBilateralFrown) notes.push('Original stronger-frown routes are not active; calibrated gradual routes are checked separately');
         if (!b.gates.openMouthSafe && !b.gates.relativeSad) notes.push('Open-mouth guard blocked this cue');
       }
       if (key !== 'smile' && !this.relative?.ready) notes.push(this.baseline ? 'Relative route needs all fresh blendshape scores' : 'Calibrate neutral to enable subtle relative cues');
       if (this.relative?.ready && key !== 'smile') {
         const { deltas: d, limits: l } = this.relative;
         const check = (name, value, min) => `${name} ${value.toFixed(3)} ${value >= min ? '≥' : '<'} ${min.toFixed(3)}`;
-        if (key === 'sad' && !b.gates.relativeSad) notes.push(`Relative checks: ${check('mouth mean', d.frown, l.frown)}, ${check('weaker mouth side', d.frownSide, l.frownSide)}, ${check('inner brow', d.inner, l.innerSad)}; brow shape needs ${check('brow down', d.down, l.browDown)} OR ${check('inner–outer contrast', d.contrast, l.browContrast)}; jaw raw < 0.25 and change < 0.1`);
+        if (key === 'sad' && !b.gates.relativeSad) notes.push(`Raised-inner-brow route: ${check('mouth mean', d.frown, l.frown)}, ${check('weaker mouth side', d.frownSide, l.frownSide)}, ${check('inner brow', d.inner, l.innerSad)}; brow shape needs ${check('brow down', d.down, l.browDown)} OR ${check('inner–outer contrast', d.contrast, l.browContrast)}; jaw raw < 0.25 and change < 0.1`);
         if (key === 'surprise' && !b.gates.expressiveEyes && !b.gates.supportedEyes) notes.push(`Relative route A: ${check('outer brow', d.outer, l.outer)}, ${check('eyes', d.eye, l.eye)}. Route B: ${check('inner brow', d.inner, l.innerSurprise)}, ${check('outer brow', d.outer, l.supportedOuter)}, ${check('eyes', d.eye, l.supportedEye)}, ${check('jaw', d.jaw, l.jaw)}. Both routes require ${check('weaker outer side', d.outerBoth, l.outerSide)} and ${check('weaker eye side', d.eyeBoth, l.eyeSide)}`);
       }
       if (b.beforeCompetition - b.evidence > .01) notes.push(`Other cues reduced evidence ${b.beforeCompetition.toFixed(3)} → ${b.evidence.toFixed(3)}`);
@@ -304,6 +380,7 @@
         breakdown: Object.fromEntries(Object.entries(this.breakdown).map(([k, b]) => [k, { ...b, gates: { ...b.gates }, missing: [...b.missing] }])),
         reasons: Object.fromEntries(['smile', 'sad', 'surprise'].map(k => [k, this.explain(k)])),
         relative: this.relative && { ...this.relative, deltas: { ...this.relative.deltas }, limits: { ...this.relative.limits }, routes: { ...this.relative.routes } }, noise: { ...this.noise },
+        continuousSad: { ...this.continuousSad, features: { ...this.continuousSad.features }, groups: { ...this.continuousSad.groups }, floors: { ...this.continuousSad.floors } }, groupNoise: { ...this.groupNoise },
         thresholds: this.rules, baseline: this.baseline && { ...this.baseline }, calibrating: !!this.calibration, calibrationMessage: this.calibrationMessage };
     }
   }
@@ -837,24 +914,39 @@
   class ExperienceAudio {
     constructor() {
       this.context = null; this.music = null; this.musicNode = null; this.musicGain = null;
-      this.musicTarget = null; this.departingMusic = new Set();
+      this.musicTarget = null; this.musicEpoch = 0;
       this.musicLevels = { normal: .10, effect: .035 };
       this.buffers = new Map(); this.loading = null; this.generation = 0; this.active = false;
       this.effectsEnabled = true; this.musicEnabled = true; this.voice = null; this.retiring = new Set();
+      try { this.musicEnabled = localStorage.getItem('resonance.music') !== 'off'; } catch {}
       this.policy = new SoundCues(); this.lastPlayed = {}; this.history = []; this.counts = { wake: 0, curious: 0, happy: 0, afraid: 0 };
       this.guardUntil = 0; this.lastAny = -Infinity; this.ready = false; this.blocked = false; this.errors = [];
     }
-    prepareGesture() {
-      // A rapid new Start must finish the previous session's exit fade first.
-      this.finishDepartingMusic();
+    ensureContext() {
       if (!this.context || this.context.state === 'closed') {
         const Audio = window.AudioContext || window.webkitAudioContext;
         if (!Audio) { this.errors = ['Playback is unavailable in this browser.']; return; }
         try { this.context = new Audio({ latencyHint: 'interactive' }); }
         catch { this.errors = ['Playback could not start.']; return; }
+        const ctx = this.context;
+        ctx.addEventListener('statechange', () => {
+          if (this.context === ctx && ctx.state === 'running') { this.blocked = false; this.musicTarget = null; this.updateMusic(); }
+        });
       }
-      const id = this.generation, ctx = this.context;
-      ctx.resume().then(() => { if (id === this.generation) this.blocked = ctx.state !== 'running'; }).catch(() => { if (id === this.generation) this.blocked = true; });
+      return this.context;
+    }
+    resumeContext(ctx) {
+      ctx.resume().then(() => { if (this.context === ctx) { this.blocked = ctx.state !== 'running'; this.updateMusic(); } }).catch(() => { if (this.context === ctx) this.blocked = true; });
+    }
+    prepareMusic() {
+      if (!this.musicEnabled || document.hidden) return;
+      const ctx = this.ensureContext(); if (!ctx) return;
+      this.resumeContext(ctx); this.startMusicGesture();
+    }
+    prepareGesture() {
+      const ctx = this.ensureContext(); if (!ctx) return;
+      const id = this.generation;
+      this.resumeContext(ctx);
       if (this.musicEnabled) this.startMusicGesture();
       if (!this.loading || (this.ready && this.errors.length)) {
         this.ready = false;
@@ -884,8 +976,17 @@
         this.musicNode = this.context.createMediaElementSource(element); this.musicNode.connect(this.musicGain).connect(this.context.destination);
         element.addEventListener('error', () => { if (this.music === element) this.musicError = true; });
       }
-      const element = this.music, id = this.generation;
-      element.play().then(() => { if (id === this.generation) { this.musicBlocked = false; this.musicError = false; } }).catch(() => { if (id === this.generation) this.musicBlocked = true; });
+      const element = this.music, epoch = this.musicEpoch;
+      if (element.error) element.load();
+      // Reuse the same element and playback position across every site screen.
+      if (element.paused) element.play().then(() => {
+        if (this.music === element && epoch === this.musicEpoch) { this.musicBlocked = false; this.musicError = false; }
+      }).catch(error => {
+        if (this.music === element && epoch === this.musicEpoch) {
+          this.musicBlocked = error.name === 'NotAllowedError';
+          if (error.name !== 'NotAllowedError' && error.name !== 'AbortError') this.musicError = true;
+        }
+      });
     }
     begin() {
       if (this.active) return;
@@ -908,8 +1009,11 @@
       gain.setTargetAtTime(target, now, seconds);
       this.musicTarget = target;
     }
-    finishDepartingMusic() {
-      for (const session of this.departingMusic) session.finish();
+    updateMusic() {
+      if (document.hidden) return;
+      // Independent of interaction state, microphone level, and calibration.
+      const target = !this.musicEnabled || !this.music || this.music.paused ? 0 : this.voice ? this.musicLevels.effect : this.musicLevels.normal;
+      this.setMusicLevel(target, target < (this.musicTarget ?? 0) ? .07 : .4);
     }
     guardForCalibration() {
       this.guardUntil = Math.max(this.guardUntil, performance.now() + 250);
@@ -945,6 +1049,7 @@
       source.start(start); return true;
     }
     update(now, s, familiarity, events) {
+      this.updateMusic();
       if (!this.active || document.hidden) return;
       const cue = this.policy.update(now, s, familiarity, events);
       const calibrating = model.stage === 'live' && !live.muted && live.gate.elapsed < 1.3;
@@ -961,66 +1066,49 @@
       const ctx = this.context;
       if (!ctx || ctx.state !== 'running') return;
       if (this.voice && this.voice.name !== 'afraid') this.voice.gain.gain.setTargetAtTime(speaking ? .14 : .65, ctx.currentTime, .07);
-      if (this.musicGain) {
-        // Microphone level and calibration never control background music.
-        const target = !this.musicEnabled ? 0 : this.voice ? this.musicLevels.effect : this.musicLevels.normal;
-        this.setMusicLevel(target, target < (this.musicTarget ?? 0) ? .07 : .4);
-      }
     }
     pause() {
       this.policy.pause(); this.releaseVoice();
-      this.finishDepartingMusic();
       this.music?.pause();
       if (this.musicGain && this.context?.state !== 'closed') {
         this.musicGain.gain.cancelScheduledValues(this.context.currentTime); this.musicGain.gain.value = 0; this.musicTarget = null;
       }
     }
     resume() {
-      if (!this.active) return;
+      if (!this.active) { this.prepareMusic(); return; }
       this.prepareGesture();
       if (this.wakePending) { this.wakePending = false; creature.awaken(); }
     }
     setEffects(enabled) { this.effectsEnabled = enabled; if (!enabled) this.releaseVoice(); else this.prepareGesture(); }
     setMusic(enabled) {
-      this.musicEnabled = enabled;
-      if (enabled) { this.prepareGesture(); }
+      this.musicEnabled = enabled; this.musicEpoch++;
+      try { localStorage.setItem('resonance.music', enabled ? 'on' : 'off'); } catch {}
+      if (enabled) { this.prepareMusic(); }
       else {
+        this.musicBlocked = false;
         this.music?.pause();
         if (this.musicGain) { this.musicGain.gain.cancelScheduledValues(this.context.currentTime); this.musicGain.gain.value = 0; this.musicTarget = null; }
       }
     }
-    stop(fadeMusic = true) {
+    stop() {
       this.active = false; this.generation++; this.wakePending = false; this.abort?.abort(); this.abort = null;
       this.releaseVoice(true);
       for (const v of this.retiring) { try { v.source.stop(); } catch {} v.source.disconnect(); v.gain.disconnect(); }
       this.retiring.clear();
-      const ctx = this.context, element = this.music, node = this.musicNode, gain = this.musicGain;
-      this.context = this.music = this.musicNode = this.musicGain = null; this.musicTarget = null;
-      if (ctx) {
-        // Capture only this session: a late fade timer cannot stop a new experience.
-        const session = { timer: null, finish: () => {
-          clearTimeout(session.timer); this.departingMusic.delete(session);
-          if (element) { element.pause(); element.removeAttribute('src'); element.load(); }
-          node?.disconnect(); gain?.disconnect(); ctx.close().catch(() => {});
-        } };
-        if (fadeMusic && !document.hidden && ctx.state === 'running' && element && !element.paused && gain.gain.value > .0001) {
-          const now = ctx.currentTime, param = gain.gain;
-          if (param.cancelAndHoldAtTime) param.cancelAndHoldAtTime(now);
-          else { const value = param.value; param.cancelScheduledValues(now); param.setValueAtTime(value, now); }
-          // Anchor the linear fade after the preceding exponential target.
-          param.setValueAtTime(param.value, now);
-          param.linearRampToValueAtTime(0, now + .4);
-          this.departingMusic.add(session); session.timer = setTimeout(session.finish, 450);
-        } else session.finish();
-      }
-      if (!fadeMusic) this.finishDepartingMusic();
-      this.loading = null; this.ready = false; this.blocked = this.musicBlocked = this.musicError = false;
-      this.guardUntil = 0; this.policy.reset();
+      this.loading = null; this.ready = false; this.errors = [];
+      this.guardUntil = 0; this.policy.reset(); this.updateMusic();
+    }
+    dispose() {
+      this.stop(); this.musicEpoch++;
+      if (this.music) { this.music.pause(); this.music.removeAttribute('src'); this.music.load(); }
+      this.musicNode?.disconnect(); this.musicGain?.disconnect();
+      this.music = this.musicNode = this.musicGain = null; this.musicTarget = null;
+      const ctx = this.context; this.context = null; ctx?.close().catch(() => {});
     }
     snapshot() { return { active: this.active, context: this.context?.state || 'closed', musicEnabled: this.musicEnabled,
       effectsEnabled: this.effectsEnabled, current: this.voice?.name || null, retiring: this.retiring.size, ready: this.ready,
       musicPlaying: !!this.music && !this.music.paused, musicTracks: this.music ? 1 : 0, musicGain: this.musicGain?.gain.value || 0,
-      musicDefault: this.musicLevels.normal, musicTarget: this.musicTarget, departingMusic: this.departingMusic.size,
+      musicDefault: this.musicLevels.normal, musicTarget: this.musicTarget, musicPosition: this.music?.currentTime || 0,
       effectGain: this.voice?.gain.gain.value || 0, blocked: !!(this.blocked || this.musicBlocked),
       echoGuard: this.guardMicrophone(performance.now()), counts: { ...this.counts }, history: this.history.map(e => ({ ...e })), errors: [...this.errors] }; }
   }
@@ -1317,6 +1405,13 @@
   $('#sensitivity').addEventListener('input', e => { live.sensitivity = +e.target.value; $('#sensitivity-value').textContent = `${live.sensitivity.toFixed(1)}×`; });
   $('#calibrate').addEventListener('click', () => { sounds.guardForCalibration(); live.gate.reset(); toast('Stay quiet for a moment while the microphone settles.'); });
   $$('[data-music]').forEach(button => button.addEventListener('click', () => { sounds.setMusic(!sounds.musicEnabled); syncPlaybackControls(); }));
+  $$('[data-retry-music]').forEach(button => button.addEventListener('click', () => sounds.prepareMusic()));
+  // Autoplay can be blocked. A real click/touch/key retries without overriding Off.
+  const unlockMusic = event => {
+    if (event.target.closest?.('[data-music]') || !sounds.musicEnabled || sounds.musicError) return;
+    if (!sounds.context || sounds.context.state !== 'running' || !sounds.music || sounds.music.paused || sounds.musicBlocked) sounds.prepareMusic();
+  };
+  for (const event of ['pointerup', 'touchend', 'click', 'keydown']) document.addEventListener(event, unlockMusic, { passive: true });
   $$('[data-effects]').forEach(button => button.addEventListener('click', () => { sounds.setEffects(!sounds.effectsEnabled); syncPlaybackControls(); }));
   $$('[data-resume-playback]').forEach(button => button.addEventListener('click', () => sounds.resume()));
   $('#resume-audio').addEventListener('click', () => { live.audio?.resume().catch(() => toast('Could not resume the microphone. End the interaction and try again.')); });
@@ -1447,12 +1542,15 @@
     const last = c.frames.at(-1);
     const record = { intended: c.label, frames: c.frames.length, durationMs: Math.round(last.time - c.frames[0].time), raw,
       finalCounts: c.frames.reduce((counts, s) => { const key = s.debug.active || 'neutral'; counts[key] = (counts[key] || 0) + 1; return counts; }, {}),
+      timeline: c.frames.map(s => ({ timeMs: Math.round(s.time - c.frames[0].time), raw: s.debug.raw, active: s.debug.active, candidate: s.debug.candidate,
+        sadEvidence: s.debug.scores.sad, sadResponse: s.debug.output.sad, route: s.debug.continuousSad.route, heldSeconds: s.debug.continuousSad.heldSeconds })),
       lastDecision: last.debug, animation: last.animation };
     expressionSamples.records = expressionSamples.records.filter(s => s.intended !== c.label).concat(record);
     const neutral = expressionSamples.records.find(s => s.intended === 'neutral');
     const samples = expressionSamples.records.map(s => ({ ...s, changeFromNeutral: neutral ? Object.fromEntries(f.names.map(k => [k,
       s.raw[k] && neutral.raw[k] ? round(s.raw[k].mean - neutral.raw[k].mean) : null])) : null }));
-    $('#expression-sample-data').value = JSON.stringify({ note: 'Live score samples, not a recognition accuracy claim. Intended expressions are user labels. Changes from a sampled Neutral label are diagnostic only. The classifier uses the separate Calibrate neutral baseline and noise limits included in each decision.', samples }, null, 2);
+    $('#expression-sample-data').value = JSON.stringify({ note: 'Live score samples, not a recognition accuracy claim. Intended expressions are user labels. Changes from a sampled Neutral label are diagnostic only. The classifier uses the separate Calibrate neutral baseline and noise limits included in each decision.',
+      calibrationReview: f.reviewNeutral(neutral?.raw, neutral?.lastDecision.baseline), samples }, null, 2);
     $('#expression-sample-report').hidden = false;
     status.textContent = `Saved ${c.label}. ${samples.length} of 5 labels sampled. Choose another label or copy the samples before leaving Live.`;
   }
@@ -1476,28 +1574,39 @@
     for (const [name, cell] of expressionRows) cell.textContent = number(d.raw[name]);
     $('#expression-decision').textContent = `Final: ${f.present ? label(d.active) : 'No face scores'}. Candidate: ${label(d.candidate)} (${Math.round(d.heldMs)} ms). Sad evidence: ${d.reason}.`;
     $('#expression-adjusted').textContent = `After neutral baseline: frown mean ${number(d.adjusted.frownMean)}, weaker side ${number(d.adjusted.frownBoth)}, inner brow ${number(d.adjusted.innerBrow)}. Signed changes: outer brow ${number(d.adjusted.outerBrowChange)}, wide eyes ${number(d.adjusted.eyeWideChange)}, brow down ${number(d.adjusted.browDownChange)}, inner–outer contrast ${number(d.adjusted.browContrast)}, jaw ${number(d.adjusted.jawChange)}. ${d.baseline ? 'Relative routes enabled when scores are complete.' : 'Calibrate neutral to enable subtle relative cues.'}`;
-    $('#expression-filtered').textContent = `Smoothed evidence: smile ${number(d.scores.smile)}, sad-looking ${number(d.scores.sad)}, surprise ${number(d.scores.surprise)}. Animation strength: ${number(d.output[d.active] || 0)} (not confidence).`;
+    $('#expression-filtered').textContent = `Smoothed evidence: smile ${number(d.scores.smile)}, sad-looking ${number(d.scores.sad)}, surprise ${number(d.scores.surprise)}. Sad-look animation strength ${number(d.output.sad)} can rise before a full state (not confidence).`;
+    const soft = d.continuousSad, sr = r.continuousSad;
+    $('#expression-continuous').textContent = `Gradual sad-look: ${soft.route}. Joint evidence ${number(soft.evidence)}; fresh joint features ${soft.freshJoint ? 'yes' : 'no'}; held ${soft.heldSeconds.toFixed(2)} s. Preview starts after ${sr.warmup} s, grows over ${sr.fadeIn} s, capped at ${sr.maxPreview}. Lowered-brow full route needs ${sr.fullAfter} s plus state confirmation. Groups: ${Object.entries(soft.groups).map(([key, value]) => `${key} ${number(value)}`).join('; ') || 'waiting'}.`;
+    $('#expression-continuous-floors').textContent = `Gradual feature floors (relative to calibration): ${Object.entries(soft.floors).map(([key, value]) => `${key} > ${number(value)}`).join('; ') || 'waiting'}. Both routes need bilateral mouth changes and brow changes; no smile absence, head pose or eye closure is used as evidence.`;
     for (const key of ['surprise', 'sad', 'smile']) $(`#expression-${key}-reason`).textContent = `${label(key)}: ${d.reasons[key]}`;
     const animation = expressionAnimation();
     $('#expression-animation').textContent = `Animation delivery (smile / sad / surprise): target ${Object.values(animation.target).map(number).join(' / ')}; rendered ${Object.values(animation.rendered).map(number).join(' / ')}. RGB ${animation.color.join(', ')}; flow ${number(animation.speed)}; expansion ${number(animation.expansion)}. Other inputs can also affect movement.`;
     $('#expression-thresholds').textContent = `Stronger sad routes: frown mean ≥ ${r.frownMean}, both sides ≥ ${r.frownBoth}, inner brow ≥ ${r.innerBrow}; OR mean ≥ ${r.strongFrown}, both ≥ ${r.strongBoth}. If jaw ≥ ${r.openJaw}, require mean ≥ ${r.speechFrown} and brow ≥ ${r.speechBrow}. Enter: sad ${r.enter.sad}, smile ${r.enter.smile}, surprise ${r.enter.surprise}; hold > ${r.exit}; switch margin ${r.margin}. Confirm: sad ${r.dwell.sad} ms, smile ${r.dwell.smile} ms, surprise ${r.dwell.surprise} ms, neutral ${r.dwell.neutral} ms. Smoothing: ${Math.round(1000 / r.smoothing)} ms time constant. Neutral is the fallback, not a competing score.`;
-    $('#expression-thresholds').textContent += ` Relative thresholds are at least ${r.relative.noiseMultiplier} times neutral noise (the larger of MAD and half the 10–90% range). Sad needs mouth + inner brow + brow shape changes. Surprise allows brows + eyes with an optional jaw, or inner / outer brows + eyes supported by the jaw. Jaw alone never qualifies. Without calibration, surprise uses the stronger brow / eye route (${r.outerBrowFloor} / ${r.eyeWideFloor} floors).`;
+    $('#expression-thresholds').textContent += ` Original relative-route thresholds are at least ${r.relative.noiseMultiplier} times neutral noise. Gradual routes use separate ${sr.noiseMultiplier}× noise floors and sustained joint support. Sad needs mouth + raised inner brow + brow shape, OR bilateral mouth + lowered brows + outer-brow settling. Surprise uses brows + eyes with an optional jaw; jaw alone never qualifies.`;
     $('#expression-relative-thresholds').textContent = d.relative?.ready ? `Effective change thresholds: ${Object.entries(d.relative.limits).map(([k, v]) => `${k} ≥ ${number(v)}`).join('; ')}. Passed relative routes: ${Object.entries(d.relative.routes).filter(([, passed]) => passed).map(([k]) => k).join(', ') || 'none'}.` : 'Relative thresholds: waiting for neutral calibration and complete face scores.';
     $('#calibrate-expression').disabled = !f.present || d.calibrating;
     $('#reset-expression-calibration').disabled = !d.baseline && !d.calibrating;
     const status = $('#expression-calibration-status');
     if (status.textContent !== d.calibrationMessage) status.textContent = d.calibrationMessage;
+    const neutralSample = expressionSamples.records.find(sample => sample.intended === 'neutral');
+    $('#expression-calibration-review').textContent = f.reviewNeutral(neutralSample?.raw, neutralSample?.lastDecision.baseline).message;
     $('#expression-baseline').textContent = d.baseline ? `Neutral baseline: ${f.names.map(k => `${k} ${number(d.baseline[k])}`).join('; ')}.` : 'Neutral baseline: none. Calibrate before testing subtle expressions.';
   }
   $('#expression-debug').addEventListener('toggle', updateExpressionDebug);
   $('#calibrate-expression').addEventListener('click', () => { if (live.active) live.expression.startCalibration(performance.now()); updateExpressionDebug(); });
   $('#reset-expression-calibration').addEventListener('click', () => { live.expression.resetCalibration(); updateExpressionDebug(); });
   function syncPlaybackControls() {
-    for (const button of $$('[data-music]')) { button.setAttribute('aria-pressed', String(sounds.musicEnabled)); button.textContent = `Music · ${sounds.musicEnabled ? 'On' : 'Off'}`; }
+    for (const button of $$('[data-music]')) { button.setAttribute('aria-pressed', String(sounds.musicEnabled)); button.textContent = `Music · ${sounds.musicEnabled ? 'On' : 'Off'}`; button.setAttribute('aria-label', sounds.musicEnabled ? 'Turn background music off' : 'Turn background music on'); }
     for (const button of $$('[data-effects]')) { button.setAttribute('aria-pressed', String(sounds.effectsEnabled)); button.textContent = `Sound Effects · ${sounds.effectsEnabled ? 'On' : 'Off'}`; }
-    const blocked = sounds.blocked || sounds.musicBlocked || (sounds.active && sounds.context?.state === 'suspended');
+    const musicWaiting = sounds.musicEnabled && (sounds.musicBlocked || sounds.context?.state === 'suspended');
+    const blocked = (sounds.active && sounds.blocked) || musicWaiting || (sounds.active && sounds.context?.state === 'suspended');
+    for (const label of $$('[data-music-status]')) {
+      label.hidden = !sounds.musicEnabled || (!sounds.musicError && !musicWaiting);
+      label.textContent = sounds.musicError ? 'Music could not load. Try again.' : 'Tap or click anywhere to start music.';
+    }
+    $$('[data-retry-music]').forEach(button => { button.hidden = !sounds.musicEnabled || !sounds.musicError; });
     $$('[data-resume-playback]').forEach(button => { button.hidden = !blocked && !sounds.errors.length && !sounds.musicError; });
-    const baseMessage = model.stage === 'demo' ? 'Music and effects are separate from simulated sound input. Demo cues use the same sound responses.' : 'Music and effects are separate from your microphone. Sounds soften while you speak.';
+    const baseMessage = model.stage === 'demo' ? 'Music continues across screens. Demo cues use the same sound responses.' : 'Music continues across screens and while you speak. Interaction effects soften while you speak.';
     const message = sounds.errors.length ? sounds.errors.join(' ') + ' Tap Resume sound to retry.' : sounds.musicError ? 'Music could not load. Tap Resume sound to retry.' : blocked ? 'Playback is paused. Tap Resume sound to continue.' : !sounds.ready && sounds.active ? 'Preparing sound…' : baseMessage;
     for (const label of $$('[data-playback-status]')) if (label.textContent !== message) label.textContent = message;
   }
@@ -1520,7 +1629,7 @@
       if ($('#body-status').textContent !== bodyText) $('#body-status').textContent = bodyText;
       $('#retry-body').hidden = bodyState !== 'error';
       $('#face-status').textContent = present ? 'Face in view' : 'Look toward the camera';
-      $('#expression-status').textContent = live.expression.present ? ({ smile: 'Smile cue', sad: 'Sad-look cue', surprise: 'Surprise cue' }[expression] || 'Neutral') : 'No face detected';
+      $('#expression-status').textContent = live.expression.present ? ({ smile: 'Smile cue', sad: 'Sad-look cue', surprise: 'Surprise cue' }[expression] || (s.sad > .03 ? 'Gradual sad-look response' : 'Neutral')) : 'No face detected';
       updateExpressionDebug();
       const suspended = live.audio?.state !== 'running';
       $('#resume-audio').hidden = !suspended || live.muted;
@@ -1532,6 +1641,7 @@
     else if (creature.events.clap < 4.2) reactions.push('Drifting apart, then gathering again');
     else if (expression === 'smile' && s.smile > .1) reactions.push('A warm glow, a little closer');
     else if (expression === 'sad' && s.sad > .1) reactions.push('Slowing down and gathering close');
+    else if (s.sad > .05 && !expression) reactions.push('A cooler glow, gently slowing down');
     else if (expression === 'surprise' && s.surprise > .1) reactions.push('Opening up, then settling into violet');
     if (s.level > .05) reactions.push('Sound ripples through it');
     if (s.handPresent) reactions.push(s.handOpen > .65 ? 'Opening with your hand' : s.handOpen < .35 ? 'Gathering with your hand' : 'Move slowly. It will follow');
@@ -1540,7 +1650,7 @@
     const text = !present && !s.handPresent && !s.bodyPresent && creature.relationship.absence >= 8 ? 'Resting quietly. Come back whenever you like.' : reactions.length ? reactions.join(' · ') : present ? 'Just being here brings you closer.' : 'Take your time. Your bond stays.';
     if ($('#reaction').textContent !== text) $('#reaction').textContent = text;
   }
-  renderPickers(); syncControls();
+  renderPickers(); syncControls(); sounds.prepareMusic(); syncPlaybackControls();
   let lastTime = performance.now();
   function frame(now) {
     const dt = Math.min(.04, Math.max(0, (now - lastTime) / 1000)); lastTime = now;
@@ -1569,7 +1679,8 @@
       creature.s.smile = creature.s.sad = creature.s.surprise = creature.s.level = 0;
     }
   });
-  window.addEventListener('pagehide', () => { sounds.stop(false); live.stop(); if (model.stage === 'live' || model.stage === 'loading') setStage('prep'); });
+  window.addEventListener('pagehide', () => { live.stop(); if (model.stage === 'live' || model.stage === 'loading') setStage('prep'); sounds.dispose(); });
+  window.addEventListener('pageshow', event => { if (event.persisted) sounds.prepareMusic(); });
   requestAnimationFrame(frame);
   // Read-only diagnostic snapshot for browser QA; it cannot inject real inputs.
   Object.defineProperty(window, 'resonanceDemo', { value: Object.freeze({

@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "A forced NotAllowedError shows an English prompt; first touch retries on the same player without starting effects",
+    "Manual Off survives gestures, Home, new interaction and reload; only explicit Music On enables it again",
+    "Choosing Off while autoplay is blocked prevents the first gesture fallback from turning it back on"
+  ],
+  "errors": [],
+  "limitations": "Chrome with forced NotAllowedError and synthetic gesture events. No physical touch device, native Safari policy or listening test."
+}

@@ -21,6 +21,11 @@
       <span id="hand-marker" hidden>＋</span>
     </div>
     <button id="home" class="home pill" hidden>← Home</button>
+    <div id="site-music" class="site-music" aria-label="Background music">
+      <button class="pill" data-music aria-pressed="true">Music · On</button>
+      <p class="hint" data-music-status role="status" hidden></p>
+      <button class="text-button" data-retry-music hidden>Retry music</button>
+    </div>
     <section id="welcome" class="welcome" aria-labelledby="title">
       <h1 id="title">RESONANCE</h1>
       <div class="welcome-bottom">
@@ -96,10 +101,13 @@
           <p class="hint">Relax your face and close your mouth for two seconds. Calibration enables subtle sad-looking and surprised cues; smile detection stays the same. Recalibrate if your lighting or camera angle changes. Calibration lasts until you leave Live.</p>
           <div class="button-row"><button id="calibrate-expression">Calibrate neutral</button><button id="reset-expression-calibration">Reset calibration</button></div>
           <p id="expression-calibration-status" class="hint" role="status"></p>
+          <p id="expression-calibration-review" class="hint"></p>
           <p id="expression-decision" class="hint"></p>
           <table><caption>Raw blendshape scores · 0–1</caption><thead><tr><th scope="col">Blendshape</th><th scope="col">Score</th></tr></thead><tbody id="expression-raw"></tbody></table>
           <p id="expression-adjusted" class="hint"></p>
           <p id="expression-filtered" class="hint"></p>
+          <p id="expression-continuous" class="hint"></p>
+          <p id="expression-continuous-floors" class="hint"></p>
           <p id="expression-surprise-reason" class="hint"></p>
           <p id="expression-sad-reason" class="hint"></p>
           <p id="expression-smile-reason" class="hint"></p>
@@ -160,7 +168,7 @@
     <p class="hint">Live uses your microphone and MediaPipe Face Landmarker on this device. Facial movements are approximate cues, not a measure of your feelings. Hiding the preview keeps tracking on. Home or End interaction stops both devices.</p>
     <p class="hint">Live hand gestures use ml5 HandPose and the same camera as face tracking. Follow the mirrored preview. When your hand leaves, it gently returns to floating. Familiarity makes it more willing to follow.</p>
     <p class="hint">Body tracking shares the same camera. Keep your shoulders and arms in view; if they leave the frame, it settles gently. Face and sound still work when only your face is visible.</p>
-    <p class="hint">Music loops at 10% volume and keeps playing while you speak or sing. It softens only while an interaction effect plays. Sound Effects controls Wake, Curious, Happy and Afraid. Interaction effects soften while you speak. Home or End interaction stops playback. During an effect and its short echo tail, microphone startles pause to help prevent feedback; sound ripples still work. Demo inputs are simulated, and the same sounds play. Capture saves only the particle image, never the camera.</p>
+    <p class="hint">Music loops at 10% volume across Home, preparation and interaction. If playback is blocked, tap or click anywhere to start it. Music keeps playing while you speak or sing, and softens only while an interaction effect plays. Music remembers your On / Off choice. Sound Effects controls Wake, Curious, Happy and Afraid. Interaction effects soften while you speak. Home or End interaction stops effects and device access; music continues. During an effect and its short echo tail, microphone startles pause to help prevent feedback; sound ripples still work. Demo inputs are simulated, and the same sounds play. Capture saves only the particle image, never the camera.</p>
   </dialog>
   <div id="toast" role="status" hidden></div>
 </body>

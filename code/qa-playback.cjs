@@ -18,6 +18,7 @@ async function main(){
     await send('Page.enable');await send('Runtime.enable');
     await send('Page.addScriptToEvaluateOnNewDocument',{source:`
       window.__audioTest={contexts:[],sources:[],music:[],streams:[],mediaOptions:[]};window.__rms=null;window.__smile=false;window.__failWake=false;
+      if(!sessionStorage.getItem('resonance.audio-qa')){localStorage.removeItem('resonance.music');sessionStorage.setItem('resonance.audio-qa','1');}
       const NativeAudio=AudioContext;window.AudioContext=class extends NativeAudio{
         constructor(...args){super(...args);__audioTest.contexts.push(this);}
         createMediaElementSource(element){const node=super.createMediaElementSource(element),r={element,context:this,gain:null};__audioTest.music.push(r);const connect=node.connect.bind(node);node.connect=target=>{r.gain=target.gain;return connect(target);};return node;}
@@ -30,8 +31,14 @@ async function main(){
     `});
     await send('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
     await send('Page.navigate',{url:'http://127.0.0.1:4173/'});await wait(()=>run('!!window.resonanceDemo'));
-    assert.equal(await run('__audioTest.contexts.length'),0);assert.equal(await run('performance.getEntriesByType("resource").filter(e=>e.name.includes("/sounds/")).length'),0);
-    await click('#meet');assert.equal(await run('__audioTest.contexts.length'),0);
+    await wait(async()=> (await snap()).playback.musicPlaying&&(await snap()).playback.musicGain>.095);
+    assert.equal(await run('__audioTest.contexts.length'),1);assert.equal(await run('__audioTest.sources.length'),0);
+    assert.equal(await run('performance.getEntriesByType("resource").filter(e=>e.name.endsWith(".wav")).length'),0);
+    assert.equal(await run('__audioTest.streams.length'),0);
+    assert(await run('document.querySelector("#site-music [data-music]").getBoundingClientRect().height>=44'));
+    await run('window.__originalMusic=__audioTest.music[0].element');const homeTime=(await snap()).playback.musicPosition;
+    await click('#meet');assert.equal(await run('__audioTest.contexts.length'),1);
+    assert((await snap()).playback.musicPlaying);assert((await snap()).playback.musicPosition>=homeTime);
     await click('#try-demo');await wait(async()=> (await snap()).playback.counts.wake===1);
     const initial=await snap();assert(initial.wakeAge<.2);assert.equal(initial.playback.history[0].duration,.6139791666666666);
     await wait(async()=> (await snap()).playback.current===null);await wait(async()=> (await snap()).playback.musicPlaying);
@@ -39,7 +46,7 @@ async function main(){
     await wait(async()=> (await snap()).playback.musicGain>.095);
     assert((await snap()).playback.musicGain<=.10001);assert(await run('__audioTest.music.at(-1).element.loop'));
     assert(await run('__audioTest.music.at(-1).element.src.endsWith("/sounds/waterfall.mp3")'));
-    pass('No audio before Start; Wake plays once; the original waterfall.mp3 loops as a single track and gently rises to 10%');
+    pass('Home starts one waterfall.mp3 loop at 10% before interaction; preparation keeps its position; effects and devices wait for Start');
     await click('#hand');await wait(async()=> (await snap()).playback.current==='curious');
     await sleep(220);assert((await snap()).playback.musicGain<.045);
     const curiousAt=(await snap()).playback.history.at(-1).at;await click('#clap');await wait(async()=> (await snap()).playback.current==='afraid');
@@ -55,26 +62,23 @@ async function main(){
     await click('#demo-controls [data-effects]');const beforeOff=(await snap()).playback.counts.afraid;await click('#clap');await sleep(150);assert.equal((await snap()).playback.counts.afraid,beforeOff);assert((await snap()).playback.musicPlaying);
     await click('#demo-controls [data-music]');assert.equal((await snap()).playback.musicPlaying,false);
     await click('#demo-controls [data-effects]');await sleep(1800);await click('#retreat');await wait(async()=> (await snap()).playback.counts.afraid>beforeOff);
-    await click('#home');assert.equal((await snap()).playback.context,'closed');assert.equal((await snap()).playback.musicTracks,0);await sleep(60);
-    assert(await run('__audioTest.contexts.every(c=>c.state==="closed")'));
+    await click('#home');assert.equal((await snap()).playback.active,false);assert.equal((await snap()).playback.current,null);assert.equal((await snap()).playback.musicPlaying,false);
+    assert.equal((await snap()).playback.musicTracks,1);assert.equal(await run('localStorage.getItem("resonance.music")'),'off');
     await click('#meet');await click('#try-demo');await wait(async()=> (await snap()).playback.counts.wake===1);await sleep(850);
-    assert.equal((await snap()).playback.counts.afraid,0);assert.equal((await snap()).playback.musicTracks,0);
+    assert.equal((await snap()).playback.counts.afraid,0);assert.equal((await snap()).playback.musicPlaying,false);
     await click('#demo-controls [data-music]');await wait(async()=> (await snap()).playback.musicGain>.095);
-    await click('#home');assert.equal((await snap()).playback.departingMusic,1);
-    const fadeStart=await run('__audioTest.music.at(-1).gain.value');await sleep(170);
-    const fadeMiddle=await run('__audioTest.music.at(-1).gain.value');assert(fadeMiddle>0&&fadeMiddle<fadeStart,JSON.stringify({fadeStart,fadeMiddle}));
-    assert(await run('!__audioTest.music.at(-1).element.paused'));
-    await sleep(330);assert.equal((await snap()).playback.departingMusic,0);
-    assert(await run('__audioTest.music.every(m=>m.element.paused&&m.context.state==="closed")'));
+    const musicBeforeHome=(await snap()).playback.musicPosition;
+    await click('#home');assert((await snap()).playback.musicPlaying);await sleep(500);
+    assert((await snap()).playback.musicPosition>musicBeforeHome);assert.equal((await snap()).playback.musicTarget,.10);
     await click('#meet');await click('#try-demo');await wait(async()=> (await snap()).playback.musicGain>.095);
-    await click('#home');assert.equal((await snap()).playback.departingMusic,1);
+    await click('#home');assert((await snap()).playback.musicPlaying);
     await click('#meet');await click('#try-demo');await wait(async()=> (await snap()).playback.musicPlaying);
     assert(await run('__audioTest.music.filter(m=>!m.element.paused).length===1'));
-    assert(await run('__audioTest.music.slice(0,-1).every(m=>m.element.paused&&m.context.state==="closed")'));
-    await sleep(600);assert((await snap()).playback.musicPlaying); // Old exit timer cannot stop this session.
+    assert(await run('__audioTest.music.length===1&&__audioTest.music[0].element===__originalMusic'));
+    await sleep(600);assert((await snap()).playback.musicPlaying);
     await click('#home');await sleep(600);
-    assert.equal((await snap()).playback.context,'closed');assert(await run('__audioTest.contexts.every(c=>c.state==="closed")'));
-    pass('Effects duck Music and it smoothly recovers; independent switches work; Home fades before stopping; rapid re-entry has one track and no stale cleanup timer');
+    assert.equal((await snap()).playback.context,'running');assert.equal(await run('__audioTest.contexts.length'),1);
+    pass('Effects duck Music then recover; Off survives Home/re-entry; enabled Music continues through Home and rapid restarts on the original element and context');
     // A fresh page avoids the in-memory decoded file cache for a real load-error check.
     await send('Page.reload');await wait(()=>run('!!window.resonanceDemo'));await run('__failWake=true');await click('#meet');await click('#try-demo');
     await wait(async()=> (await snap()).playback.errors.length>0);assert.equal((await snap()).stage,'demo');assert.equal((await snap()).playback.counts.wake,0);
@@ -107,9 +111,17 @@ async function main(){
       assert(await run('[...document.querySelectorAll("#live-controls .playback-controls .button-row button")].every(b=>{const r=b.getBoundingClientRect(),p=b.closest("aside").getBoundingClientRect();return r.height>=44&&r.left>=p.left&&r.right<=p.right&&r.top>=p.top&&r.bottom<=p.bottom})'));
       if(width===390)await shot('playback-mobile');
     }
-    await click('#exit');await sleep(100);assert.equal((await snap()).playback.context,'closed');assert.equal((await snap()).live.tracks.length,0);
-    assert(await run('__audioTest.streams.every(s=>s.getTracks().every(t=>t.readyState==="ended"))'));assert(await run('__audioTest.contexts.every(c=>c.state==="closed")'));
-    assert.equal(errors.length,0);pass('Desktop and 320/390/landscape controls fit; End interaction closes playback and capture, with no uncaught page errors');
-  }finally{await click('#home').catch(()=>{});fs.writeFileSync(path.join(__dirname,'qa/playback-report.json'),JSON.stringify({checks,errors,limitations:'Chrome fake devices and injected RMS/face values; real output assets and models. No human listening, physical phone, Safari, or loudspeaker/acoustic echo test.'},null,2));await send('Page.close').catch(()=>{});ws.close();}
+    await click('#live-controls [data-music]');await wait(async()=> (await snap()).playback.musicPlaying);
+    await click('#exit');await sleep(100);assert((await snap()).playback.musicPlaying);assert.equal((await snap()).live.tracks.length,0);
+    assert(await run('__audioTest.streams.every(s=>s.getTracks().every(t=>t.readyState==="ended"))'));assert(await run('__audioTest.contexts.filter(c=>c!==__audioTest.music[0].context).every(c=>c.state==="closed")'));
+    for(const width of [320,390,1440]){
+      await send('Emulation.setDeviceMetricsOverride',{width,height:844,deviceScaleFactor:1,mobile:width<768});await sleep(100);
+      assert(await run('(()=>{const r=document.querySelector("#site-music [data-music]").getBoundingClientRect(),t=document.querySelector("#title").getBoundingClientRect();return r.height>=44&&r.left>=0&&r.right<=innerWidth&&(r.bottom<=t.top||r.left>=t.right||r.right<=t.left)})()'));
+    }
+    await shot('playback-home');
+    await run('dispatchEvent(new PageTransitionEvent("pagehide"))');await sleep(100);
+    assert.equal((await snap()).playback.context,'closed');assert(await run('__audioTest.contexts.every(c=>c.state==="closed")'));
+    assert.equal(errors.length,0);pass('Desktop/mobile Music controls fit; End interaction closes capture and keeps Music; pagehide disposes all playback without uncaught errors');
+  }finally{await run('dispatchEvent(new PageTransitionEvent("pagehide"))').catch(()=>{});fs.writeFileSync(path.join(__dirname,'qa/playback-report.json'),JSON.stringify({checks,errors,limitations:'Chrome fake devices and injected RMS/face values; real output assets and models. No human listening, physical phone, Safari, or loudspeaker/acoustic echo test.'},null,2));await send('Page.close').catch(()=>{});ws.close();}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});
