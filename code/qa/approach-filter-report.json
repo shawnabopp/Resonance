@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "Steady acquisition, slow approach and small size jitter never startle",
+    "Fast coherent growth triggers once at 2.5, 4, 8, 12 and 20 Hz",
+    "Continued approach cannot rearm after cooldown; quiet recovery allows a new event",
+    "Dropout, stale recovery, one-frame scale jumps, identity and aspect changes establish new anchors",
+    "One-axis size changes, translation and face expressions are not depth evidence",
+    "Hand spans ignore finger tips and 3D size, and reject low-confidence or clipped palms",
+    "Face spans preserve scale across resolutions and remain usable near image edges",
+    "A short lunge needs two raw increments, not two threshold crossings; debug explains missing gates"
+  ],
+  "limitation": "Synthetic geometry and elapsed-time inputs. No physical camera/user performance validation."
+}

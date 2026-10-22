@@ -1,0 +1,510 @@
+{
+  "checks": [
+    "Unmodified real Face Landmarker pipeline updates the diagnostics from fake video: no face is reported honestly, with dimensions and frame age",
+    "Test Afraid invokes one shared event ID: the real adjusted WAV is scheduled once, particles visibly shrink/gather, and repeated clicks show the shared cooldown",
+    "Sound Effects Off still permits retreat and explicitly explains why Afraid was not played",
+    "A forced source.start failure exposes its actual exception and does not increment successful playback counts",
+    "Retreat recovers smoothly; mobile diagnostics fit; Home releases tracks; a failed WAV fetch shows HTTP 404 and Test Afraid retries successfully"
+  ],
+  "errors": [],
+  "samples": {
+    "noFace": {
+      "note": "Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.",
+      "stage": "live",
+      "pageHidden": false,
+      "facePresent": false,
+      "faceFrame": {
+        "receivedAt": 1227,
+        "capturedAt": 1218.9,
+        "latencyMs": 8.099999999999909,
+        "width": 640,
+        "height": 480,
+        "faceDetected": false,
+        "geometry": false,
+        "state": "No face detected",
+        "receivedAgeMs": 43.69999999925494
+      },
+      "face": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 6,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "palm": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 1,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "recentFaceSizes": [],
+      "cooldownMs": 0,
+      "lastEvent": null,
+      "lastAttempt": null,
+      "audio": {
+        "context": "running",
+        "effectsEnabled": true,
+        "decoded": true,
+        "playback": null,
+        "errors": [],
+        "resumeError": null
+      },
+      "animation": {
+        "depth": 0,
+        "scale": 1.0103909456442013,
+        "expansion": 0.9645589825051476
+      }
+    },
+    "button": {
+      "note": "Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.",
+      "stage": "live",
+      "pageHidden": false,
+      "facePresent": false,
+      "faceFrame": {
+        "receivedAt": 2312.4000000003725,
+        "capturedAt": 2302.2,
+        "latencyMs": 10.200000000372711,
+        "width": 640,
+        "height": 480,
+        "faceDetected": false,
+        "geometry": false,
+        "state": "No face detected",
+        "receivedAgeMs": 9
+      },
+      "face": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 19,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "palm": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 9,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "recentFaceSizes": [],
+      "cooldownMs": 2812.699999999255,
+      "lastEvent": {
+        "id": 1,
+        "kind": "depth",
+        "source": "Test Afraid",
+        "at": 1934.199999999255,
+        "reason": "sudden approach"
+      },
+      "lastAttempt": {
+        "source": "Test Afraid",
+        "at": 1934.199999999255,
+        "accepted": true,
+        "reason": "Accepted"
+      },
+      "audio": {
+        "context": "running",
+        "effectsEnabled": true,
+        "decoded": true,
+        "playback": {
+          "eventId": 1,
+          "at": 1934.199999999255,
+          "source": "Test Afraid",
+          "status": "Playback scheduled",
+          "detail": "sounds/afraid-adjusted.wav · 0.499 s · AudioContext running",
+          "delayMs": 8.000000000000007
+        },
+        "errors": [],
+        "resumeError": null
+      },
+      "animation": {
+        "depth": 0.9466764061358655,
+        "scale": 0.7225258861031828,
+        "expansion": 0.7902203984523859
+      }
+    },
+    "off": {
+      "note": "Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.",
+      "stage": "live",
+      "pageHidden": false,
+      "facePresent": false,
+      "faceFrame": {
+        "receivedAt": 5492,
+        "capturedAt": 5468.8,
+        "latencyMs": 23.199999999999818,
+        "width": 640,
+        "height": 480,
+        "faceDetected": false,
+        "geometry": false,
+        "state": "No face detected",
+        "receivedAgeMs": 12.299999998882413
+      },
+      "face": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 57,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "palm": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 33,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "recentFaceSizes": [],
+      "cooldownMs": 2991.7000000011176,
+      "lastEvent": {
+        "id": 2,
+        "kind": "depth",
+        "source": "Test Afraid",
+        "at": 5296,
+        "reason": "sudden approach"
+      },
+      "lastAttempt": {
+        "source": "Test Afraid",
+        "at": 5296,
+        "accepted": true,
+        "reason": "Accepted"
+      },
+      "audio": {
+        "context": "running",
+        "effectsEnabled": false,
+        "decoded": true,
+        "playback": {
+          "eventId": 2,
+          "at": 5296,
+          "source": "Test Afraid",
+          "status": "Not played",
+          "detail": "Sound Effects is off."
+        },
+        "errors": [],
+        "resumeError": null
+      },
+      "animation": {
+        "depth": 0.9061602102212907,
+        "scale": 0.8262716191978471,
+        "expansion": 0.8799185815135593
+      }
+    },
+    "error": {
+      "note": "Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.",
+      "stage": "live",
+      "pageHidden": false,
+      "facePresent": false,
+      "faceFrame": {
+        "receivedAt": 9482.199999999255,
+        "capturedAt": 9468.6,
+        "latencyMs": 13.599999999254578,
+        "width": 640,
+        "height": 480,
+        "faceDetected": false,
+        "geometry": false,
+        "state": "No face detected",
+        "receivedAgeMs": 7.5
+      },
+      "face": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 105,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "palm": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 61,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "recentFaceSizes": [],
+      "cooldownMs": 2674.7000000011176,
+      "lastEvent": {
+        "id": 3,
+        "kind": "depth",
+        "source": "Test Afraid",
+        "at": 8964.400000000373,
+        "reason": "sudden approach"
+      },
+      "lastAttempt": {
+        "source": "Test Afraid",
+        "at": 8964.400000000373,
+        "accepted": true,
+        "reason": "Accepted"
+      },
+      "audio": {
+        "context": "running",
+        "effectsEnabled": true,
+        "decoded": true,
+        "playback": {
+          "eventId": 3,
+          "at": 8964.400000000373,
+          "source": "Test Afraid",
+          "status": "Not played",
+          "detail": "InvalidStateError: QA scheduling failure"
+        },
+        "errors": [],
+        "resumeError": null
+      },
+      "animation": {
+        "depth": 0.8779183520818109,
+        "scale": 0.7156096770336063,
+        "expansion": 0.7689686355862065
+      }
+    },
+    "httpError": {
+      "note": "Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.",
+      "stage": "live",
+      "pageHidden": false,
+      "facePresent": false,
+      "faceFrame": {
+        "receivedAt": 979.4000000003725,
+        "capturedAt": 957.6,
+        "latencyMs": 21.800000000372506,
+        "width": 640,
+        "height": 480,
+        "faceDetected": false,
+        "geometry": false,
+        "state": "No face detected",
+        "receivedAgeMs": 81.19999999925494
+      },
+      "face": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 8,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "palm": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 3,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "recentFaceSizes": [],
+      "cooldownMs": 2572.800000000745,
+      "lastEvent": {
+        "id": 1,
+        "kind": "depth",
+        "source": "Test Afraid",
+        "at": 433.40000000037253,
+        "reason": "sudden approach"
+      },
+      "lastAttempt": {
+        "source": "Test Afraid",
+        "at": 433.40000000037253,
+        "accepted": true,
+        "reason": "Accepted"
+      },
+      "audio": {
+        "context": "running",
+        "effectsEnabled": true,
+        "decoded": false,
+        "playback": {
+          "eventId": 1,
+          "at": 433.40000000037253,
+          "source": "Test Afraid",
+          "status": "Not played",
+          "detail": "Afraid: afraid-adjusted.wav: HTTP 404"
+        },
+        "errors": [
+          "Afraid: afraid-adjusted.wav: HTTP 404"
+        ],
+        "resumeError": null
+      },
+      "animation": {
+        "depth": 0.8279032549306063,
+        "scale": 0.7244142913853785,
+        "expansion": 0.7522855255869862
+      }
+    },
+    "retry": {
+      "note": "Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.",
+      "stage": "live",
+      "pageHidden": false,
+      "facePresent": false,
+      "faceFrame": {
+        "receivedAt": 3971.7999999988824,
+        "capturedAt": 3957.5,
+        "latencyMs": 14.299999998882413,
+        "width": 640,
+        "height": 480,
+        "faceDetected": false,
+        "geometry": false,
+        "state": "No face detected",
+        "receivedAgeMs": 21.800000000745058
+      },
+      "face": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 44,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "palm": {
+        "status": "No face/palm size: missing or clipped landmarks",
+        "armed": false,
+        "size": 0,
+        "rawSize": 0,
+        "spans": null,
+        "ageMs": null,
+        "growth": 0,
+        "rate": 0,
+        "count": 0,
+        "updates": 25,
+        "coherentSamples": 0,
+        "quietMs": 0,
+        "thresholds": null,
+        "checks": {},
+        "lastDetection": null
+      },
+      "recentFaceSizes": [],
+      "cooldownMs": 3035.9000000003725,
+      "lastEvent": {
+        "id": 2,
+        "kind": "depth",
+        "source": "Test Afraid",
+        "at": 3829.5,
+        "reason": "sudden approach"
+      },
+      "lastAttempt": {
+        "source": "Test Afraid",
+        "at": 3829.5,
+        "accepted": true,
+        "reason": "Accepted"
+      },
+      "audio": {
+        "context": "running",
+        "effectsEnabled": true,
+        "decoded": true,
+        "playback": {
+          "eventId": 2,
+          "at": 3829.5,
+          "source": "Test Afraid",
+          "status": "Playback scheduled",
+          "detail": "sounds/afraid-adjusted.wav · 0.499 s · AudioContext running",
+          "delayMs": 8.000000000000007
+        },
+        "errors": [],
+        "resumeError": null
+      },
+      "animation": {
+        "depth": 0.766156619052686,
+        "scale": 0.8767945914784597,
+        "expansion": 0.9150964638438747
+      }
+    }
+  },
+  "limitation": "Actual browser button, decoded approved audio and rendering, fake media devices. Error cases are deliberately injected. No physical camera approach, speaker audibility or phone hardware test."
+}

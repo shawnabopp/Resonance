@@ -1,0 +1,497 @@
+{
+  "checks": [
+    "Injected slow face growth does not trigger; fast growth plays the approved 0.499 s Afraid once and visibly shrinks/gathers without purple or disappearance",
+    "Face/hand events share the startle guard; recovery never creates an approach; a later steady-then-fast palm approach triggers once",
+    "Purple facial Surprise remains independent of the depth-startle event and Afraid sound",
+    "Side-profile QA photo did not acquire stable face geometry; it correctly creates no startle, and does NOT validate a real-face zoom",
+    "One shared camera, mobile/landscape diagnostics, Home cleanup and explicit Demo approach work without uncaught errors"
+  ],
+  "errors": [],
+  "peak": {
+    "stage": "live",
+    "shape": "seed",
+    "theme": "Green",
+    "inputs": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": 2,
+      "expression": null,
+      "intensity": 0.85,
+      "sound": 0,
+      "sustain": false,
+      "muted": false,
+      "hand": false,
+      "openness": 0.5,
+      "body": 0,
+      "bodyLean": 0,
+      "arms": 0,
+      "present": true,
+      "faceX": 0.5
+    },
+    "signals": {
+      "smile": 0,
+      "sad": 0,
+      "surprise": 0,
+      "level": 0,
+      "spike": 0,
+      "facePresent": true,
+      "faceX": 0.72,
+      "faceY": 0.5,
+      "presenceSince": 758.2,
+      "presenceUntil": 6258,
+      "handPresent": false,
+      "handX": 0.5,
+      "handY": 0.5,
+      "handOpen": 0.5,
+      "handSpeed": 0,
+      "bodyPresent": false,
+      "bodyMotion": 0,
+      "bodySway": 0,
+      "bodyLift": 0,
+      "bodySpread": 0
+    },
+    "color": [
+      162,
+      211,
+      171
+    ],
+    "center": [
+      552.5423675487174,
+      310.4053517384665
+    ],
+    "radius": 152.145,
+    "expansion": 0.8142321190691124,
+    "scale": 0.7438915761782772,
+    "level": 0,
+    "speed": 1.007400718844893,
+    "wakeAge": 4.516399999999999,
+    "rotation": 0.6894942581418554,
+    "sway": 0,
+    "clap": 0,
+    "retreat": 0,
+    "depth": 0.9820809999999998,
+    "depthSource": "face",
+    "surprise": 0,
+    "body": {
+      "sway": 0,
+      "lift": 0,
+      "spread": 0,
+      "motion": 0
+    },
+    "familiarity": 0.06659860000000009,
+    "rest": 0,
+    "absenceSeconds": 0,
+    "followRate": 6.595422971122327,
+    "bounds": [
+      469.2511785541068,
+      219.99441024638293,
+      648.7855865884028,
+      403.7571682528479
+    ],
+    "viewport": [
+      1092,
+      621
+    ],
+    "events": {
+      "surprise": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 1
+    },
+    "playback": {
+      "active": true,
+      "context": "running",
+      "musicEnabled": true,
+      "effectsEnabled": true,
+      "current": "afraid",
+      "retiring": 0,
+      "ready": true,
+      "musicPlaying": true,
+      "musicTracks": 1,
+      "musicGain": 0.035514961928129196,
+      "musicDefault": 0.1,
+      "musicTarget": 0.035,
+      "musicPosition": 4.76921,
+      "effectGain": 0.6499999761581421,
+      "blocked": false,
+      "echoGuard": true,
+      "afraid": {
+        "eventId": 1,
+        "at": 4940.0999999996275,
+        "source": "face",
+        "status": "Playback scheduled",
+        "detail": "sounds/afraid-adjusted.wav · 0.499 s · AudioContext running",
+        "delayMs": 8.000000000000007
+      },
+      "counts": {
+        "wake": 1,
+        "curious": 0,
+        "happy": 0,
+        "afraid": 1
+      },
+      "history": [
+        {
+          "name": "wake",
+          "reason": "session start",
+          "eventId": null,
+          "at": 760.1999999992549,
+          "duration": 0.6139791666666666,
+          "delay": 0.008000000000000007
+        },
+        {
+          "name": "afraid",
+          "reason": "sudden approach",
+          "eventId": 1,
+          "at": 4940.199999999255,
+          "duration": 0.499,
+          "delay": 0.008000000000000007
+        }
+      ],
+      "errors": []
+    },
+    "live": {
+      "active": true,
+      "starting": false,
+      "modelReady": true,
+      "worker": true,
+      "frames": 55,
+      "facePresent": true,
+      "expression": null,
+      "expressionDebug": {
+        "raw": {
+          "browInnerUp": null,
+          "mouthFrownLeft": null,
+          "mouthFrownRight": null,
+          "mouthSmileLeft": null,
+          "mouthSmileRight": null,
+          "browOuterUpLeft": null,
+          "browOuterUpRight": null,
+          "eyeWideLeft": null,
+          "eyeWideRight": null,
+          "jawOpen": 0,
+          "browDownLeft": null,
+          "browDownRight": null
+        },
+        "adjusted": {
+          "frownMean": 0,
+          "frownBoth": 0,
+          "innerBrow": 0,
+          "outerBrowChange": 0,
+          "eyeWideChange": 0,
+          "browDownChange": 0,
+          "browContrast": 0,
+          "jawChange": 0
+        },
+        "scores": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "output": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0
+        },
+        "active": null,
+        "candidate": null,
+        "heldMs": 5258,
+        "reason": "Not enough joint mouth and brow evidence",
+        "breakdown": {
+          "smile": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {},
+            "missing": [
+              "mouthSmileLeft",
+              "mouthSmileRight"
+            ]
+          },
+          "sad": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {
+              "combinedFrown": false,
+              "strongBilateralFrown": false,
+              "openMouthSafe": true,
+              "relativeSad": false,
+              "settledBrows": false,
+              "gradualSad": false
+            },
+            "missing": [
+              "mouthFrownLeft",
+              "mouthFrownRight",
+              "browInnerUp"
+            ],
+            "smileMultiplier": 1,
+            "surpriseMultiplier": 1
+          },
+          "surprise": {
+            "evidence": 0,
+            "beforeCompetition": 0,
+            "gates": {
+              "raisedOuterBrows": false,
+              "widenedEyes": false,
+              "expressiveEyes": false,
+              "supportedEyes": false
+            },
+            "missing": [
+              "browOuterUpLeft",
+              "browOuterUpRight",
+              "eyeWideLeft",
+              "eyeWideRight"
+            ],
+            "outerBrowMean": 0,
+            "eyeWideMean": 0,
+            "scaledBrows": 0,
+            "scaledEyes": 0,
+            "smileMultiplier": 1
+          }
+        },
+        "reasons": {
+          "smile": "Missing: mouthSmileLeft, mouthSmileRight. Smoothed 0.000 < enter 0.32.",
+          "sad": "Missing: mouthFrownLeft, mouthFrownRight, browInnerUp. Continuous response 0.000; joint evidence 0.000, held 0.00 s; route: none. Original stronger-frown routes are not active; calibrated gradual routes are checked separately. Calibrate neutral to enable subtle relative cues. Smoothed 0.000 < enter 0.28.",
+          "surprise": "Missing: browOuterUpLeft, browOuterUpRight, eyeWideLeft, eyeWideRight. Stronger route: outer brow mean 0.000 (baseline adjusted) must exceed 0.22. Stronger route: eye-wide mean 0.000 (baseline adjusted) must exceed 0.15. Calibrate neutral to enable subtle relative cues. Smoothed 0.000 < enter 0.32."
+        },
+        "relative": {
+          "ready": false,
+          "limits": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.01,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.012,
+            "eyeSide": 0.007,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.018,
+            "supportedEye": 0.008,
+            "jaw": 0.12
+          },
+          "deltas": {
+            "frown": 0,
+            "frownSide": 0,
+            "inner": 0,
+            "outer": 0,
+            "outerBoth": 0,
+            "eye": 0,
+            "eyeBoth": 0,
+            "down": 0,
+            "contrast": 0,
+            "jaw": 0
+          },
+          "routes": {
+            "expressiveEyes": false,
+            "supportedEyes": false,
+            "relativeSad": false
+          }
+        },
+        "noise": {},
+        "continuousSad": {
+          "heldSeconds": 0,
+          "evidence": 0,
+          "previewEvidence": 0,
+          "route": "none",
+          "fullSettled": false,
+          "features": {
+            "mouth": 0,
+            "side": 0,
+            "inner": 0,
+            "down": 0,
+            "contrast": 0,
+            "outerFall": 0
+          },
+          "groups": {
+            "mouth": 0,
+            "raisedInner": 0,
+            "browShape": 0,
+            "settledMouth": 0,
+            "loweredBrows": 0,
+            "outerFall": 0,
+            "settledShape": 0
+          },
+          "floors": {
+            "mouth": 0.0015,
+            "side": 0.00075,
+            "inner": 0.008,
+            "down": 0.0025,
+            "contrast": 0.012,
+            "settledMouth": 0.006,
+            "settledSide": 0.004,
+            "outerFall": 0.0035
+          },
+          "freshJoint": false,
+          "eligible": false
+        },
+        "groupNoise": {},
+        "thresholds": {
+          "enter": {
+            "smile": 0.32,
+            "sad": 0.28,
+            "surprise": 0.32
+          },
+          "exit": 0.18,
+          "margin": 0.08,
+          "dwell": {
+            "smile": 300,
+            "sad": 650,
+            "surprise": 400,
+            "neutral": 400
+          },
+          "smoothing": 6,
+          "frownMean": 0.11,
+          "frownBoth": 0.055,
+          "innerBrow": 0.13,
+          "strongFrown": 0.24,
+          "strongBoth": 0.1,
+          "openJaw": 0.45,
+          "speechFrown": 0.2,
+          "speechBrow": 0.23,
+          "outerBrowFloor": 0.22,
+          "outerBrowRange": 0.45,
+          "eyeWideFloor": 0.15,
+          "eyeWideRange": 0.4,
+          "continuousSad": {
+            "noiseMultiplier": 1.5,
+            "mouthFloor": 0.0015,
+            "sideFloor": 0.00075,
+            "innerFloor": 0.008,
+            "downFloor": 0.0025,
+            "contrastFloor": 0.012,
+            "settledMouthFloor": 0.006,
+            "settledSideFloor": 0.004,
+            "outerFallFloor": 0.0035,
+            "warmup": 0.35,
+            "fadeIn": 0.8,
+            "fullAfter": 1.4,
+            "maxPreview": 0.42,
+            "visualGain": 1.7,
+            "featureSmoothing": 5
+          },
+          "relative": {
+            "frown": 0.004,
+            "frownSide": 0.003,
+            "innerSad": 0.018,
+            "browDown": 0.01,
+            "browContrast": 0.035,
+            "outer": 0.025,
+            "eye": 0.012,
+            "outerSide": 0.012,
+            "eyeSide": 0.007,
+            "innerSurprise": 0.045,
+            "supportedOuter": 0.018,
+            "supportedEye": 0.008,
+            "jaw": 0.12,
+            "noiseMultiplier": 4
+          }
+        },
+        "baseline": null,
+        "calibrating": false,
+        "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+      },
+      "approach": {
+        "face": {
+          "status": "Hold steady to rearm",
+          "armed": false,
+          "size": 0.346522786310299,
+          "rawSize": 0.3753471497163542,
+          "spans": [
+            0.32506016689244377,
+            0.4334135558565917
+          ],
+          "ageMs": 0,
+          "intervalMs": 83.30000000000018,
+          "growth": 0.509541721275049,
+          "rate": 1.2355418809430248,
+          "count": 1,
+          "updates": 55,
+          "coherentSamples": 4,
+          "quietMs": 0,
+          "thresholds": {
+            "growth": 0.16,
+            "rate": 0.55,
+            "span": 0.055,
+            "samples": 2
+          },
+          "checks": {
+            "armed": false,
+            "window": true,
+            "growth": true,
+            "speed": true,
+            "bothSpans": true,
+            "freshGrowth": true,
+            "coherentSamples": true
+          },
+          "lastDetection": {
+            "at": 4924.7,
+            "rawSize": 0.24745440190822793,
+            "size": 0.2295549579229948,
+            "growth": 0.32533362028349244,
+            "rate": 0.5634411215000684,
+            "armed": true,
+            "coherentSamples": 4,
+            "checks": {
+              "armed": true,
+              "window": true,
+              "growth": true,
+              "speed": true,
+              "bothSpans": true,
+              "freshGrowth": true,
+              "coherentSamples": true
+            }
+          }
+        },
+        "hand": {
+          "status": "No face/palm size: missing or clipped landmarks",
+          "armed": false,
+          "size": 0,
+          "rawSize": 0,
+          "spans": null,
+          "ageMs": null,
+          "growth": 0,
+          "rate": 0,
+          "count": 0,
+          "updates": 31,
+          "coherentSamples": 0,
+          "quietMs": 0,
+          "thresholds": null,
+          "checks": {},
+          "lastDetection": null
+        }
+      },
+      "hands": {
+        "state": "ready",
+        "active": true,
+        "worker": true,
+        "error": null,
+        "busy": false,
+        "frames": 31,
+        "interval": 125
+      },
+      "body": {
+        "state": "ready",
+        "worker": true,
+        "error": null,
+        "busy": false,
+        "frames": 21,
+        "interval": 167.00021394404263
+      },
+      "tracks": [
+        {
+          "kind": "audio",
+          "state": "live",
+          "enabled": false
+        },
+        {
+          "kind": "video",
+          "state": "live",
+          "enabled": true
+        }
+      ],
+      "audio": "running",
+      "previewHidden": false
+    }
+  },
+  "limitation": "Chrome fake devices, injected geometric sequences, and actual Face Landmarker on a zoomed local QA photo. No physical webcam/phone approach or human listening test."
+}

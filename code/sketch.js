@@ -407,6 +407,85 @@
     }
   }
 
+  // Stable spans, not a face/hand bounding box that changes when a mouth or fingers open.
+  function faceApproachMeasure(points, width, height) {
+    const ids = [234, 454, 10, 152];
+    if (!width || !height || ids.some(i => !points?.[i] || !Number.isFinite(points[i].x) || !Number.isFinite(points[i].y) ||
+        points[i].x < 0 || points[i].x > 1 || points[i].y < 0 || points[i].y > 1)) return null;
+    const distance = (a, b) => Math.hypot((points[a].x - points[b].x) * width, (points[a].y - points[b].y) * height) / Math.max(width, height);
+    return { width: distance(234, 454), height: distance(10, 152), x: 1 - (points[234].x + points[454].x) / 2,
+      y: (points[10].y + points[152].y) / 2, frameAspect: width / height, identity: 'face' };
+  }
+  function handApproachMeasure(hands, width, height) {
+    const hand = hands?.[0], p = hand?.keypoints, ids = [0, 5, 9, 13, 17];
+    if (!width || !height || !p || p.length !== 21 || (hand.confidence ?? 0) < .65 ||
+        ids.some(i => !Number.isFinite(p[i]?.x) || !Number.isFinite(p[i]?.y) || p[i].x < width * .03 || p[i].x > width * .97 || p[i].y < height * .03 || p[i].y > height * .97)) return null;
+    const distance = (a, b) => Math.hypot(p[a].x - p[b].x, p[a].y - p[b].y) / Math.max(width, height);
+    return { width: distance(5, 17), height: distance(0, 9), x: 1 - ids.reduce((sum, i) => sum + p[i].x, 0) / (ids.length * width),
+      y: ids.reduce((sum, i) => sum + p[i].y, 0) / (ids.length * height), frameAspect: width / height, identity: String(hand.handedness || 'hand') };
+  }
+  class ApproachFilter {
+    constructor() { this.reset(); }
+    reset() { this.count = this.updates = this.lastClock = 0; this.trace = []; this.lastDetection = null; this.lose(); }
+    lose(reason = 'No usable size measurement') {
+      this.last = null; this.history = []; this.armed = false; this.quiet = 0; this.votes = 0; this.started = 0;
+      this.growth = this.rate = this.size = this.rawSize = 0; this.status = reason; this.checks = {};
+    }
+    update(m, now) {
+      this.lastClock = now; this.updates++;
+      if (!m || ![m.width, m.height, m.x, m.y, m.frameAspect].every(Number.isFinite) ||
+          Math.min(m.width, m.height) < .025 || Math.max(m.width, m.height) > 1.05) { this.lose(m ? 'Invalid or too small size measurement' : 'No face/palm size: missing or clipped landmarks'); return false; }
+      this.thresholds = m.identity === 'face' ? { growth: .16, rate: .55, span: .055, samples: 2 } : { growth: .20, rate: .65, span: .09, samples: 2 };
+      const size = Math.sqrt(m.width * m.height), raw = { ...m, size, time: now };
+      this.rawSize = size;
+      const previous = this.last, dt = previous ? (now - previous.time) / 1000 : 0;
+      this.intervalMs = dt * 1000;
+      if (previous && dt <= 0) return false;
+      const discontinuity = !previous || dt > 1.2 || m.identity !== previous.identity || Math.abs(m.frameAspect / previous.frameAspect - 1) > .02 ||
+        Math.abs(Math.log(size / previous.size)) > .5 || Math.abs(Math.log((m.width / m.height) / (previous.width / previous.height))) > .25 ||
+        Math.hypot(m.x - previous.x, m.y - previous.y) > Math.max(.18, size * 1.2);
+      if (discontinuity) {
+        this.lose(previous ? 'Size/pose discontinuity: establishing a new anchor' : 'First measurement: hold steady to arm');
+        this.started = now; this.last = { ...raw, sw: Math.log(m.width), sh: Math.log(m.height) }; this.size = this.rawSize = size;
+        this.history.push({ time: now, w: this.last.sw, h: this.last.sh, rising: false }); return false;
+      }
+      const sw = approach(previous.sw, Math.log(m.width), 10, dt), sh = approach(previous.sh, Math.log(m.height), 10, dt);
+      const instantaneous = ((sw + sh) - (previous.sw + previous.sh)) / (2 * dt);
+      this.last = { ...raw, sw, sh }; this.size = Math.exp((sw + sh) / 2);
+      // Count raw coherent increments inside the window, not two consecutive
+      // threshold crossings. One abrupt tracking jump followed by stillness fails.
+      const rising = Math.min(Math.log(m.width / previous.width), Math.log(m.height / previous.height)) > .007;
+      this.history.push({ time: now, w: sw, h: sh, rising });
+      const windowMs = Math.max(550, Math.min(1050, dt * 2200));
+      while (this.history.length > 2 && this.history[0].time < now - windowMs) this.history.shift();
+      const anchor = this.history[0], seconds = (now - anchor.time) / 1000;
+      const dw = sw - anchor.w, dh = sh - anchor.h;
+      this.growth = Math.exp((dw + dh) / 2) - 1; this.rate = seconds > 0 ? (dw + dh) / (2 * seconds) : 0;
+      this.quiet = Math.abs(instantaneous) < .3 && Math.abs(this.rate) < .3 ? this.quiet + dt : 0;
+      if (now - this.started >= 600 && this.quiet >= .45) this.armed = true;
+      this.votes = this.history.slice(1).filter(item => item.rising).length;
+      const t = this.thresholds;
+      this.checks = { armed: this.armed, window: seconds >= .14 && seconds <= 1.2,
+        growth: this.growth >= t.growth, speed: this.rate >= t.rate,
+        bothSpans: Math.exp(dw) - 1 >= t.span && Math.exp(dh) - 1 >= t.span,
+        freshGrowth: rising && instantaneous > .25, coherentSamples: this.votes >= t.samples };
+      this.status = !this.armed ? 'Hold steady to rearm' : 'Waiting for: ' + Object.entries(this.checks).filter(([, pass]) => !pass).map(([key]) => key).join(', ');
+      this.trace.push({ at: now, rawSize: size, size: this.size, growth: this.growth, rate: this.rate, armed: this.armed, coherentSamples: this.votes, checks: { ...this.checks } });
+      if (this.trace.length > 30) this.trace.shift();
+      if (Object.values(this.checks).every(Boolean)) {
+        this.lastDetection = this.trace[this.trace.length - 1];
+        this.count++; this.armed = false; this.quiet = 0; this.votes = 0; this.history = [{ time: now, w: sw, h: sh, rising: false }];
+        this.status = 'Sudden approach detected: sent to shared startle handler'; return true;
+      }
+      return false;
+    }
+    tick(now) { this.lastClock = now; if (this.last && now - this.last.time > 1200) this.lose('Size updates stale for over 1.2 s'); }
+    snapshot() { return { status: this.status, armed: this.armed, size: this.size, rawSize: this.rawSize,
+      spans: this.last ? [this.last.width, this.last.height] : null, ageMs: this.last ? Math.max(0, this.lastClock - this.last.time) : null,
+      intervalMs: this.intervalMs, growth: this.growth, rate: this.rate, count: this.count, updates: this.updates,
+      coherentSamples: this.votes, quietMs: this.quiet * 1000, thresholds: this.thresholds || null, checks: { ...this.checks }, lastDetection: this.lastDetection }; }
+  }
+
   // HandPose pixels -> mirrored, normalized coordinates. No frame-rate assumptions.
   class HandFilter {
     constructor() { this.x = .5; this.y = .5; this.open = .5; this.speed = 0; this.last = null; this.seen = 0; this.present = false; this.quiet = 0; this.fast = 0; this.armed = false; this.nextWave = 0; }
@@ -534,10 +613,11 @@
           self.postMessage({ type: 'ready' });
         } else if (data.type === 'frame') {
           try {
+            const width = data.image.width, height = data.image.height;
             const result = task.detectForVideo(data.image, data.time);
             const face = result.faceLandmarks?.[0];
             self.postMessage({ type: 'result', categories: result.faceBlendshapes?.[0]?.categories || [],
-              face: face ? { x: 1 - face[1].x, y: face[1].y } : null, time: data.time });
+              face: face ? { x: 1 - face[1].x, y: face[1].y, approach: faceApproachMeasure(face, width, height) } : null, width, height, time: data.time });
           } finally { data.image.close(); }
         } else if (data.type === 'close') { task?.close(); self.close(); }
       } catch (error) { self.postMessage({ type: 'error', message: String(error?.message || error) }); }
@@ -611,6 +691,7 @@
     constructor() {
       this.filter = new HandFilter(); this.state = 'idle'; this.active = false; this.generation = 0;
       this.frames = 0; this.interval = 125; this.lastFrame = 0; this.busy = false;
+      this.approach = new ApproachFilter();
     }
     start() {
       if (this.state === 'loading' || this.state === 'ready') return;
@@ -632,8 +713,13 @@
             this.lastDuration = data.duration;
             this.interval = clamp(approach(this.interval, Math.max(125, data.duration * 1.5), 2, .125), 125, 500);
             this.nextFrame = now + Math.min(500, this.interval * .5);
-            if (!document.hidden && data.time >= live.presenceInvalidBefore && now - data.time < 1500 &&
-                this.filter.update(data.hands, data.time, data.width, data.height)) creature.trigger('retreat');
+            if (!document.hidden && data.time >= live.presenceInvalidBefore && now - data.time < 1500) {
+              const wave = this.filter.update(data.hands, data.time, data.width, data.height);
+              if (now - data.time < 750 && this.approach.update(handApproachMeasure(data.hands, data.width, data.height), data.time)) {
+                creature.trigger('depth', 1, 'hand');
+              }
+              if (wave) creature.trigger('retreat');
+            }
           }
         };
         this.worker.postMessage({ type: 'hand-init', library: localAsset('vendor/ml5-1.4.0/ml5.min.js'),
@@ -647,9 +733,11 @@
       motionBudget.release(this);
       if (this.workerURL) URL.revokeObjectURL(this.workerURL); this.workerURL = null;
       this.filter.lose(); this.frames = 0; this.busy = false; this.videoTime = -1; this.nextFrame = 0; this.error = null;
+      this.approach.reset();
     }
     update(video, now, s) {
       const f = this.filter;
+      this.approach.tick(now);
       if (now - f.seen > Math.max(650, this.interval * 2.5, (this.lastDuration || 0) * 2.5)) f.lose();
       s.handPresent = this.active && this.state === 'ready' && f.present;
       s.handX = f.x; s.handY = f.y; s.handOpen = f.open; s.handSpeed = s.handPresent ? f.speed : 0;
@@ -725,6 +813,7 @@
       this.expression = new ExpressionFilter(); this.frames = 0; this.modelReady = false; this.starting = false;
       this.modelTimer = 0; this.permissionTimer = 0; this.frameTimer = 0; this.cancelLoad = null;
       this.presenceInvalidBefore = 0; this.hands = new HandInput(); this.body = new BodyInput();
+      this.faceApproach = new ApproachFilter();
     }
     stop() {
       this.generation++; this.active = false; this.starting = false; this.modelReady = false;
@@ -732,6 +821,9 @@
       $('#expression-sample-data').value = ''; $('#expression-sample-report').hidden = true;
       $('#expression-sample-status').textContent = 'Samples stay in this tab. No images or audio are recorded. Home clears them.';
       this.hands.stop();
+      this.faceApproach.reset(); this.approachFrame = null;
+      $('#approach-report').value = ''; $('#approach-report').hidden = true; $('#approach-readings').textContent = '';
+      $('#approach-test-status').textContent = 'Test Afraid uses the same retreat and adjusted sound. Keep Sound Effects on.';
       this.body.stop();
       clearTimeout(this.modelTimer); clearTimeout(this.permissionTimer); clearTimeout(this.frameTimer);
       this.cancelLoad?.(); this.cancelLoad = null;
@@ -802,7 +894,7 @@
     }
     loadModel(id) {
       return new Promise((resolve, reject) => {
-        this.workerURL = URL.createObjectURL(new Blob([`(${faceWorker.toString()})()`], { type: 'text/javascript' }));
+        this.workerURL = URL.createObjectURL(new Blob([`${faceApproachMeasure.toString()};(${faceWorker.toString()})()`], { type: 'text/javascript' }));
         this.worker = new Worker(this.workerURL);
         this.cancelLoad = () => reject(failure('AbortError', 'Cancelled'));
         this.modelTimer = setTimeout(() => reject(failure('ModelError', 'Model loading timed out')), 45000);
@@ -816,6 +908,10 @@
           if (data.type === 'ready') { clearTimeout(this.modelTimer); this.cancelLoad = null; resolve(); }
           else if (data.type === 'result') {
             clearTimeout(this.frameTimer); this.busy = false; this.resultAt = performance.now(); this.frames++;
+            this.approachFrame = { receivedAt: this.resultAt, capturedAt: data.time, latencyMs: this.resultAt - data.time,
+              width: data.width, height: data.height,
+              faceDetected: !!data.face, geometry: !!data.face?.approach,
+              state: document.hidden ? 'Page hidden' : data.time < this.presenceInvalidBefore ? 'Old result from before resume' : this.resultAt - data.time > 1000 ? 'Result too old (over 1000 ms)' : !data.face ? 'No face detected' : !data.face.approach ? 'Face detected, but size landmarks are missing or outside the image' : 'Fresh face size received' };
             if (this.active && model.stage === 'live' && !document.hidden && data.time >= this.presenceInvalidBefore && this.resultAt - data.time <= 1000) {
               const signals = this.expression.update(data.face ? data.categories : [], data.time, clamp((data.time - this.lastResultTime) / 1000, .01, .2));
               this.lastResultTime = data.time;
@@ -823,6 +919,7 @@
               if (data.face && (!s.facePresent || data.time > s.presenceUntil)) s.presenceSince = data.time;
               Object.assign(s, signals, { facePresent: !!data.face, presenceUntil: data.time + 1000 });
               if (data.face) { s.faceX = clamp(data.face.x); s.faceY = clamp(data.face.y); }
+              if (this.faceApproach.update(data.face?.approach || null, data.time)) creature.trigger('depth', 1, 'face');
             }
           } else if (data.type === 'error') {
             if (this.starting) reject(failure('ModelError', data.message));
@@ -849,6 +946,7 @@
     update(now, dt) {
       if (!this.active || model.stage !== 'live') return;
       const s = creature.s;
+      this.faceApproach.tick(now);
       this.hands.update($('#camera'), now, s);
       this.body.update($('#camera'), now, dt, s);
       if (!this.muted && this.audio?.state === 'running') {
@@ -883,13 +981,14 @@
     reset() {
       this.last = null; this.smileTime = 0; this.neutralTime = 0; this.smileLatched = false;
       this.handTime = 0; this.handAway = 2; this.handLatched = false; this.phase = 0;
-      this.approachLevel = .04; this.events = { clap: 0, retreat: 0 };
+      this.approachLevel = .04; this.events = { clap: 0, retreat: 0, depth: 0 };
     }
     pause() { this.last = null; this.smileTime = this.handTime = 0; }
     update(now, s, familiarity, events) {
       const dt = this.last === null ? 0 : Math.min(.2, Math.max(0, (now - this.last) / 1000)); this.last = now;
-      const startled = events.clap > this.events.clap || events.retreat > this.events.retreat;
-      this.events = { clap: events.clap, retreat: events.retreat };
+      const depthStartled = (events.depth || 0) > this.events.depth;
+      const startled = events.clap > this.events.clap || events.retreat > this.events.retreat || depthStartled;
+      this.events = { clap: events.clap, retreat: events.retreat, depth: events.depth || 0 };
       const phase = familiarity >= .7 ? 3 : familiarity >= .4 ? 2 : familiarity >= .15 ? 1 : 0;
       const newPhase = phase > this.phase; this.phase = Math.max(this.phase, phase);
       this.smileTime = s.facePresent && s.smile > .2 ? this.smileTime + dt : 0;
@@ -904,7 +1003,7 @@
       if (newHand) this.handLatched = true;
       const approaching = s.facePresent && familiarity >= this.approachLevel + .12;
       if (approaching) this.approachLevel = familiarity;
-      if (startled) return { name: 'afraid', reason: 'retreat' };
+      if (startled) return { name: 'afraid', reason: depthStartled ? 'sudden approach' : 'retreat' };
       if (newSmile || newPhase) return { name: 'happy', reason: newSmile ? 'smile' : 'familiarity' };
       if ((newHand || approaching) && s.sad < .2 && s.surprise < .2) return { name: 'curious', reason: newHand ? 'hand noticed' : 'approaching' };
       return null;
@@ -921,13 +1020,15 @@
       try { this.musicEnabled = localStorage.getItem('resonance.music') !== 'off'; } catch {}
       this.policy = new SoundCues(); this.lastPlayed = {}; this.history = []; this.counts = { wake: 0, curious: 0, happy: 0, afraid: 0 };
       this.guardUntil = 0; this.lastAny = -Infinity; this.ready = false; this.blocked = false; this.errors = [];
+      this.pendingAfraid = null;
+      this.afraidPlayback = null;
     }
     ensureContext() {
       if (!this.context || this.context.state === 'closed') {
         const Audio = window.AudioContext || window.webkitAudioContext;
         if (!Audio) { this.errors = ['Playback is unavailable in this browser.']; return; }
         try { this.context = new Audio({ latencyHint: 'interactive' }); }
-        catch { this.errors = ['Playback could not start.']; return; }
+        catch (error) { this.errors = [`AudioContext: ${error.name || 'AudioError'}: ${error.message || error}`]; return; }
         const ctx = this.context;
         ctx.addEventListener('statechange', () => {
           if (this.context === ctx && ctx.state === 'running') { this.blocked = false; this.musicTarget = null; this.updateMusic(); }
@@ -936,7 +1037,7 @@
       return this.context;
     }
     resumeContext(ctx) {
-      ctx.resume().then(() => { if (this.context === ctx) { this.blocked = ctx.state !== 'running'; this.updateMusic(); } }).catch(() => { if (this.context === ctx) this.blocked = true; });
+      ctx.resume().then(() => { if (this.context === ctx) { this.blocked = ctx.state !== 'running'; this.resumeError = null; this.updateMusic(); } }).catch(error => { if (this.context === ctx) { this.blocked = true; this.resumeError = `${error.name}: ${error.message}`; } });
     }
     prepareMusic() {
       if (!this.musicEnabled || document.hidden) return;
@@ -955,13 +1056,13 @@
           if (this.buffers.has(name)) return;
           const file = name === 'wake' || name === 'afraid' ? name + '-adjusted' : name;
           const response = await fetch(localAsset('sounds/' + file + '.wav'), { signal: this.abort.signal });
-          if (!response.ok) throw Error(name);
+          if (!response.ok) throw Error(`${file}.wav: HTTP ${response.status}`);
           const buffer = await ctx.decodeAudioData(await response.arrayBuffer());
           if (id === this.generation) this.buffers.set(name, buffer);
         })).then(results => {
           if (id !== this.generation) return;
           const names = ['Wake', 'Curious', 'Happy', 'Afraid'];
-          this.errors = results.flatMap((r, i) => r.status === 'rejected' ? [names[i] + ' sound could not load.'] : []);
+          this.errors = results.flatMap((r, i) => r.status === 'rejected' ? [names[i] + ': ' + String(r.reason?.message || r.reason)] : []);
           this.ready = true;
         });
       }
@@ -990,8 +1091,8 @@
     }
     begin() {
       if (this.active) return;
-      this.active = true; this.policy.reset(); this.lastPlayed = {}; this.lastAny = -Infinity;
-      this.policy.events = { clap: creature.eventCounts.clap, retreat: creature.eventCounts.retreat }; this.lastName = null;
+      this.active = true; this.policy.reset(); this.lastPlayed = {}; this.lastAny = -Infinity; this.pendingAfraid = null;
+      this.policy.events = { clap: creature.eventCounts.clap, retreat: creature.eventCounts.retreat, depth: creature.eventCounts.depth }; this.lastName = null;
       this.counts = { wake: 0, curious: 0, happy: 0, afraid: 0 }; this.history = []; this.wakePending = true;
       const id = this.generation;
       Promise.resolve(this.loading).then(() => {
@@ -1027,12 +1128,38 @@
       try { v.source.stop(now + (immediate ? .003 : .025)); } catch {}
       v.ends = now + (immediate ? .003 : .025); this.guardUntil = performance.now() + 450;
     }
-    request(name, reason) {
+    startle(event) {
+      // The animation handler has already accepted this event and its cooldown.
+      // Audio uses its ID to deduplicate, never a second timer.
+      if (this.afraidPlayback?.eventId === event.id) return;
+      this.afraidPlayback = { eventId: event.id, at: event.at, source: event.source, status: 'Waiting', detail: '' };
+      this.pendingAfraid = { event, expires: performance.now() + 350 };
+      this.flushAfraid(performance.now());
+    }
+    flushAfraid(now) {
+      const pending = this.pendingAfraid;
+      if (!pending) return;
+      if (now > pending.expires) { this.afraidPlayback.status = 'Not played'; this.pendingAfraid = null; return; }
+      const played = this.request('afraid', pending.event.reason, pending.event.id);
+      if (played) { this.pendingAfraid = null; return; }
+      this.afraidPlayback.detail = this.lastRequestError;
+      const terminal = !this.active || !this.effectsEnabled || document.hidden || this.ready && !this.buffers.has('afraid');
+      this.afraidPlayback.status = terminal || now > pending.expires ? 'Not played' : 'Waiting';
+      if (terminal || now > pending.expires) this.pendingAfraid = null;
+    }
+    request(name, reason, eventId = null) {
       const now = performance.now(), ctx = this.context;
-      if (!this.active || !this.effectsEnabled || !ctx || ctx.state !== 'running' || document.hidden || !this.buffers.has(name)) return false;
-      const cooldown = { wake: Infinity, curious: 16000, happy: 11000, afraid: 3200 }[name];
-      if (this.lastPlayed[name] !== undefined && now - this.lastPlayed[name] < cooldown) return false;
-      if (name !== 'afraid' && (this.voice || this.retiring.size || now - this.lastAny < (this.lastName === 'wake' ? 600 : 4000))) return false;
+      const reject = message => { this.lastRequestError = message; return false; };
+      if (!this.active) return reject('Interaction audio is inactive. Start an interaction first.');
+      if (!this.effectsEnabled) return reject('Sound Effects is off.');
+      if (document.hidden) return reject('Page is hidden.');
+      if (!ctx || ctx.state !== 'running') return reject(`AudioContext is ${ctx?.state || 'unavailable'}. ${this.resumeError || this.errors.join(' ') || 'Click Test Afraid to unlock playback.'}`);
+      if (!this.buffers.has(name)) return reject(this.errors.find(e => e.startsWith(name[0].toUpperCase() + name.slice(1) + ':')) || `${name} audio is still loading or has not decoded.`);
+      if (name === 'afraid' && eventId === null) return reject('Afraid requires an accepted startle event.');
+      const cooldown = { wake: Infinity, curious: 16000, happy: 11000, afraid: 0 }[name];
+      if (this.lastPlayed[name] !== undefined && now - this.lastPlayed[name] < cooldown) return reject('Sound cue cooldown.');
+      if (name !== 'afraid' && (this.voice || this.retiring.size || now - this.lastAny < (this.lastName === 'wake' ? 600 : 4000))) return reject('Another sound or cue spacing is active.');
+      try {
       if (name === 'afraid') this.releaseVoice();
       const source = ctx.createBufferSource(), gain = ctx.createGain(); source.buffer = this.buffers.get(name);
       // Files contain the approved 30% preview levels; a further soft output trim.
@@ -1040,13 +1167,22 @@
       const priorEnd = Math.max(ctx.currentTime, ...Array.from(this.retiring, v => v.ends));
       const start = Math.max(ctx.currentTime + .008, priorEnd + .005);
       const v = { name, source, gain, context: ctx, ends: start + source.buffer.duration };
+      source.onended = () => { source.disconnect(); gain.disconnect(); this.retiring.delete(v); if (this.voice === v) this.voice = null;
+        if (name === 'afraid' && this.afraidPlayback?.eventId === eventId) this.afraidPlayback.status = 'Playback ended'; };
+      try { source.start(start); } catch (error) { source.disconnect(); gain.disconnect(); throw error; }
       this.voice = v; this.lastPlayed[name] = now; this.lastAny = now; this.counts[name]++;
       this.lastName = name;
       this.guardUntil = now + (v.ends - ctx.currentTime) * 1000 + 450;
-      this.history.push({ name, reason, at: now, duration: source.buffer.duration, delay: start - ctx.currentTime });
+      this.history.push({ name, reason, eventId, at: now, duration: source.buffer.duration, delay: start - ctx.currentTime });
       if (this.history.length > 40) this.history.shift();
-      source.onended = () => { source.disconnect(); gain.disconnect(); this.retiring.delete(v); if (this.voice === v) this.voice = null; };
-      source.start(start); return true;
+      this.lastRequestError = null;
+      if (name === 'afraid' && this.afraidPlayback?.eventId === eventId) Object.assign(this.afraidPlayback,
+        { status: 'Playback scheduled', detail: `sounds/afraid-adjusted.wav · ${source.buffer.duration.toFixed(3)} s · AudioContext running`, delayMs: (start - ctx.currentTime) * 1000 });
+      return true;
+      } catch (error) {
+        if (this.voice?.name === name) { try { this.voice.source.disconnect(); this.voice.gain.disconnect(); } catch {} this.voice = null; }
+        return reject(`${error.name || 'AudioError'}: ${error.message || error}`);
+      }
     }
     update(now, s, familiarity, events) {
       this.updateMusic();
@@ -1054,8 +1190,10 @@
       const cue = this.policy.update(now, s, familiarity, events);
       const calibrating = model.stage === 'live' && !live.muted && live.gate.elapsed < 1.3;
       const speaking = s.level > .1;
+      // Afraid was submitted directly with the animation event, not polled again.
+      this.flushAfraid(now);
       // Do not queue belated replies while the user is speaking/singing or a sound plays.
-      if (cue && (cue.name === 'afraid' || (!speaking && !calibrating))) {
+      if (cue && cue.name !== 'afraid' && !this.pendingAfraid && !speaking && !calibrating) {
         const played = this.request(cue.name, cue.reason);
         // A hand/smile that arrives during the very short wake keeps its current cue.
         if (!played && this.voice?.name === 'wake') {
@@ -1068,7 +1206,8 @@
       if (this.voice && this.voice.name !== 'afraid') this.voice.gain.gain.setTargetAtTime(speaking ? .14 : .65, ctx.currentTime, .07);
     }
     pause() {
-      this.policy.pause(); this.releaseVoice();
+      if (this.pendingAfraid && this.afraidPlayback) Object.assign(this.afraidPlayback, { status: 'Cancelled', detail: 'Page paused before playback.' });
+      this.policy.pause(); this.releaseVoice(); this.pendingAfraid = null;
       this.music?.pause();
       if (this.musicGain && this.context?.state !== 'closed') {
         this.musicGain.gain.cancelScheduledValues(this.context.currentTime); this.musicGain.gain.value = 0; this.musicTarget = null;
@@ -1079,7 +1218,10 @@
       this.prepareGesture();
       if (this.wakePending) { this.wakePending = false; creature.awaken(); }
     }
-    setEffects(enabled) { this.effectsEnabled = enabled; if (!enabled) this.releaseVoice(); else this.prepareGesture(); }
+    setEffects(enabled) { this.effectsEnabled = enabled; if (!enabled) {
+      if (this.pendingAfraid && this.afraidPlayback) Object.assign(this.afraidPlayback, { status: 'Cancelled', detail: 'Sound Effects was switched off.' });
+      this.pendingAfraid = null; this.releaseVoice();
+    } else this.prepareGesture(); }
     setMusic(enabled) {
       this.musicEnabled = enabled; this.musicEpoch++;
       try { localStorage.setItem('resonance.music', enabled ? 'on' : 'off'); } catch {}
@@ -1091,7 +1233,8 @@
       }
     }
     stop() {
-      this.active = false; this.generation++; this.wakePending = false; this.abort?.abort(); this.abort = null;
+      this.afraidPlayback = null;
+      this.active = false; this.generation++; this.wakePending = false; this.pendingAfraid = null; this.abort?.abort(); this.abort = null;
       this.releaseVoice(true);
       for (const v of this.retiring) { try { v.source.stop(); } catch {} v.source.disconnect(); v.gain.disconnect(); }
       this.retiring.clear();
@@ -1110,7 +1253,8 @@
       musicPlaying: !!this.music && !this.music.paused, musicTracks: this.music ? 1 : 0, musicGain: this.musicGain?.gain.value || 0,
       musicDefault: this.musicLevels.normal, musicTarget: this.musicTarget, musicPosition: this.music?.currentTime || 0,
       effectGain: this.voice?.gain.gain.value || 0, blocked: !!(this.blocked || this.musicBlocked),
-      echoGuard: this.guardMicrophone(performance.now()), counts: { ...this.counts }, history: this.history.map(e => ({ ...e })), errors: [...this.errors] }; }
+      echoGuard: this.guardMicrophone(performance.now()), afraid: this.afraidPlayback ? { ...this.afraidPlayback } : null,
+      counts: { ...this.counts }, history: this.history.map(e => ({ ...e })), errors: [...this.errors] }; }
   }
 
   class Creature {
@@ -1125,8 +1269,9 @@
       this.cx = 0; this.cy = 0; this.radius = 0; this.w = 0; this.h = 0; this.morph = 1;
       this.wakeAge = 10;
       this.sm = { smile: 0, sad: 0, surprise: 0, level: 0, open: .5, hand: 0, body: 0, bodySway: 0, bodyLift: 0, bodySpread: 0, expansion: 1, scale: 1, closeness: .04, rest: 0 };
-      this.events = { surprise: 20, clap: 20, retreat: 20 }; this.power = { surprise: 1, clap: 1, retreat: 1 };
-      this.lastEvent = { surprise: -10, clap: -10, retreat: -10 }; this.eventCounts = { surprise: 0, clap: 0, retreat: 0 };
+      this.events = { surprise: 20, clap: 20, retreat: 20, depth: 20 }; this.power = { surprise: 1, clap: 1, retreat: 1, depth: 1 };
+      this.lastEvent = { surprise: -10, clap: -10, retreat: -10, depth: -10 }; this.eventCounts = { surprise: 0, clap: 0, retreat: 0, depth: 0 };
+      this.lastStartleAt = -Infinity; this.startleSequence = 0; this.lastStartleEvent = this.startleAttempt = null;
       this.lastSpike = 0; this.wasSurprised = false; this.retreatX = -.7; this.retreatY = -.3;
       this.reduced = matchMedia('(prefers-reduced-motion: reduce)');
       this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(canvas); this.resize();
@@ -1149,10 +1294,21 @@
       // Fast but continuous attack, long, non-oscillating recovery.
       return age < .3 ? Math.sin(age / .3 * Math.PI / 2) : ((duration - age) / (duration - .3)) ** 2;
     }
-    trigger(kind, power = 1) {
-      if (this.time - this.lastEvent[kind] < (kind === 'retreat' ? 2 : 1.5)) return false;
+    trigger(kind, power = 1, source = kind === 'clap' ? 'loud sound' : kind === 'retreat' ? 'quick movement' : 'approach') {
+      const now = performance.now();
+      if (kind !== 'surprise') {
+        const remaining = Math.max(0, 3200 - (now - this.lastStartleAt));
+        this.startleAttempt = { source, at: now, accepted: remaining === 0, reason: remaining ? `Shared cooldown: ${(remaining / 1000).toFixed(1)} s remaining` : 'Accepted' };
+        if (remaining) return false;
+        this.lastStartleAt = now;
+      } else if (this.time - this.lastEvent[kind] < 1.5) return false;
       this.lastEvent[kind] = this.time; this.events[kind] = 0; this.power[kind] = clamp(power);
       this.eventCounts[kind]++;
+      if (kind !== 'surprise') {
+        if (kind === 'depth') this.depthSource = source;
+        this.lastStartleEvent = { id: ++this.startleSequence, kind, source, at: now, reason: kind === 'depth' ? 'sudden approach' : source };
+        sounds.startle(this.lastStartleEvent);
+      }
       if (kind === 'retreat') {
         const x = .5 - this.s.handX, y = .5 - this.s.handY, len = Math.hypot(x, y) || 1;
         this.retreatX = Math.abs(x) + Math.abs(y) < .03 ? -.8 : x / len;
@@ -1163,6 +1319,7 @@
     awaken() { this.wakeAge = 0; }
     reset(familiarity = false) {
       this.wakeAge = 10;
+      this.lastStartleAt = -Infinity; this.lastStartleEvent = this.startleAttempt = null; this.depthSource = null;
       this.s = emptySignals(); this.lastSpike = 0; this.wasSurprised = false;
       this.relationship.pause();
       if (familiarity) { this.relationship.reset(); this.fam = .04; }
@@ -1197,6 +1354,7 @@
       const surprise = this.pulse(this.events.surprise, 3.5) * this.power.surprise;
       const clap = this.pulse(this.events.clap, 4.2) * this.power.clap;
       const retreat = this.pulse(this.events.retreat, 2.7) * this.power.retreat;
+      const depth = this.pulse(this.events.depth, 4) * this.power.depth;
       const expressionTotal = sm.smile + sm.sad + sm.surprise;
       const warm = [255, 213, 112], blue = [120, 177, 255], purple = [200, 147, 255];
       for (let c = 0; c < 3; c++) {
@@ -1207,9 +1365,11 @@
       // A closed hand keeps its gathering effect even when both arms are open.
       const bodyExpansion = sm.bodySpread * .28 * (1 - sm.hand * (1 - sm.open) * .8);
       const waking = this.engaged ? 1 - Math.exp(-this.wakeAge * 5) : 1;
-      const expansion = clamp(1 + sm.smile * .23 - sm.sad * .27 + open + bodyExpansion + sm.level * .1 + surprise * .52 * motionFactor - retreat * .2, .6, 1.75) * (.82 + .18 * waking);
+      const naturalExpansion = 1 + sm.smile * .23 - sm.sad * .27 + open + bodyExpansion + sm.level * .1 + surprise * .52 * motionFactor - retreat * .2;
+      // Depth retreat owns shape/position briefly, even with a fully open hand.
+      const expansion = clamp(lerp(naturalExpansion, .72, depth), .6, 1.75) * (.82 + .18 * waking);
       sm.expansion = approach(sm.expansion, expansion, 5, dt);
-      sm.scale = approach(sm.scale, 1 + closeness * .3 + sm.smile * .17 - sm.rest * .16, 2.2, dt);
+      sm.scale = approach(sm.scale, lerp(1 + closeness * .3 + sm.smile * .17 - sm.rest * .16, .68, depth), depth > .1 ? 8 : 2.2, dt);
       const W = this.w, H = this.h;
       const radiusFactor = this.thumbnail ? .3 : this.engaged && W < 500 ? .31 : .245;
       const R = Math.min(W, H) * radiusFactor;
@@ -1238,23 +1398,24 @@
         tx += Math.sin(this.t * .85) * R * .045 * closeness * awake * motionFactor;
       }
       ty += Math.sin(this.t * .7) * R * .045;
+      tx = lerp(tx, W / 2, depth); ty = lerp(ty, H / 2, depth);
       tx = clamp(tx, W * .27, W * .73); ty = clamp(ty, H * .27, H * .73);
-      const followRate = (1.5 + closeness * 3) * (1 - sm.rest * .6) + retreat * 4;
+      const followRate = (1.5 + closeness * 3) * (1 - sm.rest * .6) + retreat * 4 + depth * 5;
       this.cx = approach(this.cx, tx, followRate, dt); this.cy = approach(this.cy, ty, followRate, dt);
-      this.visual = { surprise, clap, retreat, motionFactor, speed, R, scale: sm.scale * sm.expansion, followRate };
+      this.visual = { surprise, clap, retreat, depth, motionFactor, speed, R, scale: sm.scale * sm.expansion, followRate };
     }
     draw() {
       const { ctx, w: W, h: H, sm, time, t } = this;
       if (!W || !H) return;
-      const { R, clap, motionFactor, retreat } = this.visual;
+      const { R, clap, motionFactor, retreat, depth } = this.visual;
       ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
       const [r, g, b] = this.color.map(Math.round), color = `rgb(${r},${g},${b})`;
-      const halo = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, R * 1.65);
+      const halo = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, R * 1.65 * (1 - depth * .28));
       halo.addColorStop(0, `rgba(${r},${g},${b},.12)`); halo.addColorStop(.4, `rgba(${r},${g},${b},.025)`); halo.addColorStop(1, 'transparent');
       ctx.fillStyle = halo; ctx.fillRect(0, 0, W, H);
-      const coreR = R * .2, core = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, coreR);
+      const coreR = R * .2 * (1 - depth * .28), core = ctx.createRadialGradient(this.cx, this.cy, 0, this.cx, this.cy, coreR);
       core.addColorStop(0, `rgba(${r},${g},${b},.25)`); core.addColorStop(1, 'transparent');
       ctx.fillStyle = core; ctx.fillRect(this.cx - coreR, this.cy - coreR, coreR * 2, coreR * 2);
       const tilt = .29 + Math.sin(t * .3) * .1 + sm.body * Math.sin(t * 1.6) * .35 * motionFactor;
@@ -1268,7 +1429,7 @@
         const d = Math.hypot(x, y, z);
         const ripple = sm.level * .23 * Math.sin(d * 12 - t * 7 + ph * .12) * motionFactor;
         const breathing = 1 + .055 * Math.sin(t * 1.5 - d * 2.2);
-        const scatter = clap * (.25 + .43 * (1 + Math.sin(ph * 3)) / 2) * motionFactor;
+        const scatter = clap * (.25 + .43 * (1 + Math.sin(ph * 3)) / 2) * motionFactor * (1 - depth * .9);
         const m = sm.scale * sm.expansion * breathing * (1 + ripple) + scatter;
         const vib = sm.level * .035 * motionFactor;
         x = x * m + Math.sin(t * 17 + ph) * vib + Math.sin(t * .6 + ph) * .025;
@@ -1286,9 +1447,9 @@
         if (q > .78) { const bounded = .78 + .21 * Math.tanh((q - .78) / .21); dx *= bounded / q; dy *= bounded / q; }
         const px = this.cx + dx, py = this.cy + dy;
         minX = Math.min(minX, px); maxX = Math.max(maxX, px); minY = Math.min(minY, py); maxY = Math.max(maxY, py);
-        const depth = clamp(.75 - depthZ * .22, .32, 1);
-        const alpha = clamp(this.brightness[i] * depth * (.88 + sm.closeness * .12) * (1 - sm.rest * .22) * (1 + Math.max(0, .5 - d) * .8));
-        const size = this.size[i] * clamp(perspective, .7, 1.4) * (this.thumbnail ? .75 : 1);
+        const depthLight = clamp(.75 - depthZ * .22, .32, 1);
+        const alpha = clamp(this.brightness[i] * depthLight * (.88 + sm.closeness * .12) * (1 - sm.rest * .22) * (1 + Math.max(0, .5 - d) * .8));
+        const size = this.size[i] * clamp(perspective, .7, 1.4) * (this.thumbnail ? .75 : 1) * (1 - depth * .12);
         ctx.globalAlpha = alpha; ctx.fillRect(px - size / 2, py - size / 2, size, size);
         if (i % 13 === 0) {
           ctx.globalAlpha = alpha * .075; ctx.beginPath(); ctx.arc(px, py, size * 2.6, 0, Math.PI * 2); ctx.fill();
@@ -1297,7 +1458,7 @@
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
       this.metrics = { color: this.color.map(Math.round), center: [this.cx, this.cy], radius: R,
         expansion: sm.expansion, scale: sm.scale, level: sm.level, speed: this.visual.speed, wakeAge: this.wakeAge,
-        rotation: this.rotation, sway, clap, retreat, surprise: this.visual.surprise,
+        rotation: this.rotation, sway, clap, retreat, depth, depthSource: this.depthSource, surprise: this.visual.surprise,
         body: { sway: sm.bodySway, lift: sm.bodyLift, spread: sm.bodySpread, motion: sm.body },
         familiarity: this.fam, rest: sm.rest, absenceSeconds: this.relationship.absence, followRate: this.visual.followRate,
         bounds: [minX, minY, maxX, maxY], viewport: [W, H], events: { ...this.eventCounts } };
@@ -1362,7 +1523,7 @@
   function resetInputs(familiarity = false) {
     Object.assign(model, { expression: null, intensity: .85, sound: 0, sustain: false, muted: false, hand: false, openness: .5, body: 0, bodyLean: 0, arms: 0, present: true, faceX: .5 });
     creature.reset(familiarity); pointer = null; lastSoundInput = { value: 0, time: performance.now() }; syncControls();
-    if (familiarity && sounds.active) { sounds.policy.reset(); sounds.policy.events = { clap: creature.eventCounts.clap, retreat: creature.eventCounts.retreat }; }
+    if (familiarity && sounds.active) { sounds.policy.reset(); sounds.policy.events = { clap: creature.eventCounts.clap, retreat: creature.eventCounts.retreat, depth: creature.eventCounts.depth }; }
   }
   function setStage(stage) {
     const previous = model.stage;
@@ -1452,6 +1613,20 @@
   $('#hand').addEventListener('click', () => { if (model.stage !== 'demo') return; model.hand = !model.hand; pointer = null; creature.s.handSpeed = 0; syncControls(); });
   $('#openness').addEventListener('input', e => { model.openness = +e.target.value; model.hand = true; syncControls(); });
   $('#retreat').addEventListener('click', () => { if (model.stage !== 'demo') return; model.hand = true; creature.trigger('retreat'); syncControls(); });
+  $('#approach').addEventListener('click', () => { if (model.stage === 'demo') creature.trigger('depth', 1, 'Demo'); });
+  $('#test-afraid').addEventListener('click', () => {
+    if (model.stage !== 'live') return;
+    sounds.prepareGesture();
+    const accepted = creature.trigger('depth', 1, 'Test Afraid');
+    $('#approach-test-status').textContent = accepted ? 'Test event accepted. Watch the retreat and check audio status below.' : creature.startleAttempt.reason + '. Wait, then try again.';
+    updateApproachDebug();
+  });
+  $('#copy-approach').addEventListener('click', async () => {
+    updateApproachDebug();
+    const report = $('#approach-report'); report.hidden = false; report.select();
+    try { await navigator.clipboard.writeText(report.value); $('#approach-test-status').textContent = 'Diagnostics copied. No camera images or microphone recordings are included.'; }
+    catch { $('#approach-test-status').textContent = 'Select and copy the diagnostic report below.'; }
+  });
   $('#body').addEventListener('input', e => { model.body = +e.target.value; syncControls(); });
   $('#body-lean').addEventListener('input', e => { model.bodyLean = +e.target.value; });
   $('#body-arms').addEventListener('input', e => { model.arms = +e.target.value; });
@@ -1610,6 +1785,43 @@
     const message = sounds.errors.length ? sounds.errors.join(' ') + ' Tap Resume sound to retry.' : sounds.musicError ? 'Music could not load. Tap Resume sound to retry.' : blocked ? 'Playback is paused. Tap Resume sound to continue.' : !sounds.ready && sounds.active ? 'Preparing sound…' : baseMessage;
     for (const label of $$('[data-playback-status]')) if (label.textContent !== message) label.textContent = message;
   }
+  function approachDiagnostics() {
+    return { note: 'Live size measurements and browser playback status; no camera images or audio recordings. Test Afraid is a manual event, not a camera approach.',
+      stage: model.stage, pageHidden: document.hidden, facePresent: !!creature.s.facePresent && performance.now() <= creature.s.presenceUntil,
+      faceFrame: live.approachFrame ? { ...live.approachFrame, receivedAgeMs: performance.now() - live.approachFrame.receivedAt } : null,
+      face: live.faceApproach.snapshot(), palm: live.hands.approach.snapshot(), recentFaceSizes: live.faceApproach.trace,
+      cooldownMs: Math.max(0, 3200 - (performance.now() - creature.lastStartleAt)),
+      lastEvent: creature.lastStartleEvent, lastAttempt: creature.startleAttempt,
+      audio: { context: sounds.context?.state || 'unavailable', effectsEnabled: sounds.effectsEnabled,
+        decoded: sounds.buffers.has('afraid'), playback: sounds.afraidPlayback, errors: sounds.errors, resumeError: sounds.resumeError || null },
+      animation: { depth: creature.visual?.depth || 0, scale: creature.sm.scale, expansion: creature.sm.expansion } };
+  }
+  function updateApproachDebug() {
+    if (!$('#approach-debug').open) return;
+    const d = approachDiagnostics(), v = d.face, f = d.faceFrame, t = v.thresholds || { growth: .16, rate: .55, span: .055, samples: 2 };
+    const age = value => value === null || value === undefined ? 'n/a' : `${Math.round(value)} ms`;
+    $('#approach-readings').textContent = [
+      `Face detected: ${d.facePresent ? 'Yes' : 'No'} | Size available: ${f?.geometry ? 'Yes' : 'No'}`,
+      `Frame: ${f?.width || '?'} × ${f?.height || '?'} | Results: ${live.frames} | Size updates: ${v.updates}`,
+      `Latest result: ${f?.state || 'No result received'} | Received ${age(f?.receivedAgeMs)} ago`,
+      `Inference age: ${age(f?.latencyMs)} | Sample interval: ${age(v.intervalMs)}`,
+      `Face size: ${v.size.toFixed(3)} (raw ${v.rawSize.toFixed(3)}); width / height: ${v.spans?.map(n => n.toFixed(3)).join(' / ') || 'n/a'}`,
+      `Growth: ${(v.growth * 100).toFixed(1)}% | Speed: ${v.rate.toFixed(3)} log-size/s`,
+      `Thresholds: growth ≥ ${(t.growth * 100).toFixed(0)}%, speed ≥ ${t.rate.toFixed(2)}/s, both spans ≥ ${(t.span * 100).toFixed(1)}%, ${t.samples} coherent increments`,
+      `Armed: ${v.armed ? 'Yes' : 'No'} | Stillness: ${Math.round(v.quietMs)} / 450 ms | Coherent increments: ${v.coherentSamples}`,
+      `Detection: ${v.status}`,
+      `Checks: ${Object.entries(v.checks).map(([k, pass]) => `${k} ${pass ? 'PASS' : 'WAIT'}`).join('; ') || 'Waiting for usable measurements'}`,
+      `Shared cooldown: ${d.cooldownMs ? (d.cooldownMs / 1000).toFixed(1) + ' s' : 'Ready'}`,
+      `Last attempt: ${d.lastAttempt ? `${d.lastAttempt.source}: ${d.lastAttempt.reason}` : 'None'}`,
+      `Last event: ${d.lastEvent ? `#${d.lastEvent.id} ${d.lastEvent.kind} / ${d.lastEvent.source}, ${age(performance.now() - d.lastEvent.at)} ago` : 'None'}`,
+      `Audio: ${d.audio.context} | Sound Effects ${d.audio.effectsEnabled ? 'On' : 'Off'} | Afraid decoded: ${d.audio.decoded ? 'Yes' : 'No'}`,
+      `Afraid: ${d.audio.playback ? `#${d.audio.playback.eventId} ${d.audio.playback.status}. ${d.audio.playback.detail}` : 'No accepted event yet'}`,
+      ...d.audio.errors,
+      `Retreat: ${d.animation.depth.toFixed(2)} | Scale: ${d.animation.scale.toFixed(2)} | Expansion: ${d.animation.expansion.toFixed(2)}`,
+      `Palm: ${d.palm.status} (optional; never required for a face approach)`
+    ].join('\n');
+    $('#approach-report').value = JSON.stringify(d, null, 2);
+  }
   function updateStatus() {
     syncPlaybackControls();
     const fam = creature.fam;
@@ -1635,9 +1847,11 @@
       $('#resume-audio').hidden = !suspended || live.muted;
       $('#mic-status').textContent = live.muted ? 'Microphone is off.' : suspended ? 'Microphone paused. Tap Resume microphone.' : live.audioState?.calibrating ? 'Stay quiet for a moment while the microphone settles.' : 'Listening. Gentle sounds make ripples.';
       $('#mic-meter').value = s.level;
+      updateApproachDebug();
     }
     const reactions = [];
-    if (creature.events.retreat < 2.7) reactions.push('A little startled. Gently stepping back');
+    if (creature.events.depth < 4) reactions.push('A little startled. Tucking in, then opening again');
+    else if (creature.events.retreat < 2.7) reactions.push('A little startled. Gently stepping back');
     else if (creature.events.clap < 4.2) reactions.push('Drifting apart, then gathering again');
     else if (expression === 'smile' && s.smile > .1) reactions.push('A warm glow, a little closer');
     else if (expression === 'sad' && s.sad > .1) reactions.push('Slowing down and gathering close');
@@ -1673,6 +1887,7 @@
     if (live.active) {
       live.presenceInvalidBefore = lastTime;
       live.hands.filter.lose(); creature.s.handPresent = false;
+      live.faceApproach.lose(); live.hands.approach.lose();
       live.body.filter = new BodyFilter();
       Object.assign(creature.s, { bodyPresent: false, bodySway: 0, bodyLift: 0, bodySpread: 0, bodyMotion: 0 });
       live.gate.reset(); live.expression.clearTracking(); creature.s.facePresent = false;
@@ -1684,8 +1899,11 @@
   requestAnimationFrame(frame);
   // Read-only diagnostic snapshot for browser QA; it cannot inject real inputs.
   Object.defineProperty(window, 'resonanceDemo', { value: Object.freeze({
-    snapshot: () => ({ stage: model.stage, shape: model.shape, theme: THEMES[model.theme].name, inputs: { ...model }, signals: { ...creature.s }, ...structuredClone(creature.metrics), playback: sounds.snapshot(),
+    snapshot: () => ({ stage: model.stage, shape: model.shape, theme: THEMES[model.theme].name, inputs: { ...model }, signals: { ...creature.s }, ...structuredClone(creature.metrics),
+      events: { ...creature.eventCounts }, depthSource: creature.depthSource,
+      startle: { event: creature.lastStartleEvent, attempt: creature.startleAttempt, cooldownMs: Math.max(0, 3200 - (performance.now() - creature.lastStartleAt)) }, playback: sounds.snapshot(),
       live: { active: live.active, starting: live.starting, modelReady: live.modelReady, worker: !!live.worker, frames: live.frames, facePresent: live.expression.present, expression: live.expression.active, expressionDebug: live.expression.diagnostics(),
+        approach: { face: live.faceApproach.snapshot(), hand: live.hands.approach.snapshot() },
         hands: { state: live.hands.state, active: live.hands.active, worker: !!live.hands.worker, error: live.hands.error, busy: live.hands.busy, frames: live.hands.frames, interval: live.hands.interval },
         body: { state: live.body.state, worker: !!live.body.worker, error: live.body.error, busy: live.body.busy, frames: live.body.frames, interval: live.body.interval },
         tracks: live.stream?.getTracks().map(t => ({ kind: t.kind, state: t.readyState, enabled: t.enabled })) || [], audio: live.audio?.state || 'closed', previewHidden: live.previewHidden } }),

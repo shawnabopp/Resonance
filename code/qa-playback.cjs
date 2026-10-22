@@ -61,7 +61,7 @@ async function main(){
     pass('Hand noticing, stable smile and retreat use their corresponding effects; Afraid preempts Curious; held inputs and quick repeats do not stack or retrigger');
     await click('#demo-controls [data-effects]');const beforeOff=(await snap()).playback.counts.afraid;await click('#clap');await sleep(150);assert.equal((await snap()).playback.counts.afraid,beforeOff);assert((await snap()).playback.musicPlaying);
     await click('#demo-controls [data-music]');assert.equal((await snap()).playback.musicPlaying,false);
-    await click('#demo-controls [data-effects]');await sleep(1800);await click('#retreat');await wait(async()=> (await snap()).playback.counts.afraid>beforeOff);
+    await click('#demo-controls [data-effects]');await sleep(3300);await click('#retreat');await wait(async()=> (await snap()).playback.counts.afraid>beforeOff);
     await click('#home');assert.equal((await snap()).playback.active,false);assert.equal((await snap()).playback.current,null);assert.equal((await snap()).playback.musicPlaying,false);
     assert.equal((await snap()).playback.musicTracks,1);assert.equal(await run('localStorage.getItem("resonance.music")'),'off');
     await click('#meet');await click('#try-demo');await wait(async()=> (await snap()).playback.counts.wake===1);await sleep(850);

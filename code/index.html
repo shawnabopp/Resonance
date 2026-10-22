@@ -75,6 +75,7 @@
         </fieldset>
         <fieldset><legend><span>03</span> Gesture · Demo only</legend>
           <div class="button-row"><button id="hand" aria-pressed="false">Follow hand · Off</button><button id="retreat">Quick wave</button></div>
+          <button id="approach" class="pill">Quick approach · Demo</button>
           <label class="slider-label" for="openness">Closed <span>Open <output for="openness" id="openness-value">50%</output></span></label><input id="openness" type="range" min="0" max="1" step="0.01" value="0.5">
           <p class="hint">Turn on hand follow, then move your pointer or drag over the creature. Arrow keys work too.</p>
         </fieldset>
@@ -145,6 +146,16 @@
           <p class="hint body-phone-hint">Place your phone somewhere stable and step back.</p>
           <p class="hint">Sway gently, then raise or open both arms. Keep moving to add rotation and flow. Rest your arms to let it settle. Your hand still guides and gathers it.</p>
         </fieldset>
+        <p class="hint">After holding still, a sudden approach with your face or palm makes it tuck in and play Afraid. Keep Sound Effects on to hear it. Move slowly for a gentler response. Pause before trying again.</p>
+        <details id="approach-debug" class="expression-debug">
+          <summary>Camera approach diagnostics</summary>
+          <p class="hint">Hold still until Armed is Yes, then move your face closer quickly. Hands are optional. Size is relative to the image, not distance in metres. A shared 3.2-second cooldown protects every startle. Purple still means a surprised facial expression.</p>
+          <div class="button-row"><button id="test-afraid" class="pill">Test Afraid</button><button id="copy-approach" class="pill">Copy diagnostics</button></div>
+          <p id="approach-test-status" class="hint" role="status">Test Afraid bypasses camera detection and uses the same startle handler, animation and adjusted sound. Keep Sound Effects on.</p>
+          <pre id="approach-readings" class="hint"></pre>
+          <textarea id="approach-report" rows="12" readonly aria-label="Approach diagnostic report" hidden></textarea>
+          <p class="hint">Playback status confirms browser scheduling, not that your speakers are audible. If the test works but your approach does not, copy this report immediately after trying.</p>
+        </details>
         <p class="hint">Headphones help keep the creature's sounds out of your microphone.</p>
         <button id="exit" class="pill">End interaction</button>
       </aside>
@@ -161,7 +172,7 @@
   <dialog id="theme-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>A colour of its own</h2><button class="close" aria-label="Close">×</button></div><div class="theme-picker" data-theme-picker></div><p class="hint">Expressions gently tint its colour. It returns to your theme when the signal settles.</p></dialog>
   <dialog id="help-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>Small gestures matter.</h2><button class="close" aria-label="Close">×</button></div>
     <span id="help-mode" class="badge">HOW TO CONNECT</span>
-    <ul class="help-list"><li><b>Smile</b> · It warms, opens up and comes closer.</li><li><b>Sad look</b> · It turns blue, slows and gathers.</li><li><b>Surprise</b> · It turns purple, opens outward and settles.</li><li><b>Sound</b> · Your volume creates ripples. A sudden loud sound scatters it once, then it gathers again.</li><li><b>Hand gestures</b> · Move slowly to guide it. Open your palm to expand, close your hand to gather, or wave quickly to startle it. Pause before waving again.</li><li><b>Body movement</b> · Sway from side to side, or raise and open both arms to help it float and expand. Moving adds rotation and flow; pausing lets it settle. Body movement alone never startles it.</li></ul>
+    <ul class="help-list"><li><b>Smile</b> · It warms, opens up and comes closer.</li><li><b>Sad look</b> · It turns blue, slows and gathers.</li><li><b>Surprise</b> · It turns purple, opens outward and settles.</li><li><b>Sound</b> · Your volume creates ripples. A sudden loud sound scatters it once, then it gathers again.</li><li><b>Hand gestures</b> · Move slowly to guide it. Open your palm to expand, close your hand to gather, or wave quickly to startle it. Pause before waving again.</li><li><b>Sudden approach</b> · Hold steady, then bring your face or palm closer quickly. It shrinks and tucks toward the centre, then gently opens again. Slow approaches stay calm. Pause before trying again.</li><li><b>Body movement</b> · Sway from side to side, or raise and open both arms to help it float and expand. Moving adds rotation and flow; pausing lets it settle. Body movement alone never startles it.</li></ul>
     <p class="description">Simply stay in view. A quiet minute or two brings it closer; smiles and gentle sounds help it warm up sooner. A neutral or sad look never reduces familiarity. A loud sound may startle it, but does not undo your bond.</p>
     <p class="hint">If your face leaves the frame, growth pauses and your progress stays. After about eight seconds away it gradually rests. Growth pauses in background tabs. Demo presence uses the same timing. Reset clears Demo inputs; Start fresh and Home reset familiarity.</p>
     <button id="restart" class="pill">Start fresh</button>

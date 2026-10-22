@@ -31,6 +31,7 @@
 .expression-debug th,.expression-debug td{padding:5px 0;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
 .expression-debug th:last-child,.expression-debug td:last-child{text-align:right;padding-left:8px}
 .expression-debug .button-row{flex-wrap:wrap}
+.expression-debug pre{white-space:pre-wrap;font-family:inherit;line-height:1.7}
 .expression-debug .button-row button{min-height:44px;flex-basis:95px}
 .expression-debug select,.expression-debug textarea{width:100%;max-width:100%;border:1px solid var(--line);border-radius:8px;padding:10px;background:#111512;color:#d1d4d1;font:inherit;min-height:44px}
 .expression-debug textarea{resize:vertical;font-family:monospace;font-size:10px;margin:8px 0}

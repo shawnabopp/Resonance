@@ -19,6 +19,13 @@ for(const hz of [10,30,60]) {
   const baseline=p.phase;p.pause();now+=500000;feed(.1,{smile:0},.4);assert.equal(p.phase,baseline);
 }
 const g=new AudioGate();
+const depthPolicy=new SoundCues(),depthEvents={clap:0,retreat:0,depth:0};
+const depthSignals={facePresent:true,smile:0,handPresent:false,handSpeed:0,sad:0,surprise:0};
+depthPolicy.update(0,depthSignals,.04,depthEvents);depthEvents.depth++;
+assert.equal(depthPolicy.update(100,depthSignals,.04,depthEvents).reason,'sudden approach');
+assert.equal(depthPolicy.update(200,depthSignals,.04,depthEvents),null,'one depth event cannot replay');
+depthEvents.depth++;depthEvents.clap++;depthEvents.retreat++;
+assert.equal(depthPolicy.update(4000,depthSignals,.04,depthEvents).name,'afraid','simultaneous inputs share one cue');
 for(let i=0;i<100;i++)g.update(.35,.02,1,true);
 assert.equal(g.elapsed,0,'own wake is excluded from initial room-noise calibration');
 for(let i=0;i<130;i++)g.update(.006,.02);
