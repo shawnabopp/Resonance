@@ -53,7 +53,9 @@
       <header class="session-heading"><span id="mode-badge" class="badge">DEMO · SIMULATED INPUTS</span><span class="session-wordmark">RESONANCE</span></header>
       <div class="bond"><span id="bond-label">Cautious · Still a little shy</span><div class="bond-track"><div id="bond-fill"></div></div><span id="bond-value">4%</span></div>
       <p id="reaction" class="reaction" aria-live="polite">Take your time. It is getting to know you.</p>
+      <div id="controls-backdrop" hidden aria-hidden="true"></div>
       <aside id="demo-controls" class="controls" aria-labelledby="controls-title" tabindex="-1">
+        <div class="drawer-heading"><span id="demo-drawer-title">Controls · Demo</span><button class="text-button" data-close-controls aria-label="Close controls">×</button></div>
         <div class="panel-heading"><div><p class="eyebrow accent">DEMO PLAYGROUND</p><h2 id="controls-title">A little give & take.</h2></div><button id="reset" class="text-button" title="Clear simulated inputs and keep familiarity">Reset</button></div>
         <p class="panel-intro">Give it a signal. See how it responds.<br>Try combining different inputs.</p>
         <fieldset class="playback-controls"><legend>Audio</legend><div class="button-row"><button data-music aria-pressed="true">Music · On</button><button data-effects aria-pressed="true">Sound Effects · On</button></div><button data-resume-playback class="text-button" hidden>Resume sound</button><p class="hint" data-playback-status role="status">Music and effects are separate from Demo input.</p></fieldset>
@@ -88,6 +90,7 @@
         <div class="control-footer"><span class="status-dot"></span>All Demo inputs are simulated.</div>
       </aside>
       <aside id="live-controls" class="controls" hidden tabindex="-1" aria-labelledby="live-title">
+        <div class="drawer-heading"><span id="live-drawer-title">Controls</span><button class="text-button" data-close-controls aria-label="Close controls">×</button></div>
         <p class="eyebrow accent">LIVE · ON THIS DEVICE</p><h2 id="live-title">Here with you.</h2>
         <p id="model-status" class="panel-intro" role="status">Face Landmarker is ready.</p>
         <fieldset class="playback-controls"><legend>Audio</legend><div class="button-row"><button data-music aria-pressed="true">Music · On</button><button data-effects aria-pressed="true">Sound Effects · On</button></div><button data-resume-playback class="text-button" hidden>Resume sound</button><p class="hint" data-playback-status role="status">Music and effects are separate from your microphone.</p></fieldset>
@@ -165,6 +168,7 @@
         <button data-dialog="shape-dialog"><span aria-hidden="true">◇</span>Shape</button>
         <button data-dialog="theme-dialog"><span aria-hidden="true">◌</span>Theme</button>
         <button id="mute" aria-pressed="false"><span aria-hidden="true">≈</span><span id="mute-label">Demo input</span></button>
+        <button id="controls-toggle" hidden aria-controls="live-controls" aria-expanded="false" aria-haspopup="dialog"><span aria-hidden="true">☷</span>Controls</button>
         <button id="help-button" data-dialog="help-dialog" aria-haspopup="dialog" aria-controls="help-dialog" aria-expanded="false"><span aria-hidden="true">?</span>Help</button>
       </nav>
     </section>
