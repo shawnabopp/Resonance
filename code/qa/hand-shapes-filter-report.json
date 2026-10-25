@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "Four poses and repeated transitions stabilize at 4/8/12/30 Hz using elapsed-time dwell",
+    "Stationary palm + moving index produces localized finger energy, without palm speed or a wave startle",
+    "Rigid translation, rotation and distance changes are separated from finger articulation",
+    "Portrait source dimensions and mirrored point direction remain consistent",
+    "Weak attraction uses broad 3D clouds; loss releases the gesture tendency gradually to the selected base",
+    "Tracking loss clears old gesture/velocity; reacquisition starts with no stored finger impulse"
+  ],
+  "limitation": "Synthetic 2D hand landmarks, not physical-camera recognition accuracy."
+}

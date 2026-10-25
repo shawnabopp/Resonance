@@ -137,7 +137,8 @@
         <fieldset><legend>Hand gestures · ml5 HandPose</legend>
           <p id="hand-status" class="hint" role="status">Loading HandPose on this device…</p>
           <button id="retry-hand" class="pill" hidden>Retry hand tracking</button>
-          <p class="hint">Keep one hand in view. Move slowly to guide it, open your palm to expand it, or close your hand to gather it. A quick wave makes it step back. Pause before waving again.</p>
+          <p class="hint">Keep one hand in view. Move slowly to guide it, or hold an open palm, fist, V sign, or one pointing finger for a moment to shape it. Keep your palm still and wiggle your fingers to send ripples through it. A quick wave makes it step back.</p>
+          <p id="hand-shape-status" class="hint" role="status">Hold a gesture for about half a second. Let your hand leave the view to restore its natural shape.</p>
         </fieldset>
         <fieldset><legend>Body movement</legend>
           <p id="body-status" class="hint" role="status">Loading body tracking on this device…</p>
@@ -177,7 +178,7 @@
     <p class="hint">If your face leaves the frame, growth pauses and your progress stays. After about eight seconds away it gradually rests. Growth pauses in background tabs. Demo presence uses the same timing. Reset clears Demo inputs; Start fresh and Home reset familiarity.</p>
     <button id="restart" class="pill">Start fresh</button>
     <p class="hint">Live uses your microphone and MediaPipe Face Landmarker on this device. Facial movements are approximate cues, not a measure of your feelings. Hiding the preview keeps tracking on. Home or End interaction stops both devices.</p>
-    <p class="hint">Live hand gestures use ml5 HandPose and the same camera as face tracking. Follow the mirrored preview. When your hand leaves, it gently returns to floating. Familiarity makes it more willing to follow.</p>
+    <p class="hint">Live hand gestures use ml5 HandPose and the same camera as face tracking. Follow the mirrored preview. Keep your palm still and move your fingers to make ripples. Hold an open palm, fist, V sign, or pointing finger for a moment to shape it. When your hand leaves, it returns to its chosen natural form. Familiarity makes it more willing to follow. Demo keeps its simulated follow and open / close controls.</p>
     <p class="hint">Body tracking shares the same camera. Keep your shoulders and arms in view; if they leave the frame, it settles gently. Face and sound still work when only your face is visible.</p>
     <p class="hint">Music loops at 10% volume across Home, preparation and interaction. If playback is blocked, tap or click anywhere to start it. Music keeps playing while you speak or sing, and softens only while an interaction effect plays. Music remembers your On / Off choice. Sound Effects controls Wake, Curious, Happy and Afraid. Interaction effects soften while you speak. Home or End interaction stops effects and device access; music continues. During an effect and its short echo tail, microphone startles pause to help prevent feedback; sound ripples still work. Demo inputs are simulated, and the same sounds play. Capture saves only the particle image, never the camera.</p>
   </dialog>

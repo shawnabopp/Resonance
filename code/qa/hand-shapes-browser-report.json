@@ -1,0 +1,3135 @@
+{
+  "checks": [
+    "Actual pinned ml5 detector + landmark model on the official open-hand photo confirms the new open-palm route (image-based only)",
+    "Synthetic open/fist/V/point transitions retain broad clouds: a weakly attracted minority, a freely drifting majority, and bounded positions without a startle",
+    "Only the index moves: rendered local ripple displacement exceeds 2 px, palm speed stays zero, and no retreat is triggered",
+    "Ripple input settles smoothly; animation continues with all real workers; 320/390 px portrait and landscape remain within bounds",
+    "Loss gradually restores the selected base, reacquisition works, hiding preview keeps tracking, and Home cleans the single camera stream"
+  ],
+  "errors": [],
+  "snapshots": {
+    "photo": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 4520.2,
+        "handPresent": true,
+        "handX": 0.2095394381766696,
+        "handY": 0.34930490845491263,
+        "handOpen": 0.8348620069752458,
+        "handSpeed": 0,
+        "handPose": {
+          "points": [
+            {
+              "x": -0.035259933796969616,
+              "y": -0.34506370385093
+            },
+            {
+              "x": 0.15880510498742306,
+              "y": -0.27506464521251395
+            },
+            {
+              "x": 0.2912103514945638,
+              "y": -0.12770631966130716
+            },
+            {
+              "x": 0.3810858441421033,
+              "y": 0.019288596397221795
+            },
+            {
+              "x": 0.478088158949084,
+              "y": 0.11842230670822607
+            },
+            {
+              "x": 0.17904991756003377,
+              "y": 0.07528493786466683
+            },
+            {
+              "x": 0.2457706066854506,
+              "y": 0.30451621608204793
+            },
+            {
+              "x": 0.2770872690351861,
+              "y": 0.43239405115403934
+            },
+            {
+              "x": 0.293550429386793,
+              "y": 0.5371181083011246
+            },
+            {
+              "x": 0.060740544835514276,
+              "y": 0.10480728665894279
+            },
+            {
+              "x": 0.09440725826668274,
+              "y": 0.3587337162723782
+            },
+            {
+              "x": 0.10449906360271051,
+              "y": 0.5083416667402874
+            },
+            {
+              "x": 0.10117923655633153,
+              "y": 0.6271700698068154
+            },
+            {
+              "x": -0.05312605041780196,
+              "y": 0.09845463185313821
+            },
+            {
+              "x": -0.05007025409848483,
+              "y": 0.3293812459088808
+            },
+            {
+              "x": -0.05589208624690335,
+              "y": 0.4734726455604574
+            },
+            {
+              "x": -0.06933004166924461,
+              "y": 0.5833564090838785
+            },
+            {
+              "x": -0.1514044781807754,
+              "y": 0.06651684747418214
+            },
+            {
+              "x": -0.17343355106990593,
+              "y": 0.2441171489124989
+            },
+            {
+              "x": -0.18877886635660684,
+              "y": 0.3437694806789264
+            },
+            {
+              "x": -0.20817943027257385,
+              "y": 0.42619242264816115
+            }
+          ],
+          "extension": [
+            0.44139723971207007,
+            0.7540802040416137,
+            0.9020188619399416,
+            0.902885282996802,
+            0.7758352478861525
+          ],
+          "energy": [
+            0.0008294975559104125,
+            0.0015852885568064792,
+            0.0012380271808844268,
+            0.000819220118768983,
+            0.0022120359472752845
+          ],
+          "gesture": "open",
+          "candidate": "open",
+          "heldMs": 2033.2999999999997,
+          "pointFinger": 1
+        },
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        459.81362043820997,
+        290.1919251467225
+      ],
+      "radius": 152.145,
+      "expansion": 1.2321855908500734,
+      "scale": 1.0119901514727252,
+      "level": 0,
+      "speed": 1.0048,
+      "wakeAge": 2.883199999999999,
+      "rotation": 0.45432835839999985,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": "open",
+        "candidate": "open",
+        "heldMs": 2033.2999999999997,
+        "blend": 0.41737239822183675,
+        "energy": [
+          0.004237446049077185,
+          0.008134802748586367,
+          0.006323098822668274,
+          0.00441672115624322,
+          0.010981346775473405
+        ],
+        "rippleMaxPx": 0.16577668088061945,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0,
+      "absenceSeconds": 2.866499999999999,
+      "followRate": 1.62,
+      "bounds": [
+        272.41489433860346,
+        87.71033696902475,
+        725.2345835640299,
+        524.3142498497888
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.04954378679394722,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 3.111474,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": true,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 35,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 35,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "intervalMs": 133.30000000000018,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 19,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {},
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 19,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 13,
+          "interval": 167.06500613565868
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    },
+    "open": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 7603.3,
+        "handPresent": true,
+        "handX": 0.48907999998794677,
+        "handY": 0.5340199999920141,
+        "handOpen": 0.9776510029408692,
+        "handSpeed": 7.22561310165614e-13,
+        "handPose": {
+          "points": [
+            {
+              "x": 0.05152000000000019,
+              "y": 0.32016000000000017
+            },
+            {
+              "x": 0.24932000000000012,
+              "y": 0.18215999999999993
+            },
+            {
+              "x": 0.37352000000000024,
+              "y": 0.07636000000000012
+            },
+            {
+              "x": 0.48851999999999995,
+              "y": 0.002760000000000272
+            },
+            {
+              "x": 0.5805200000000001,
+              "y": -0.07083999999999979
+            },
+            {
+              "x": 0.23552,
+              "y": -0.09383999999999981
+            },
+            {
+              "x": 0.23552,
+              "y": -0.2870399999999998
+            },
+            {
+              "x": 0.23552,
+              "y": -0.5078399999999997
+            },
+            {
+              "x": 0.23552,
+              "y": -0.69184
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.33303999999999984
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.5538399999999998
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.7378399999999998
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.08463999999999988
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.27783999999999986
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.49863999999999986
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.6826399999999999
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.001839999999999902
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.19503999999999988
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.4158399999999999
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.5998399999999999
+            }
+          ],
+          "extension": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "energy": [
+            0.0004883935206356008,
+            0.0004885649498029812,
+            0.0003527423815127027,
+            0.000488391189498435,
+            0.0004887071091872269
+          ],
+          "gesture": "open",
+          "candidate": "open",
+          "heldMs": 5149.9,
+          "pointFinger": 1
+        },
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        541.3325704148592,
+        310.60482814112265
+      ],
+      "radius": 152.145,
+      "expansion": 1.3343498735811323,
+      "scale": 1.0119999900076755,
+      "level": 0,
+      "speed": 1.0048,
+      "wakeAge": 6.016500000000021,
+      "rotation": 0.8950959360000033,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": "open",
+        "candidate": "open",
+        "heldMs": 5149.9,
+        "blend": 0.478933997038479,
+        "energy": [
+          0.003749876695412423,
+          0.0037516264671505085,
+          0.002708754253539867,
+          0.003749876190218359,
+          0.0037530388434353313
+        ],
+        "rippleMaxPx": 0,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0,
+      "absenceSeconds": 5.99980000000002,
+      "followRate": 1.62,
+      "bounds": [
+        334.0395107802144,
+        81.79761111606018,
+        843.5605632895977,
+        527.1503001749895
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.0999821200966835,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 6.246254,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": false,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 72,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 72,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "Waiting for: growth, speed, bothSpans, freshGrowth, coherentSamples",
+            "armed": true,
+            "size": 0.09940329020194283,
+            "rawSize": 0.09940329020194284,
+            "spans": [
+              0.10134373438945296,
+              0.0975
+            ],
+            "ageMs": 100,
+            "intervalMs": 133.40000000000055,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 42,
+            "coherentSamples": 0,
+            "quietMs": 2850,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {
+              "armed": true,
+              "window": true,
+              "growth": false,
+              "speed": false,
+              "bothSpans": false,
+              "freshGrowth": false,
+              "coherentSamples": false
+            },
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 42,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": true,
+          "frames": 28,
+          "interval": 167.00043364964532
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    },
+    "fist": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 9853.3,
+        "handPresent": true,
+        "handX": 0.48907999999999996,
+        "handY": 0.53402,
+        "handOpen": 0.03488834288444953,
+        "handSpeed": 1.7089820924602106e-22,
+        "handPose": {
+          "points": [
+            {
+              "x": 0.05152000000000019,
+              "y": 0.32016000000000017
+            },
+            {
+              "x": 0.24932000000000012,
+              "y": 0.18215999999999993
+            },
+            {
+              "x": 0.15732,
+              "y": -0.03403999999999987
+            },
+            {
+              "x": -0.003679999999999804,
+              "y": -0.057039999999999896
+            },
+            {
+              "x": -0.08648,
+              "y": 0.011960000000000201
+            },
+            {
+              "x": 0.23552,
+              "y": -0.09383999999999981
+            },
+            {
+              "x": 0.23552,
+              "y": -0.2318399999999998
+            },
+            {
+              "x": 0.23552,
+              "y": -0.07543999999999997
+            },
+            {
+              "x": 0.23552,
+              "y": 0.007360000000000028
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.27783999999999986
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.12143999999999981
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.03863999999999983
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.08463999999999988
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.22263999999999987
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.06623999999999981
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": 0.016559999999999953
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.001839999999999902
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": 0.016559999999999953
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": 0.09936000000000016
+            }
+          ],
+          "extension": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "energy": [
+            0.004831700574164567,
+            0.004831700943175194,
+            0.004831408577693863,
+            0.00483170056914667,
+            0.004831701249181017
+          ],
+          "gesture": "fist",
+          "candidate": "fist",
+          "heldMs": 1933.199999999999,
+          "pointFinger": 0
+        },
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        542.5417988225174,
+        312.20558086964655
+      ],
+      "radius": 152.145,
+      "expansion": 0.8963569212363633,
+      "scale": 1.0119999999265394,
+      "level": 0,
+      "speed": 1.0048,
+      "wakeAge": 8.249600000000036,
+      "rotation": 1.209230579200006,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": "fist",
+        "candidate": "fist",
+        "heldMs": 1933.199999999999,
+        "blend": 0.4799415225398807,
+        "energy": [
+          0.025457954390347107,
+          0.025457957929805944,
+          0.025455451675376724,
+          0.02545795436242553,
+          0.025457960831408357
+        ],
+        "rippleMaxPx": 1.1869582777480157,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0,
+      "absenceSeconds": 8.232900000000036,
+      "followRate": 1.62,
+      "bounds": [
+        421.00152230745914,
+        183.00422968215798,
+        676.7958919546082,
+        450.2947817825907
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.10000000149011612,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 8.472381,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": false,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 99,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 99,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "Waiting for: growth, speed, bothSpans, freshGrowth, coherentSamples",
+            "armed": true,
+            "size": 0.09940329020194283,
+            "rawSize": 0.09940329020194284,
+            "spans": [
+              0.10134373438945296,
+              0.0975
+            ],
+            "ageMs": 116.60000000000036,
+            "intervalMs": 150,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 58,
+            "coherentSamples": 0,
+            "quietMs": 5066.5,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {
+              "armed": true,
+              "window": true,
+              "growth": false,
+              "speed": false,
+              "bothSpans": false,
+              "freshGrowth": false,
+              "coherentSamples": false
+            },
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 58,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 39,
+          "interval": 167.00001100375897
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    },
+    "v": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 12103.2,
+        "handPresent": true,
+        "handX": 0.48907999999999996,
+        "handY": 0.53402,
+        "handOpen": 0.47603586977919116,
+        "handSpeed": 4.7719205535904997e-32,
+        "handPose": {
+          "points": [
+            {
+              "x": 0.05152000000000019,
+              "y": 0.32016000000000017
+            },
+            {
+              "x": 0.24932000000000012,
+              "y": 0.18215999999999993
+            },
+            {
+              "x": 0.15732,
+              "y": -0.03403999999999987
+            },
+            {
+              "x": -0.003679999999999804,
+              "y": -0.057039999999999896
+            },
+            {
+              "x": -0.08648,
+              "y": 0.011960000000000201
+            },
+            {
+              "x": 0.23552,
+              "y": -0.09383999999999981
+            },
+            {
+              "x": 0.27673600000000015,
+              "y": -0.2870399999999998
+            },
+            {
+              "x": 0.32568000000000025,
+              "y": -0.5078399999999997
+            },
+            {
+              "x": 0.3643200000000003,
+              "y": -0.69184
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": 0.007360000000000028,
+              "y": -0.33303999999999984
+            },
+            {
+              "x": -0.0450799999999997,
+              "y": -0.5538399999999998
+            },
+            {
+              "x": -0.08648,
+              "y": -0.7378399999999998
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.08463999999999988
+            },
+            {
+              "x": -0.14904000000000003,
+              "y": -0.22263999999999987
+            },
+            {
+              "x": -0.20147999999999974,
+              "y": -0.06623999999999981
+            },
+            {
+              "x": -0.24288000000000007,
+              "y": 0.016559999999999953
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.001839999999999902
+            },
+            {
+              "x": -0.27783999999999986,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": -0.33028,
+              "y": 0.016559999999999953
+            },
+            {
+              "x": -0.3716799999999999,
+              "y": 0.09936000000000016
+            }
+          ],
+          "extension": [
+            0,
+            1,
+            1,
+            0,
+            0.02458957371350218
+          ],
+          "energy": [
+            0.000019750993036798203,
+            0.004843677201416336,
+            0.004843676545712022,
+            0.003505971319933421,
+            0.003728680273847643
+          ],
+          "gesture": "v",
+          "candidate": "v",
+          "heldMs": 1933.2000000000007,
+          "pointFinger": 1
+        },
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        542.5788476291323,
+        321.0030987113576
+      ],
+      "radius": 152.145,
+      "expansion": 0.994433500202881,
+      "scale": 1.0119999999994602,
+      "level": 0,
+      "speed": 1.0048,
+      "wakeAge": 10,
+      "rotation": 1.5233933568000144,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": "v",
+        "candidate": "v",
+        "heldMs": 1933.2000000000007,
+        "blend": 0.47999679295041237,
+        "energy": [
+          0.0001920216645793589,
+          0.023918632518301442,
+          0.023918625336727006,
+          0.017324282326571072,
+          0.018422147608919023
+        ],
+        "rippleMaxPx": 0.6324447940139254,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0,
+      "absenceSeconds": 10.466199999999997,
+      "followRate": 1.62,
+      "bounds": [
+        383.6047508956001,
+        117.67967861373134,
+        711.2326792985846,
+        490.4362628377022
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.10000000149011612,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 10.701497,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": false,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 126,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 126,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "Waiting for: growth, speed, bothSpans, freshGrowth, coherentSamples",
+            "armed": true,
+            "size": 0.09940329020194283,
+            "rawSize": 0.09940329020194284,
+            "spans": [
+              0.10134373438945296,
+              0.0975
+            ],
+            "ageMs": 150,
+            "intervalMs": 133.3000000000011,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 74,
+            "coherentSamples": 0,
+            "quietMs": 7266.400000000001,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {
+              "armed": true,
+              "window": true,
+              "growth": false,
+              "speed": false,
+              "bothSpans": false,
+              "freshGrowth": false,
+              "coherentSamples": false
+            },
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": true,
+          "frames": 74,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 50,
+          "interval": 167.00000027921783
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    },
+    "point": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 14353.1,
+        "handPresent": true,
+        "handX": 0.48907999999999996,
+        "handY": 0.53402,
+        "handOpen": 0.27816820057553926,
+        "handSpeed": 1.1275134175525548e-41,
+        "handPose": {
+          "points": [
+            {
+              "x": 0.05152000000000019,
+              "y": 0.32016000000000017
+            },
+            {
+              "x": 0.24932000000000012,
+              "y": 0.18215999999999993
+            },
+            {
+              "x": 0.15732,
+              "y": -0.03403999999999987
+            },
+            {
+              "x": -0.003679999999999804,
+              "y": -0.057039999999999896
+            },
+            {
+              "x": -0.08648,
+              "y": 0.011960000000000201
+            },
+            {
+              "x": 0.23552,
+              "y": -0.09383999999999981
+            },
+            {
+              "x": 0.23552,
+              "y": -0.2870399999999998
+            },
+            {
+              "x": 0.23552,
+              "y": -0.5078399999999997
+            },
+            {
+              "x": 0.23552,
+              "y": -0.69184
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.27783999999999986
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.12143999999999981
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.03863999999999983
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.08463999999999988
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.22263999999999987
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.06623999999999981
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": 0.016559999999999953
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.001839999999999902
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": 0.016559999999999953
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": 0.09936000000000016
+            }
+          ],
+          "extension": [
+            0,
+            1,
+            0,
+            0,
+            0
+          ],
+          "energy": [
+            7.743656223911034e-8,
+            0.0030386953084343845,
+            0.005185853165311404,
+            0.0032852486334701446,
+            0.0034978268112089723
+          ],
+          "gesture": "point",
+          "candidate": "point",
+          "heldMs": 1933.199999999999,
+          "pointFinger": 1
+        },
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        542.2030569073914,
+        319.7826423790919
+      ],
+      "radius": 152.145,
+      "expansion": 0.9503828249494349,
+      "scale": 1.0119999999999958,
+      "level": 0,
+      "speed": 1.0048,
+      "wakeAge": 10,
+      "rotation": 1.835192844800019,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": "point",
+        "candidate": "point",
+        "heldMs": 1933.199999999999,
+        "blend": 0.47999982023388194,
+        "energy": [
+          0.0000011295893920485384,
+          0.015022485866971257,
+          0.025622551729632136,
+          0.016233853231172917,
+          0.017284274920303832
+        ],
+        "rippleMaxPx": 0.6193558494039306,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0,
+      "absenceSeconds": 12.682699999999961,
+      "followRate": 1.62,
+      "bounds": [
+        398.05265995735954,
+        158.76795344318103,
+        696.2159424843167,
+        465.46581947488033
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.10000000149011612,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 12.930066,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": false,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 153,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 153,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "Waiting for: growth, speed, bothSpans, freshGrowth, coherentSamples",
+            "armed": true,
+            "size": 0.09940329020194283,
+            "rawSize": 0.09940329020194284,
+            "spans": [
+              0.10134373438945296,
+              0.0975
+            ],
+            "ageMs": 149.90000000000146,
+            "intervalMs": 133.39999999999964,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 90,
+            "coherentSamples": 0,
+            "quietMs": 9482.999999999996,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {
+              "armed": true,
+              "window": true,
+              "growth": false,
+              "speed": false,
+              "bothSpans": false,
+              "freshGrowth": false,
+              "coherentSamples": false
+            },
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": true,
+          "frames": 90,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 61,
+          "interval": 167.0000000070851
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    },
+    "fingers": {
+      "stage": "live",
+      "shape": "seed",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 18519.6,
+        "handPresent": true,
+        "handX": 0.48907999999999996,
+        "handY": 0.53402,
+        "handOpen": 0.9763043343614515,
+        "handSpeed": 9.06237710697414e-60,
+        "handPose": {
+          "points": [
+            {
+              "x": 0.05152000000000019,
+              "y": 0.32016000000000017
+            },
+            {
+              "x": 0.24932000000000012,
+              "y": 0.18215999999999993
+            },
+            {
+              "x": 0.37352000000000024,
+              "y": 0.07636000000000012
+            },
+            {
+              "x": 0.48851999999999995,
+              "y": 0.002760000000000272
+            },
+            {
+              "x": 0.5805200000000001,
+              "y": -0.07083999999999979
+            },
+            {
+              "x": 0.23552,
+              "y": -0.09383999999999981
+            },
+            {
+              "x": 0.23552,
+              "y": -0.2870399999999998
+            },
+            {
+              "x": 0.23552,
+              "y": -0.5078399999999997
+            },
+            {
+              "x": 0.13663869718514102,
+              "y": -0.6226230880295985
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.13983999999999988
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.33303999999999984
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.5538399999999998
+            },
+            {
+              "x": 0.05152000000000019,
+              "y": -0.7378399999999998
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.08463999999999988
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.27783999999999986
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.49863999999999986
+            },
+            {
+              "x": -0.10487999999999986,
+              "y": -0.6826399999999999
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.001839999999999902
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.19503999999999988
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.4158399999999999
+            },
+            {
+              "x": -0.2336799999999997,
+              "y": -0.5998399999999999
+            }
+          ],
+          "extension": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ],
+          "energy": [
+            0.00003689919671404822,
+            0.3599090167248133,
+            0.0000369843863683968,
+            0.000036953164068862476,
+            0.000036956656210141
+          ],
+          "gesture": "open",
+          "candidate": "open",
+          "heldMs": 3883.199999999999,
+          "pointFinger": 1
+        },
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        542.6724139296406,
+        311.34146821931944
+      ],
+      "radius": 152.145,
+      "expansion": 1.3334126107263626,
+      "scale": 1.0119999999999971,
+      "level": 0,
+      "speed": 1.0048,
+      "wakeAge": 10,
+      "rotation": 2.4283504000000113,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": "open",
+        "candidate": "open",
+        "heldMs": 3883.199999999999,
+        "blend": 0.47999999925167913,
+        "energy": [
+          0.0003069229238307911,
+          0.44815177353747826,
+          0.00030777009485943657,
+          0.00030745961210333476,
+          0.0003074943404861969
+        ],
+        "rippleMaxPx": 5.071834290706688,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0,
+      "absenceSeconds": 16.899299999999883,
+      "followRate": 1.62,
+      "bounds": [
+        323.0099322556483,
+        93.21355641051946,
+        850.7611628576876,
+        523.070398858949
+      ],
+      "viewport": [
+        1092,
+        621
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.10000000149011612,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 17.139909,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": false,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 203,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 203,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "Waiting for: growth, speed, bothSpans, freshGrowth, coherentSamples",
+            "armed": true,
+            "size": 0.09940329020194283,
+            "rawSize": 0.09940329020194284,
+            "spans": [
+              0.10134373438945296,
+              0.0975
+            ],
+            "ageMs": 0,
+            "intervalMs": 166.70000000000073,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 121,
+            "coherentSamples": 0,
+            "quietMs": 13816.199999999986,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {
+              "armed": true,
+              "window": true,
+              "growth": false,
+              "speed": false,
+              "bothSpans": false,
+              "freshGrowth": false,
+              "coherentSamples": false
+            },
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 121,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 81,
+          "interval": 167.00000000000892
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    },
+    "animationFramesIn1500ms": 91,
+    "loss": {
+      "stage": "live",
+      "shape": "cloud",
+      "theme": "Green",
+      "inputs": {
+        "stage": "live",
+        "shape": "cloud",
+        "theme": 2,
+        "expression": null,
+        "intensity": 0.85,
+        "sound": 0,
+        "sustain": false,
+        "muted": false,
+        "hand": false,
+        "openness": 0.5,
+        "body": 0,
+        "bodyLean": 0,
+        "arms": 0,
+        "present": true,
+        "faceX": 0.5
+      },
+      "signals": {
+        "smile": 0,
+        "sad": 0,
+        "surprise": 0,
+        "level": 0,
+        "spike": 0,
+        "facePresent": false,
+        "faceX": 0.5,
+        "faceY": 0.5,
+        "presenceSince": 0,
+        "presenceUntil": 38852.2,
+        "handPresent": false,
+        "handX": 0.4883098695976632,
+        "handY": 0.5378081053649163,
+        "handOpen": 0.4880572948592198,
+        "handSpeed": 0,
+        "handPose": null,
+        "bodyPresent": false,
+        "bodyMotion": 0,
+        "bodySway": 0,
+        "bodyLift": 0,
+        "bodySpread": 0
+      },
+      "color": [
+        162,
+        211,
+        171
+      ],
+      "center": [
+        247.9660043323484,
+        103.66232375796628
+      ],
+      "radius": 60.45,
+      "expansion": 0.9999999999999435,
+      "scale": 0.8524546693097074,
+      "level": 0,
+      "speed": 0.3023595681252562,
+      "wakeAge": 10,
+      "rotation": 4.8178182998936645,
+      "sway": 0,
+      "clap": 0,
+      "retreat": 0,
+      "depth": 0,
+      "depthSource": null,
+      "surprise": 0,
+      "body": {
+        "sway": 0,
+        "lift": 0,
+        "spread": 0,
+        "motion": 0
+      },
+      "handShape": {
+        "gesture": null,
+        "candidate": null,
+        "heldMs": 0,
+        "blend": 0.0010913070473817362,
+        "energy": [
+          3.148353158256416e-13,
+          4.482588617053122e-10,
+          6.578275631494511e-10,
+          4.76189861432869e-10,
+          5.065194557483023e-10
+        ],
+        "rippleMaxPx": 0,
+        "contourParticles": 1152,
+        "driftingParticles": 2448
+      },
+      "familiarity": 0.04,
+      "rest": 0.998692606737295,
+      "absenceSeconds": 37.18179999999989,
+      "followRate": 0.6492707862513494,
+      "bounds": [
+        192.5032463660775,
+        69.20863237269333,
+        304.17893092458337,
+        146.3292234369912
+      ],
+      "viewport": [
+        496,
+        195
+      ],
+      "events": {
+        "surprise": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0
+      },
+      "startle": {
+        "event": null,
+        "attempt": null,
+        "cooldownMs": 0
+      },
+      "playback": {
+        "active": true,
+        "context": "running",
+        "musicEnabled": true,
+        "effectsEnabled": true,
+        "current": null,
+        "retiring": 0,
+        "ready": true,
+        "musicPlaying": true,
+        "musicTracks": 1,
+        "musicGain": 0.10000000149011612,
+        "musicDefault": 0.1,
+        "musicTarget": 0.1,
+        "musicPosition": 37.427815,
+        "effectGain": 0,
+        "blocked": false,
+        "echoGuard": false,
+        "afraid": null,
+        "counts": {
+          "wake": 1,
+          "curious": 1,
+          "happy": 0,
+          "afraid": 0
+        },
+        "history": [
+          {
+            "name": "wake",
+            "reason": "session start",
+            "eventId": null,
+            "at": 690.3999999999069,
+            "duration": 0.6139791666666666,
+            "delay": 0.008000000000000007
+          },
+          {
+            "name": "curious",
+            "reason": "hand noticed",
+            "eventId": null,
+            "at": 2255.1999999997206,
+            "duration": 1.2,
+            "delay": 0.008000000000000007
+          }
+        ],
+        "errors": []
+      },
+      "live": {
+        "active": true,
+        "starting": false,
+        "modelReady": true,
+        "worker": true,
+        "frames": 447,
+        "facePresent": false,
+        "expression": null,
+        "expressionDebug": {
+          "raw": {},
+          "adjusted": {},
+          "scores": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "output": {
+            "smile": 0,
+            "sad": 0,
+            "surprise": 0
+          },
+          "active": null,
+          "candidate": null,
+          "heldMs": 0,
+          "reason": "No face scores",
+          "breakdown": {},
+          "reasons": {
+            "smile": "No fresh face scores. Expression output cleared.",
+            "sad": "No fresh face scores. Expression output cleared.",
+            "surprise": "No fresh face scores. Expression output cleared."
+          },
+          "relative": null,
+          "noise": {},
+          "continuousSad": {
+            "heldSeconds": 0,
+            "evidence": 0,
+            "previewEvidence": 0,
+            "route": "none",
+            "fullSettled": false,
+            "features": {
+              "mouth": 0,
+              "side": 0,
+              "inner": 0,
+              "down": 0,
+              "contrast": 0,
+              "outerFall": 0
+            },
+            "groups": {},
+            "floors": {}
+          },
+          "groupNoise": {},
+          "thresholds": {
+            "enter": {
+              "smile": 0.32,
+              "sad": 0.28,
+              "surprise": 0.32
+            },
+            "exit": 0.18,
+            "margin": 0.08,
+            "dwell": {
+              "smile": 300,
+              "sad": 650,
+              "surprise": 400,
+              "neutral": 400
+            },
+            "smoothing": 6,
+            "frownMean": 0.11,
+            "frownBoth": 0.055,
+            "innerBrow": 0.13,
+            "strongFrown": 0.24,
+            "strongBoth": 0.1,
+            "openJaw": 0.45,
+            "speechFrown": 0.2,
+            "speechBrow": 0.23,
+            "outerBrowFloor": 0.22,
+            "outerBrowRange": 0.45,
+            "eyeWideFloor": 0.15,
+            "eyeWideRange": 0.4,
+            "continuousSad": {
+              "noiseMultiplier": 1.5,
+              "mouthFloor": 0.0015,
+              "sideFloor": 0.00075,
+              "innerFloor": 0.008,
+              "downFloor": 0.0025,
+              "contrastFloor": 0.012,
+              "settledMouthFloor": 0.006,
+              "settledSideFloor": 0.004,
+              "outerFallFloor": 0.0035,
+              "warmup": 0.35,
+              "fadeIn": 0.8,
+              "fullAfter": 1.4,
+              "maxPreview": 0.42,
+              "visualGain": 1.7,
+              "featureSmoothing": 5
+            },
+            "relative": {
+              "frown": 0.004,
+              "frownSide": 0.003,
+              "innerSad": 0.018,
+              "browDown": 0.01,
+              "browContrast": 0.035,
+              "outer": 0.025,
+              "eye": 0.012,
+              "outerSide": 0.012,
+              "eyeSide": 0.007,
+              "innerSurprise": 0.045,
+              "supportedOuter": 0.018,
+              "supportedEye": 0.008,
+              "jaw": 0.12,
+              "noiseMultiplier": 4
+            }
+          },
+          "baseline": null,
+          "calibrating": false,
+          "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+        },
+        "approach": {
+          "face": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 447,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": null,
+            "checks": {},
+            "lastDetection": null
+          },
+          "hand": {
+            "status": "No face/palm size: missing or clipped landmarks",
+            "armed": false,
+            "size": 0,
+            "rawSize": 0,
+            "spans": null,
+            "ageMs": null,
+            "intervalMs": 133.3000000000029,
+            "growth": 0,
+            "rate": 0,
+            "count": 0,
+            "updates": 268,
+            "coherentSamples": 0,
+            "quietMs": 0,
+            "thresholds": {
+              "growth": 0.2,
+              "rate": 0.65,
+              "span": 0.09,
+              "samples": 2
+            },
+            "checks": {},
+            "lastDetection": null
+          }
+        },
+        "hands": {
+          "state": "ready",
+          "active": true,
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 268,
+          "interval": 125
+        },
+        "body": {
+          "state": "ready",
+          "worker": true,
+          "error": null,
+          "busy": false,
+          "frames": 179,
+          "interval": 167.00000000000003
+        },
+        "tracks": [
+          {
+            "kind": "audio",
+            "state": "live",
+            "enabled": false
+          },
+          {
+            "kind": "video",
+            "state": "live",
+            "enabled": true
+          }
+        ],
+        "audio": "running",
+        "previewHidden": false
+      }
+    }
+  },
+  "limitation": "Chrome fake camera/microphone; actual ml5 inference on an official photo, synthetic landmark sequences for articulation and other poses. No human webcam or physical phone validation."
+}

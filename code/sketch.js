@@ -27,7 +27,7 @@
   ];
   const emptySignals = () => ({ smile: 0, sad: 0, surprise: 0, level: 0, spike: 0,
     facePresent: false, faceX: .5, faceY: .5, presenceSince: 0, presenceUntil: 0,
-    handPresent: false, handX: .5, handY: .5, handOpen: .5, handSpeed: 0,
+    handPresent: false, handX: .5, handY: .5, handOpen: .5, handSpeed: 0, handPose: null,
     bodyPresent: false, bodyMotion: 0, bodySway: 0, bodyLift: 0, bodySpread: 0 });
   const expressionSamples = { pending: null, records: [] };
   const gauss = () => Math.sqrt(-2 * Math.log(Math.max(.00001, Math.random()))) * Math.cos(Math.random() * Math.PI * 2);
@@ -488,13 +488,13 @@
 
   // HandPose pixels -> mirrored, normalized coordinates. No frame-rate assumptions.
   class HandFilter {
-    constructor() { this.x = .5; this.y = .5; this.open = .5; this.speed = 0; this.last = null; this.seen = 0; this.present = false; this.quiet = 0; this.fast = 0; this.armed = false; this.nextWave = 0; }
-    lose() { this.present = false; this.last = null; this.speed = 0; this.quiet = this.fast = 0; this.armed = false; }
+    constructor() { this.x = .5; this.y = .5; this.open = .5; this.speed = 0; this.last = null; this.seen = 0; this.present = false; this.quiet = 0; this.fast = 0; this.armed = false; this.nextWave = 0; this.art = new HandArticulation(); }
+    lose() { this.present = false; this.last = null; this.speed = 0; this.quiet = this.fast = 0; this.armed = false; this.art.lose(); }
     update(hands, now, width, height) {
       const hand = hands?.[0], points = hand?.keypoints;
       if (!width || !height || !points || points.length !== 21 || (hand.confidence ?? 0) < (this.present ? .5 : .65) ||
           points.some(p => !Number.isFinite(p.x) || !Number.isFinite(p.y) || p.x < -width * .1 || p.x > width * 1.1 || p.y < -height * .1 || p.y > height * 1.1)) {
-        this.last = null; this.fast = 0;
+        this.last = null; this.fast = 0; this.art.pause(now);
         if (now - this.seen > 450) this.lose();
         return false;
       }
@@ -505,19 +505,21 @@
       const p = hand.keypoints3D?.length === 21 && hand.keypoints3D.every(v => [v.x, v.y, v.z].every(Number.isFinite)) ? hand.keypoints3D : points;
       const palmSize = distance(p[0], p[9]);
       if (palmSize < 1e-5 || distance(points[0], points[9]) < Math.min(width, height) * .025) { this.lose(); return false; }
-      const openness = [5, 9, 13, 17].reduce((sum, i) => {
+      const extensions = [5, 9, 13, 17].map(i => {
         const a = distance(p[i], p[i + 1]), b = distance(p[i + 1], p[i + 3]);
         const straight = clamp((distance(p[i], p[i + 3]) / Math.max(1e-5, a + b) - .55) / .4);
         const extended = clamp((distance(p[0], p[i + 3]) / Math.max(palmSize * .5, distance(p[0], p[i])) - 1.05) / .85);
-        return sum + extended * (.35 + .65 * straight);
-      }, 0) / 4;
+        return extended * (.35 + .65 * straight);
+      });
+      const openness = extensions.reduce((sum, value) => sum + value, 0) / 4;
+      this.art.update(points, p, extensions, now, String(hand.handedness || 'hand'));
       const previous = this.last;
       this.last = { x, y, time: now }; this.seen = now;
       if (!previous || now - previous.time > 1200) { this.fast = 0; this.speed = 0; return false; }
       const dt = clamp((now - previous.time) / 1000, .016, 1.2);
       const jump = Math.hypot(x - previous.x, y - previous.y);
       // An isolated teleport establishes a new anchor; it must not become a wave.
-      if (jump > .38) { this.fast = 0; this.speed = 0; this.armed = false; this.quiet = 0; return false; }
+      if (jump > .38) { this.fast = 0; this.speed = 0; this.armed = false; this.quiet = 0; this.art.lose(); return false; }
       this.present = true;
       this.x = approach(this.x, x, 8, dt); this.y = approach(this.y, y, 8, dt);
       if (Math.abs(openness - this.open) > .035) this.open = approach(this.open, openness, 5, dt);
@@ -530,6 +532,116 @@
         this.nextWave = now + 3000; this.armed = false; this.quiet = 0; return true;
       }
       return false;
+    }
+  }
+
+  // Separate articulation from translation, camera scale, and rigid palm rotation.
+  // Pixel coordinates are mirrored only for the visible shape, not the motion test.
+  class HandArticulation {
+    constructor() { this.lose(); }
+    lose() {
+      this.last = null; this.candidate = this.gesture = null; this.since = 0; this.frames = 0; this.identity = null;
+      this.energy = [0, 0, 0, 0, 0]; this.pose = null;
+    }
+    pause(now) { this.last = null; this.candidate = null; this.since = now; this.frames = 0; }
+    update(points, metric, four, now, identity) {
+      if (this.identity && identity !== this.identity) this.lose();
+      this.identity = identity;
+      const ids = [0, 5, 9, 13, 17], tips = [4, 8, 12, 16, 20];
+      const center = ids.reduce((v, i) => ({ x: v.x + points[i].x / 5, y: v.y + points[i].y / 5 }), { x: 0, y: 0 });
+      const dx = points[9].x - points[0].x, dy = points[9].y - points[0].y, scale = Math.hypot(dx, dy);
+      if (scale < 1e-5) { this.lose(); return; }
+      const ux = dx / scale, uy = dy / scale;
+      const local = points.map(p => ({ x: ((p.x - center.x) * uy - (p.y - center.y) * ux) / scale,
+        y: ((p.x - center.x) * ux + (p.y - center.y) * uy) / scale }));
+      const dist = (a, b) => Math.hypot(metric[a].x - metric[b].x, metric[a].y - metric[b].y, (metric[a].z || 0) - (metric[b].z || 0));
+      const thumb = clamp((dist(4, 17) / Math.max(1e-5, dist(0, 9)) - .65) / .85);
+      const extension = [thumb, ...four];
+      const previous = this.last, dt = previous ? (now - previous.time) / 1000 : 0;
+      if (previous && dt > 0 && dt < 1.2) {
+        for (let f = 0; f < 5; f++) {
+          const tip = tips[f], base = f === 0 ? 1 : 1 + f * 4;
+          const ax = local[tip].x - local[base].x, ay = local[tip].y - local[base].y;
+          const bx = previous.local[tip].x - previous.local[base].x, by = previous.local[tip].y - previous.local[base].y;
+          const velocity = Math.hypot(ax - bx, ay - by) / dt;
+          const bending = Math.abs(extension[f] - previous.extension[f]) / dt;
+          // Keypoint noise is not a finger wave. Bound isolated landmark glitches.
+          const strength = clamp((Math.min(velocity, 4) * .65 + Math.min(bending, 4) * .45 - .16) / 1.8);
+          this.energy[f] = approach(this.energy[f], strength, strength > this.energy[f] ? 7 : 2.5, dt);
+        }
+      } else this.energy.fill(0);
+      this.last = { time: now, local, extension };
+      const raised = four.map(e => e > .62), folded = four.map(e => e < .38);
+      let candidate = null;
+      if (raised.every(Boolean)) candidate = 'open';
+      else if (folded.every(Boolean)) candidate = 'fist';
+      else if (raised[0] && raised[1] && folded[2] && folded[3] &&
+          Math.hypot(local[8].x - local[12].x, local[8].y - local[12].y) > .18) candidate = 'v';
+      else if (raised.filter(Boolean).length === 1 && four.every((e, i) => raised[i] || folded[i])) candidate = 'point';
+      if (candidate !== this.candidate) { this.candidate = candidate; this.since = now; this.frames = 1; }
+      else this.frames++;
+      if (candidate && now - this.since >= 500 && this.frames >= 3) this.gesture = candidate;
+      // Keep an established outline during brief finger play; release uncertain poses.
+      if (!candidate && now - this.since > 1100) this.gesture = null;
+      const shape = points.map(p => ({ x: clamp(-(p.x - center.x) / scale * .46, -1.45, 1.45),
+        y: clamp((p.y - center.y) / scale * .46, -1.45, 1.45) }));
+      this.pose = { points: shape, extension, energy: [...this.energy], gesture: this.gesture, candidate,
+        heldMs: now - this.since, pointFinger: raised.findIndex(Boolean) + 1 };
+    }
+  }
+
+  // Broad drifting lobes suggest a gesture without tracing joints or fingertips.
+  // Most particles retain their autonomous cloud positions at all times.
+  class HandSculpture {
+    constructor(count) {
+      this.count = count; this.coords = new Float32Array(count * 3); this.blend = 0; this.pose = null;
+      this.energy = [0, 0, 0, 0, 0]; this.tips = Array.from({ length: 5 }, () => ({ x: 0, y: 0 }));
+      this.seeds = Float32Array.from({ length: count * 6 }, (_, i) => {
+        const value = Math.sin((i + 1) * 127.1) * 43758.5453; return value - Math.floor(value);
+      });
+      this.ready = false; this.flowTime = 0;
+    }
+    clear() { this.blend = 0; this.pose = null; this.energy.fill(0); this.ready = false; this.flowTime = 0; }
+    update(pose, dt) {
+      if (pose) this.pose = pose;
+      this.flowTime += dt;
+      this.blend = approach(this.blend, pose?.gesture ? .48 : 0, pose?.gesture ? 1.3 : 1.1, dt);
+      for (let f = 0; f < 5; f++) {
+        const value = pose?.energy[f] || 0;
+        this.energy[f] = approach(this.energy[f], value, value > this.energy[f] ? 8 : 2.5, dt);
+      }
+      const p = this.pose?.points;
+      if (!p) return;
+      if (!pose && this.blend < .001 && this.energy.every(e => e < .001)) { this.pose = null; this.ready = false; return; }
+      for (let f = 0; f < 5; f++) {
+        const target = p[[4, 8, 12, 16, 20][f]];
+        this.tips[f].x = approach(this.tips[f].x, target.x, 7, dt);
+        this.tips[f].y = approach(this.tips[f].y, target.y, 7, dt);
+      }
+      const gesture = this.pose.gesture, finger = this.pose.pointFinger;
+      const mean = (a, b) => ({ x: (p[a].x + p[b].x) / 2, y: (p[a].y + p[b].y) / 2 });
+      // An open hand has three overlapping tendencies, never five finger tubes.
+      const directions = gesture === 'fist' ? [] : gesture === 'v' ? [p[8], p[12]] : gesture === 'point' ? [p[[4, 8, 12, 16, 20][finger]]] : [p[4], mean(8, 12), mean(16, 20)];
+      const smoothing = 1 - Math.exp(-2.3 * dt);
+      for (let i = 0; i < this.count; i++) {
+        const k = i * 6, j = i * 3, a = this.seeds[k], b = this.seeds[k + 1], c = this.seeds[k + 2], d = this.seeds[k + 3];
+        const e = this.seeds[k + 4], f = this.seeds[k + 5];
+        const spread = gesture === 'fist' ? .62 : gesture === 'v' ? .60 : .90;
+        let x = (c + e - 1) * spread, y = (d + f - 1) * spread;
+        if (a >= .42 && directions.length) {
+          const direction = directions[Math.min(directions.length - 1, Math.floor(b * directions.length))];
+          const length = Math.hypot(direction.x, direction.y) || 1, reach = gesture === 'v' ? .45 + c * 1.5 : .28 + c * 1.14;
+          x += direction.x / length * reach; y += direction.y / length * reach;
+        }
+        // Wide soft volumes and slow wandering prevent dense bones, edges or tips.
+        x += Math.sin(this.flowTime * .65 + a * Math.PI * 2) * .11;
+        y += Math.cos(this.flowTime * .53 + b * Math.PI * 2) * .11;
+        const z = (b + e - 1) * .72 + Math.sin(this.flowTime * .43 + d * Math.PI * 2) * .09;
+        this.coords[j] = this.ready ? this.coords[j] + (x - this.coords[j]) * smoothing : x;
+        this.coords[j + 1] = this.ready ? this.coords[j + 1] + (y - this.coords[j + 1]) * smoothing : y;
+        this.coords[j + 2] = this.ready ? this.coords[j + 2] + (z - this.coords[j + 2]) * smoothing : z;
+      }
+      this.ready = true;
     }
   }
 
@@ -741,6 +853,7 @@
       if (now - f.seen > Math.max(650, this.interval * 2.5, (this.lastDuration || 0) * 2.5)) f.lose();
       s.handPresent = this.active && this.state === 'ready' && f.present;
       s.handX = f.x; s.handY = f.y; s.handOpen = f.open; s.handSpeed = s.handPresent ? f.speed : 0;
+      s.handPose = s.handPresent ? f.art.pose : null;
       if (!this.active || this.state !== 'ready' || this.busy || now < this.nextFrame || now - this.lastFrame < this.interval || video.readyState < 2 || video.currentTime === this.videoTime) return;
       if (!motionBudget.acquire(this, now)) return;
       this.lastFrame = now; this.videoTime = video.currentTime; this.busy = true;
@@ -1261,6 +1374,7 @@
     constructor(canvas, { count = 3400, shape = 'seed', theme = THEMES[2].p, thumbnail = false } = {}) {
       this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.n = count; this.thumbnail = thumbnail;
       this.base = generate(shape, count); this.from = this.base; this.morph = 1;
+      this.handSculpture = new HandSculpture(count);
       this.phase = Float32Array.from({ length: count }, () => Math.random() * Math.PI * 2);
       this.size = Float32Array.from({ length: count }, () => .55 + Math.random() ** 3 * 1.3);
       this.brightness = Float32Array.from({ length: count }, () => .4 + Math.random() ** 2 * .6);
@@ -1321,12 +1435,14 @@
       this.wakeAge = 10;
       this.lastStartleAt = -Infinity; this.lastStartleEvent = this.startleAttempt = null; this.depthSource = null;
       this.s = emptySignals(); this.lastSpike = 0; this.wasSurprised = false;
+      this.handSculpture.clear();
       this.relationship.pause();
       if (familiarity) { this.relationship.reset(); this.fam = .04; }
       for (const key of Object.keys(this.events)) { this.events[key] = 20; this.lastEvent[key] = -10; }
     }
     update(dt, now = performance.now()) {
       const s = this.s, sm = this.sm;
+      this.handSculpture.update(s.handPresent ? s.handPose : null, dt);
       this.wakeAge = Math.min(10, this.wakeAge + dt);
       this.time += dt;
       for (const key of Object.keys(this.events)) this.events[key] += dt;
@@ -1361,7 +1477,8 @@
         const tint = expressionTotal > .001 ? (warm[c] * sm.smile + blue[c] * sm.sad + purple[c] * sm.surprise) / expressionTotal : this.theme[c];
         this.color[c] = approach(this.color[c], lerp(this.theme[c], tint, clamp(expressionTotal * 1.5)), 2.7, dt);
       }
-      const open = (sm.open - .5) * .7 * sm.hand;
+      const rawOpen = (sm.open - .5) * .7 * sm.hand;
+      const open = s.handPose ? Math.max(rawOpen, rawOpen * .32) : rawOpen;
       // A closed hand keeps its gathering effect even when both arms are open.
       const bodyExpansion = sm.bodySpread * .28 * (1 - sm.hand * (1 - sm.open) * .8);
       const waking = this.engaged ? 1 - Math.exp(-this.wakeAge * 5) : 1;
@@ -1423,6 +1540,7 @@
       const cr = Math.cos(this.rotation), sr = Math.sin(this.rotation), cx = Math.cos(tilt), sx = Math.sin(tilt), cz = Math.cos(sway), sz = Math.sin(sway);
       const mk = this.ease(this.morph); ctx.fillStyle = color;
       let minX = W, maxX = 0, minY = H, maxY = 0;
+      let fingerRippleMaxPx = 0;
       for (let i = 0; i < this.n; i++) {
         const j = i * 3, ph = this.phase[i];
         let x = lerp(this.from[j], this.base[j], mk), y = lerp(this.from[j + 1], this.base[j + 1], mk), z = lerp(this.from[j + 2], this.base[j + 2], mk);
@@ -1437,8 +1555,26 @@
         z *= m;
         const rx = x * cr + z * sr, rz = -x * sr + z * cr;
         const ry = y * cx - rz * sx, depthZ = y * sx + rz * cx;
-        const xx = rx * cz - ry * sz, yy = rx * sz + ry * cz;
-        const perspective = 3.8 / (3.8 + depthZ);
+        let xx = rx * cz - ry * sz, yy = rx * sz + ry * cz, zz = depthZ;
+        const hand = this.handSculpture, handMix = hand.blend * (1 - depth) * (i % 100 < 32 ? 1 : 0);
+        if (handMix > .001) {
+          // Screen-facing targets preserve the mirrored pointing direction.
+          // The unassigned cloud keeps the creature's autonomous 3D flow.
+          xx = lerp(xx, hand.coords[j] * m, handMix);
+          yy = lerp(yy, hand.coords[j + 1] * m, handMix);
+          zz = lerp(zz, hand.coords[j + 2] * m, handMix);
+        }
+        let waveX = 0, waveY = 0;
+        for (let f = 0; f < 5; f++) {
+          if (hand.energy[f] < .008) continue;
+          const fx = xx - hand.tips[f].x * m, fy = yy - hand.tips[f].y * m;
+          const distance = Math.hypot(fx, fy), wave = .105 * hand.energy[f] * Math.sin(time * 5 - distance * 8) / (1 + distance * distance * 3);
+          waveX += fx / Math.max(.12, distance) * wave; waveY += fy / Math.max(.12, distance) * wave;
+        }
+        const limit = Math.max(1, Math.hypot(waveX, waveY) / .14);
+        fingerRippleMaxPx = Math.max(fingerRippleMaxPx, Math.hypot(waveX, waveY) / limit * R * motionFactor * (1 - depth));
+        xx += waveX / limit * motionFactor * (1 - depth); yy += waveY / limit * motionFactor * (1 - depth);
+        const perspective = 3.8 / (3.8 + zz);
         let dx = xx * R * perspective, dy = yy * R * perspective;
         // Soft ellipse compression keeps every combination visible without hard edge clipping.
         const safeX = Math.max(8, Math.min(this.cx, W - this.cx) - 9);
@@ -1460,6 +1596,10 @@
         expansion: sm.expansion, scale: sm.scale, level: sm.level, speed: this.visual.speed, wakeAge: this.wakeAge,
         rotation: this.rotation, sway, clap, retreat, depth, depthSource: this.depthSource, surprise: this.visual.surprise,
         body: { sway: sm.bodySway, lift: sm.bodyLift, spread: sm.bodySpread, motion: sm.body },
+        handShape: { gesture: this.s.handPose?.gesture || null, candidate: this.s.handPose?.candidate || null,
+          heldMs: this.s.handPose?.heldMs || 0, blend: this.handSculpture.blend, energy: [...this.handSculpture.energy],
+          rippleMaxPx: fingerRippleMaxPx,
+          contourParticles: Math.round(this.n * .32), driftingParticles: Math.round(this.n * .68) },
         familiarity: this.fam, rest: sm.rest, absenceSeconds: this.relationship.absence, followRate: this.visual.followRate,
         bounds: [minX, minY, maxX, maxY], viewport: [W, H], events: { ...this.eventCounts } };
     }
@@ -1835,6 +1975,11 @@
     if (model.stage === 'live') {
       const handState = live.hands.state;
       $('#hand-status').textContent = handState === 'loading' ? 'Loading HandPose on this device…' : handState === 'error' ? 'Hand tracking is unavailable. Check the model files and try again. Face and sound still work.' : s.handPresent ? (s.handOpen > .65 ? 'Open hand · Expanding' : s.handOpen < .35 ? 'Closed hand · Gathering' : 'Hand in view · Following') : 'HandPose is ready. Bring one hand into view.';
+      const gestureNames = { open: 'Open palm', fist: 'Fist', v: 'V sign', point: 'Pointing finger' }, pose = s.handPose;
+      const shapeText = !s.handPresent ? 'Bring one hand into view. The creature returns to its natural shape when tracking is lost.' :
+        pose?.gesture ? `${gestureNames[pose.gesture]} · Shaping. Wiggle your fingers to make ripples.` :
+        pose?.candidate ? `${gestureNames[pose.candidate]} · Hold for a moment to shape it.` : 'Move your fingers to make ripples. Hold an open palm, fist, V sign, or one pointing finger.';
+      if ($('#hand-shape-status').textContent !== shapeText) $('#hand-shape-status').textContent = shapeText;
       $('#retry-hand').hidden = handState !== 'error';
       const bodyState = live.body.state;
       const bodyText = ['waiting', 'loading'].includes(bodyState) ? 'Loading body tracking on this device…' : bodyState === 'error' ? 'Body tracking is unavailable. Other interactions still work. Try again.' : s.bodyPresent ? 'Upper body in view. Move at your own pace.' : 'Body tracking is ready. Bring your shoulders and arms into view.';
