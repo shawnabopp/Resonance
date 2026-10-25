@@ -40,7 +40,7 @@
           "faceX": 0.5,
           "faceY": 0.5,
           "presenceSince": 0,
-          "presenceUntil": 2212.3,
+          "presenceUntil": 2074.8,
           "handPresent": false,
           "handX": 0.5,
           "handY": 0.5,
@@ -59,16 +59,16 @@
           171
         ],
         "center": [
-          546.0974354434234,
-          312.09305191149997
+          546.1069816137255,
+          312.27261652184194
         ],
         "radius": 152.145,
-        "expansion": 0.9661438068772482,
-        "scale": 1.0107559441625673,
+        "expansion": 0.9712131050958954,
+        "scale": 1.0108933588987092,
         "level": 0,
-        "speed": 1.0048002025466989,
-        "wakeAge": 0.5166,
-        "rotation": 0.14489220640404707,
+        "speed": 1.0048001767899681,
+        "wakeAge": 0.5666,
+        "rotation": 0.1523759547693212,
         "sway": 0,
         "clap": 0,
         "retreat": 0,
@@ -99,13 +99,13 @@
         },
         "familiarity": 0.04,
         "rest": 0,
-        "absenceSeconds": 0.4998999999999998,
-        "followRate": 1.6200050636674739,
+        "absenceSeconds": 0.5498999999999999,
+        "followRate": 1.6200044197492032,
         "bounds": [
-          393.2453991355477,
-          154.8090346119189,
-          702.3057390389113,
-          463.160299788922
+          387.2850742119168,
+          160.23590515536452,
+          702.5700453961324,
+          461.0561931196429
         ],
         "viewport": [
           1092,
@@ -132,10 +132,10 @@
           "ready": true,
           "musicPlaying": true,
           "musicTracks": 1,
-          "musicGain": 0.035016316920518875,
+          "musicGain": 0.03501073271036148,
           "musicDefault": 0.1,
           "musicTarget": 0.035,
-          "musicPosition": 0.861214,
+          "musicPosition": 0.943311,
           "effectGain": 0.6499999761581421,
           "blocked": false,
           "echoGuard": true,
@@ -151,7 +151,7 @@
               "name": "wake",
               "reason": "session start",
               "eventId": null,
-              "at": 791.9000000003725,
+              "at": 554.6999999992549,
               "duration": 0.6139791666666666,
               "delay": 0.008000000000000007
             }
@@ -163,7 +163,7 @@
           "starting": false,
           "modelReady": true,
           "worker": true,
-          "frames": 6,
+          "frames": 7,
           "facePresent": false,
           "expression": null,
           "expressionDebug": {
@@ -285,7 +285,7 @@
               "growth": 0,
               "rate": 0,
               "count": 0,
-              "updates": 6,
+              "updates": 7,
               "coherentSamples": 0,
               "quietMs": 0,
               "thresholds": null,
@@ -325,7 +325,7 @@
             "error": null,
             "busy": false,
             "frames": 1,
-            "interval": 168.47652033220695
+            "interval": 173.58755225317498
           },
           "tracks": [
             {
@@ -374,7 +374,7 @@
           "faceX": 0.5,
           "faceY": 0.5,
           "presenceSince": 0,
-          "presenceUntil": 3795.6,
+          "presenceUntil": 3574.8,
           "handPresent": false,
           "handX": 0.5,
           "handY": 0.5,
@@ -393,16 +393,16 @@
           171
         ],
         "center": [
-          546.2405684527724,
-          315.8628001932874
+          546.2394647938767,
+          315.88755117483873
         ],
         "radius": 152.145,
-        "expansion": 0.9999324343234437,
-        "scale": 1.011955909981442,
+        "expansion": 0.9999419283104992,
+        "scale": 1.0119593071984438,
         "level": 0,
-        "speed": 1.0048000328164683,
-        "wakeAge": 2.0333,
-        "rotation": 0.35824944840853545,
+        "speed": 1.0048000292231851,
+        "wakeAge": 2.0665999999999984,
+        "rotation": 0.3633839718138505,
         "sway": 0,
         "clap": 0,
         "retreat": 0,
@@ -433,13 +433,13 @@
         },
         "familiarity": 0.04,
         "rest": 0,
-        "absenceSeconds": 2.0166000000000004,
-        "followRate": 1.6200008204117078,
+        "absenceSeconds": 2.0498999999999987,
+        "followRate": 1.6200007305796296,
         "bounds": [
-          377.7995599037688,
-          136.22857166460122,
-          720.1757201606262,
-          486.0564625094995
+          379.85642335718154,
+          143.53481657153492,
+          725.7203619660438,
+          476.610610967502
         ],
         "viewport": [
           1092,
@@ -466,10 +466,10 @@
           "ready": true,
           "musicPlaying": true,
           "musicTracks": 1,
-          "musicGain": 0.09798409789800644,
+          "musicGain": 0.09817589819431305,
           "musicDefault": 0.1,
           "musicTarget": 0.1,
-          "musicPosition": 2.37424,
+          "musicPosition": 2.452608,
           "effectGain": 0,
           "blocked": false,
           "echoGuard": false,
@@ -485,7 +485,7 @@
               "name": "wake",
               "reason": "session start",
               "eventId": null,
-              "at": 791.9000000003725,
+              "at": 554.6999999992549,
               "duration": 0.6139791666666666,
               "delay": 0.008000000000000007
             }
@@ -659,7 +659,7 @@
             "error": null,
             "busy": false,
             "frames": 9,
-            "interval": 167.10204801845074
+            "interval": 167.45529115936554
           },
           "tracks": [
             {
@@ -678,7 +678,7 @@
         }
       }
     },
-    "hintVisibleMs": 5976.699999999255
+    "hintVisibleMs": 6025.10000000149
   },
   "limitation": "Chrome virtual media devices, actual local inference tasks, keyboard/mouse/touch events and emulated mobile viewports. No physical phone or assistive-technology test."
 }

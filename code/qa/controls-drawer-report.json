@@ -1,0 +1,180 @@
+{
+  "checks": [
+    "Live starts with Controls closed; opening/closing leaves canvas dimensions and radius identical, and the original video, mic, three models and one music track keep running",
+    "390/430 px phones and 600/768/820/900 px windows have a full-width canvas, six non-overlapping touch targets, a scrollable drawer under 65%, and mask close without reflow",
+    "Help and Controls are mutually exclusive; Esc and the existing keyboard skip link work without changing the Live stage",
+    "Wide desktop keeps its original sidebar; narrowing resets the drawer closed, Home still releases capture, and Demo uses the same compact Controls entry"
+  ],
+  "errors": [],
+  "layouts": [
+    {
+      "width": 390,
+      "height": 844,
+      "canvas": {
+        "x": 0,
+        "y": 124,
+        "width": 390,
+        "height": 600,
+        "bottom": 724,
+        "right": 390
+      },
+      "drawer": {
+        "x": 14,
+        "y": 211.40625,
+        "width": 362,
+        "height": 548.59375,
+        "bottom": 760,
+        "right": 376
+      },
+      "toolbar": {
+        "x": 14,
+        "y": 769,
+        "width": 362,
+        "height": 63,
+        "bottom": 832,
+        "right": 376
+      }
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "canvas": {
+        "x": 0,
+        "y": 124,
+        "width": 430,
+        "height": 688,
+        "bottom": 812,
+        "right": 430
+      },
+      "drawer": {
+        "x": 14,
+        "y": 242.203125,
+        "width": 402,
+        "height": 605.796875,
+        "bottom": 848,
+        "right": 416
+      },
+      "toolbar": {
+        "x": 14,
+        "y": 857,
+        "width": 402,
+        "height": 63,
+        "bottom": 920,
+        "right": 416
+      }
+    },
+    {
+      "width": 820,
+      "height": 900,
+      "canvas": {
+        "x": 0,
+        "y": 124,
+        "width": 820,
+        "height": 656,
+        "bottom": 780,
+        "right": 820
+      },
+      "drawer": {
+        "x": 130,
+        "y": 231,
+        "width": 560,
+        "height": 585,
+        "bottom": 816,
+        "right": 690
+      },
+      "toolbar": {
+        "x": 185,
+        "y": 825,
+        "width": 450,
+        "height": 63,
+        "bottom": 888,
+        "right": 635
+      }
+    },
+    {
+      "width": 900,
+      "height": 650,
+      "canvas": {
+        "x": 0,
+        "y": 124,
+        "width": 900,
+        "height": 406,
+        "bottom": 530,
+        "right": 900
+      },
+      "drawer": {
+        "x": 170,
+        "y": 143.5,
+        "width": 560,
+        "height": 422.5,
+        "bottom": 566,
+        "right": 730
+      },
+      "toolbar": {
+        "x": 225,
+        "y": 575,
+        "width": 450,
+        "height": 63,
+        "bottom": 638,
+        "right": 675
+      }
+    },
+    {
+      "width": 768,
+      "height": 720,
+      "canvas": {
+        "x": 0,
+        "y": 124,
+        "width": 768,
+        "height": 476,
+        "bottom": 600,
+        "right": 768
+      },
+      "drawer": {
+        "x": 104,
+        "y": 168,
+        "width": 560,
+        "height": 468,
+        "bottom": 636,
+        "right": 664
+      },
+      "toolbar": {
+        "x": 159,
+        "y": 645,
+        "width": 450,
+        "height": 63,
+        "bottom": 708,
+        "right": 609
+      }
+    },
+    {
+      "width": 600,
+      "height": 480,
+      "canvas": {
+        "x": 0,
+        "y": 104,
+        "width": 600,
+        "height": 268,
+        "bottom": 372,
+        "right": 600
+      },
+      "drawer": {
+        "x": 20,
+        "y": 106,
+        "width": 560,
+        "height": 290,
+        "bottom": 396,
+        "right": 580
+      },
+      "toolbar": {
+        "x": 75,
+        "y": 405,
+        "width": 450,
+        "height": 63,
+        "bottom": 468,
+        "right": 525
+      }
+    }
+  ],
+  "limitation": "Chrome virtual media devices, actual local model workers and touch/key events, emulated viewport dimensions. Physical phones, notches and mobile Safari remain untested."
+}

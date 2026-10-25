@@ -1392,6 +1392,7 @@
     }
     resize() {
       const r = this.canvas.getBoundingClientRect();
+      this.compact = this.engaged && !this.thumbnail && matchMedia('(max-width:1000px)').matches;
       this.dpr = Math.min(devicePixelRatio || 1, 2); this.w = r.width; this.h = r.height;
       this.canvas.width = Math.max(1, Math.round(r.width * this.dpr));
       this.canvas.height = Math.max(1, Math.round(r.height * this.dpr));
@@ -1488,7 +1489,7 @@
       sm.expansion = approach(sm.expansion, expansion, 5, dt);
       sm.scale = approach(sm.scale, lerp(1 + closeness * .3 + sm.smile * .17 - sm.rest * .16, .68, depth), depth > .1 ? 8 : 2.2, dt);
       const W = this.w, H = this.h;
-      const radiusFactor = this.thumbnail ? .3 : this.engaged && W < 500 ? .31 : .245;
+      const radiusFactor = this.thumbnail ? .3 : this.compact ? .33 : .245;
       const R = Math.min(W, H) * radiusFactor;
       this.radius = R;
       let tx = W / 2, ty = H / 2;
@@ -1667,6 +1668,7 @@
   }
   function setStage(stage) {
     const previous = model.stage;
+    closeControls(false);
     if (stage !== 'live') hideHelpNudge();
     if (stage !== 'live' && stage !== 'loading') live.stop();
     if (!['live', 'demo', 'loading'].includes(stage)) sounds.stop();
@@ -1679,6 +1681,7 @@
     $('#session').hidden = !creature.engaged; $('#home').hidden = stage === 'welcome';
     $('#connection').hidden = stage !== 'loading' && stage !== 'error';
     $('#demo-controls').hidden = stage !== 'demo'; $('#live-controls').hidden = stage !== 'live';
+    syncControlsLayout();
     $('#mode-badge').textContent = stage === 'live' ? 'LIVE · CAMERA + MICROPHONE' : 'DEMO · SIMULATED INPUTS';
     $('.skip-link').href = stage === 'live' ? '#live-controls' : '#demo-controls';
     $('.skip-link').textContent = stage === 'live' ? 'Skip to live controls' : 'Skip to Demo controls';
@@ -1688,8 +1691,8 @@
     requestAnimationFrame(() => {
       if (model.stage !== stage) return;
       if (stage === 'prep') $('#prep-title').focus();
-      else if (stage === 'demo') $('#demo-controls').focus({ preventScroll: true });
-      else if (stage === 'live') { $('#live-controls').focus({ preventScroll: true }); showHelpNudge(); }
+      else if (stage === 'demo') (compactControls.matches ? controlsToggle : $('#demo-controls')).focus({ preventScroll: true });
+      else if (stage === 'live') { (compactControls.matches ? controlsToggle : $('#live-controls')).focus({ preventScroll: true }); showHelpNudge(); }
       else if (stage === 'loading' || stage === 'error') $('#connection-title').focus({ preventScroll: true });
       else $('#meet').focus({ preventScroll: true });
     });
@@ -1794,6 +1797,55 @@
     creature.s.handY = clamp(creature.s.handY + (e.key === 'ArrowDown' ? .05 : e.key === 'ArrowUp' ? -.05 : 0));
   });
   const helpDialog = $('#help-dialog'), helpButton = $('#help-button'), helpNudge = $('#help-nudge');
+  const compactControls = matchMedia('(max-width:1000px)'), controlsToggle = $('#controls-toggle');
+  let controlsDrawer = null;
+  function closeControls(restoreFocus = true) {
+    const wasOpen = !!controlsDrawer;
+    if (controlsDrawer) {
+      controlsDrawer.classList.remove('drawer-open');
+      controlsDrawer.inert = compactControls.matches;
+      if (compactControls.matches) controlsDrawer.setAttribute('aria-hidden', 'true');
+    }
+    controlsDrawer = null; $('#controls-backdrop').hidden = true;
+    controlsToggle.setAttribute('aria-expanded', 'false');
+    if (wasOpen && restoreFocus && creature.engaged && compactControls.matches) controlsToggle.focus({ preventScroll: true });
+  }
+  function syncControlsLayout() {
+    const focusedPanel = $$('.controls').find(panel => panel.contains(document.activeElement));
+    const toggleFocused = document.activeElement === controlsToggle;
+    if (!compactControls.matches || !creature.engaged) closeControls(false);
+    controlsToggle.hidden = !compactControls.matches || !creature.engaged;
+    controlsToggle.setAttribute('aria-controls', model.stage === 'live' ? 'live-controls' : 'demo-controls');
+    for (const panel of $$('.controls')) {
+      const closed = compactControls.matches && panel !== controlsDrawer;
+      // Opacity + inert keep the existing video element in place and playing.
+      // Do not display:none, detach it, or stop capture when closing the drawer.
+      panel.inert = closed;
+      if (closed) panel.setAttribute('aria-hidden', 'true'); else panel.removeAttribute('aria-hidden');
+      if (compactControls.matches) { panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-labelledby', panel.id === 'live-controls' ? 'live-drawer-title' : 'demo-drawer-title'); }
+      else { panel.removeAttribute('role'); panel.setAttribute('aria-labelledby', panel.id === 'live-controls' ? 'live-title' : 'controls-title'); }
+    }
+    if (creature.engaged && compactControls.matches && focusedPanel && focusedPanel !== controlsDrawer) controlsToggle.focus({ preventScroll: true });
+    else if (creature.engaged && !compactControls.matches && toggleFocused) $(model.stage === 'live' ? '#live-controls' : '#demo-controls').focus({ preventScroll: true });
+  }
+  function openControls() {
+    if (!compactControls.matches || !creature.engaged) return;
+    hideHelpNudge();
+    $$('dialog[open]').forEach(dialog => dialog.close());
+    closeControls(false);
+    controlsDrawer = $(model.stage === 'live' ? '#live-controls' : '#demo-controls');
+    controlsDrawer.inert = false; controlsDrawer.removeAttribute('aria-hidden');
+    controlsDrawer.classList.add('drawer-open'); $('#controls-backdrop').hidden = false;
+    controlsToggle.setAttribute('aria-expanded', 'true');
+    controlsDrawer.querySelector('[data-close-controls]').focus({ preventScroll: true });
+  }
+  controlsToggle.addEventListener('click', () => controlsDrawer ? closeControls() : openControls());
+  $$('[data-close-controls]').forEach(button => button.addEventListener('click', () => closeControls()));
+  $('#controls-backdrop').addEventListener('click', () => closeControls());
+  $('.skip-link').addEventListener('click', event => { if (compactControls.matches && creature.engaged) { event.preventDefault(); openControls(); } });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && controlsDrawer) { event.preventDefault(); closeControls(); } });
+  compactControls.addEventListener('change', syncControlsLayout);
+  syncControlsLayout();
   let helpHintSeen = false, helpHintTimer;
   try { helpHintSeen = sessionStorage.getItem('resonance.helpHintSeen') === 'yes'; } catch {}
   function hideHelpNudge() {
@@ -1826,6 +1878,7 @@
   }
   function openHelp() {
     if (!creature.engaged || helpDialog.open) return;
+    closeControls(false);
     hideHelpNudge();
     const demo = model.stage === 'demo';
     $('#help-mode').textContent = demo ? 'DEMO · SIMULATED INPUTS' : 'LIVE INTERACTION';
@@ -1849,7 +1902,7 @@
   }
   helpDialog.addEventListener('close', () => {
     helpButton.setAttribute('aria-expanded', 'false');
-    if (creature.engaged && helpButton.getClientRects().length) helpButton.focus({ preventScroll: true });
+    if (creature.engaged && !controlsDrawer && helpButton.getClientRects().length) helpButton.focus({ preventScroll: true });
   });
   helpDialog.addEventListener('keydown', event => {
     if (event.key !== 'Tab') return;
@@ -1862,7 +1915,7 @@
   window.visualViewport?.addEventListener('resize', placeHelpUI, { passive: true });
   $$('[data-dialog]').forEach(button => button.addEventListener('click', () => {
     if (button.dataset.dialog === 'help-dialog') openHelp();
-    else $(`#${button.dataset.dialog}`).showModal();
+    else { closeControls(false); $(`#${button.dataset.dialog}`).showModal(); }
   }));
   $$('dialog').forEach(dialog => {
     dialog.querySelector('.close').addEventListener('click', () => dialog.close());
