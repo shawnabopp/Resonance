@@ -165,23 +165,27 @@
         <button data-dialog="shape-dialog"><span aria-hidden="true">◇</span>Shape</button>
         <button data-dialog="theme-dialog"><span aria-hidden="true">◌</span>Theme</button>
         <button id="mute" aria-pressed="false"><span aria-hidden="true">≈</span><span id="mute-label">Demo input</span></button>
-        <button data-dialog="help-dialog"><span aria-hidden="true">?</span>Help</button>
+        <button id="help-button" data-dialog="help-dialog" aria-haspopup="dialog" aria-controls="help-dialog" aria-expanded="false"><span aria-hidden="true">?</span>Help</button>
       </nav>
     </section>
   </main>
   <dialog id="shape-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>Choose its form</h2><button class="close" aria-label="Close">×</button></div><div class="shape-picker" data-shape-picker></div></dialog>
   <dialog id="theme-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>A colour of its own</h2><button class="close" aria-label="Close">×</button></div><div class="theme-picker" data-theme-picker></div><p class="hint">Expressions gently tint its colour. It returns to your theme when the signal settles.</p></dialog>
-  <dialog id="help-dialog"><button class="dialog-home text-button">← Home</button><div class="dialog-heading"><h2>Small gestures matter.</h2><button class="close" aria-label="Close">×</button></div>
-    <span id="help-mode" class="badge">HOW TO CONNECT</span>
-    <ul class="help-list"><li><b>Smile</b> · It warms, opens up and comes closer.</li><li><b>Sad look</b> · It turns blue, slows and gathers.</li><li><b>Surprise</b> · It turns purple, opens outward and settles.</li><li><b>Sound</b> · Your volume creates ripples. A sudden loud sound scatters it once, then it gathers again.</li><li><b>Hand gestures</b> · Move slowly to guide it. Open your palm to expand, close your hand to gather, or wave quickly to startle it. Pause before waving again.</li><li><b>Sudden approach</b> · Hold steady, then bring your face or palm closer quickly. It shrinks and tucks toward the centre, then gently opens again. Slow approaches stay calm. Pause before trying again.</li><li><b>Body movement</b> · Sway from side to side, or raise and open both arms to help it float and expand. Moving adds rotation and flow; pausing lets it settle. Body movement alone never startles it.</li></ul>
-    <p class="description">Simply stay in view. A quiet minute or two brings it closer; smiles and gentle sounds help it warm up sooner. A neutral or sad look never reduces familiarity. A loud sound may startle it, but does not undo your bond.</p>
-    <p class="hint">If your face leaves the frame, growth pauses and your progress stays. After about eight seconds away it gradually rests. Growth pauses in background tabs. Demo presence uses the same timing. Reset clears Demo inputs; Start fresh and Home reset familiarity.</p>
-    <button id="restart" class="pill">Start fresh</button>
-    <p class="hint">Live uses your microphone and MediaPipe Face Landmarker on this device. Facial movements are approximate cues, not a measure of your feelings. Hiding the preview keeps tracking on. Home or End interaction stops both devices.</p>
-    <p class="hint">Live hand gestures use ml5 HandPose and the same camera as face tracking. Follow the mirrored preview. Keep your palm still and move your fingers to make ripples. Hold an open palm, fist, V sign, or pointing finger for a moment to shape it. When your hand leaves, it returns to its chosen natural form. Familiarity makes it more willing to follow. Demo keeps its simulated follow and open / close controls.</p>
-    <p class="hint">Body tracking shares the same camera. Keep your shoulders and arms in view; if they leave the frame, it settles gently. Face and sound still work when only your face is visible.</p>
-    <p class="hint">Music loops at 10% volume across Home, preparation and interaction. If playback is blocked, tap or click anywhere to start it. Music keeps playing while you speak or sing, and softens only while an interaction effect plays. Music remembers your On / Off choice. Sound Effects controls Wake, Curious, Happy and Afraid. Interaction effects soften while you speak. Home or End interaction stops effects and device access; music continues. During an effect and its short echo tail, microphone startles pause to help prevent feedback; sound ripples still work. Demo inputs are simulated, and the same sounds play. Capture saves only the particle image, never the camera.</p>
+  <dialog id="help-dialog" aria-labelledby="help-title" aria-describedby="help-mode">
+    <div class="help-topbar"><button class="dialog-home text-button">← Home</button><button class="close" aria-label="Close help" autofocus>×</button></div>
+    <header class="help-heading"><p id="help-mode" class="eyebrow">LIVE INTERACTION</p><h2 id="help-title">How to interact</h2></header>
+    <div class="help-scroll" tabindex="0" role="region" aria-label="Interaction tips">
+      <ul class="help-list">
+        <li><b>Expressions</b><p data-help="expressions">Smile or change your expression to influence its colour and mood.</p></li>
+        <li><b>Hands</b><p data-help="hands">Move your hand and wiggle your fingers. Watch it follow, ripple and gently echo your gestures.</p></li>
+        <li><b>Voice</b><p data-help="voice">Speak or sing to create movement and waves.</p></li>
+        <li><b>Stay a while</b><p data-help="presence">Your presence helps it become more familiar with you.</p></li>
+        <li><b>Capture</b><p>Save a snapshot of your moment together.</p></li>
+      </ul>
+    </div>
+    <footer class="help-footer"><button id="restart" class="text-button">Start fresh</button><span>Take your time.</span></footer>
   </dialog>
+  <div id="help-nudge" role="status" hidden>Not sure what to do? Start here.</div>
   <div id="toast" role="status" hidden></div>
 </body>
 </html>

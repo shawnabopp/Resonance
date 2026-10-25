@@ -21,6 +21,16 @@ Live 的 **Hide preview** 仅隐藏镜像画面，识别继续。工具栏 **Mic
 
 ## 信号处理
 
+### How to interact 帮助
+
+继续使用互动工具栏原来的 **? Help**，未增加第二个入口。电脑端在按钮上方显示小浮层；手机竖屏及触摸设备横屏使用底部面板。标题为 **How to interact**，只列 Expressions / Hands / Voice / Stay a while / Capture 五项已实现互动。Live 使用简短的真实操作说明，Demo 改为模拟控件说明；没有把尚未完成真人摄像头验证的突然靠近列入帮助。原来的 Home / Start fresh 操作保留。
+
+关闭按钮、外部点击、触摸和 Esc 可关闭；初始焦点落在 Close help，Tab / Shift+Tab 在面板内循环，关闭后回到 Help。短屏内容在内部滚动，顶部 Home / Close 和底部操作始终可见；按钮点击目标至少 44 px。打开／关闭仅处理帮助 UI，不切换体验、不停止设备或识别循环，也不操作音乐播放器。
+
+首次进入 **Live** 时在 Help 上方显示 **Not sure what to do? Start here.**，约 6 秒后、打开 Help 或离开 Live 时消失。`sessionStorage` 的 `resonance.helpHintSeen` 记录本次浏览会话已显示；Home、重新进入和刷新不会重复提示，存储不可用时退回当前页面内存。Demo 不触发该提示。
+
+`node code/qa-help.cjs` 检查现有单入口、Live / Demo 内容、首次提示与约 6 秒超时、会话内刷新去重、鼠标／Esc／触摸关闭、焦点进入与循环／返回、320 / 390 竖屏和 844 横屏滚动边界；实际本地模型配合虚拟摄像头确认面板打开期间动画、人脸及手部帧数继续增长，同一 BGM 播放器继续推进。报告与截图为 `qa/help-*`，未测试实体手机或读屏软件。
+
 ### 麦克风
 
 - Web Audio Analyser 获取时域样本并计算 RMS，麦克风采样不直连扬声器（无返听）；Music / Sound Effects 使用独立播放节点与 AudioContext。

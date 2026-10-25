@@ -1667,6 +1667,7 @@
   }
   function setStage(stage) {
     const previous = model.stage;
+    if (stage !== 'live') hideHelpNudge();
     if (stage !== 'live' && stage !== 'loading') live.stop();
     if (!['live', 'demo', 'loading'].includes(stage)) sounds.stop();
     $$('dialog[open]').forEach(d => d.close());
@@ -1685,9 +1686,10 @@
     clearTimeout(toastTimer); $('#toast').hidden = true; syncControls();
     window.scrollTo(0, 0); creature.resize();
     requestAnimationFrame(() => {
+      if (model.stage !== stage) return;
       if (stage === 'prep') $('#prep-title').focus();
       else if (stage === 'demo') $('#demo-controls').focus({ preventScroll: true });
-      else if (stage === 'live') $('#live-controls').focus({ preventScroll: true });
+      else if (stage === 'live') { $('#live-controls').focus({ preventScroll: true }); showHelpNudge(); }
       else if (stage === 'loading' || stage === 'error') $('#connection-title').focus({ preventScroll: true });
       else $('#meet').focus({ preventScroll: true });
     });
@@ -1791,7 +1793,77 @@
     creature.s.handX = clamp(creature.s.handX + (e.key === 'ArrowRight' ? .05 : e.key === 'ArrowLeft' ? -.05 : 0));
     creature.s.handY = clamp(creature.s.handY + (e.key === 'ArrowDown' ? .05 : e.key === 'ArrowUp' ? -.05 : 0));
   });
-  $$('[data-dialog]').forEach(button => button.addEventListener('click', () => $(`#${button.dataset.dialog}`).showModal()));
+  const helpDialog = $('#help-dialog'), helpButton = $('#help-button'), helpNudge = $('#help-nudge');
+  let helpHintSeen = false, helpHintTimer;
+  try { helpHintSeen = sessionStorage.getItem('resonance.helpHintSeen') === 'yes'; } catch {}
+  function hideHelpNudge() {
+    clearTimeout(helpHintTimer); helpNudge.hidden = true;
+    helpButton.removeAttribute('aria-describedby');
+  }
+  function showHelpNudge() {
+    if (helpHintSeen || model.stage !== 'live' || helpDialog.open) return;
+    helpHintSeen = true;
+    try { sessionStorage.setItem('resonance.helpHintSeen', 'yes'); } catch {}
+    helpNudge.hidden = false; helpButton.setAttribute('aria-describedby', 'help-nudge');
+    placeHelpUI(); helpHintTimer = setTimeout(hideHelpNudge, 6000);
+  }
+  function placeHelpUI() {
+    const anchor = helpButton.getBoundingClientRect();
+    if (helpDialog.open) {
+      if (matchMedia('(max-width:767px), (max-width:1000px) and (pointer:coarse)').matches) {
+        helpDialog.style.removeProperty('left'); helpDialog.style.removeProperty('top');
+      } else {
+        const r = helpDialog.getBoundingClientRect();
+        helpDialog.style.left = `${clamp(anchor.right - r.width, 16, Math.max(16, innerWidth - r.width - 16))}px`;
+        helpDialog.style.top = `${clamp(anchor.top - r.height - 12, 16, Math.max(16, innerHeight - r.height - 16))}px`;
+      }
+    }
+    if (!helpNudge.hidden) {
+      const r = helpNudge.getBoundingClientRect(), x = clamp(anchor.right - r.width, 16, Math.max(16, innerWidth - r.width - 16));
+      helpNudge.style.left = `${x}px`; helpNudge.style.top = `${Math.max(12, anchor.top - r.height - 14)}px`;
+      helpNudge.style.setProperty('--hint-arrow', `${clamp(anchor.left + anchor.width / 2 - x - 4, 12, r.width - 20)}px`);
+    }
+  }
+  function openHelp() {
+    if (!creature.engaged || helpDialog.open) return;
+    hideHelpNudge();
+    const demo = model.stage === 'demo';
+    $('#help-mode').textContent = demo ? 'DEMO · SIMULATED INPUTS' : 'LIVE INTERACTION';
+    const tips = demo ? {
+      expressions: 'Use the Demo expression controls to change its colour and mood.',
+      hands: 'Use Follow hand and the Open / close slider to guide and shape it.',
+      voice: 'Use the Demo sound controls to create movement and waves.',
+      presence: 'Keep Demo presence on to explore how familiarity grows.'
+    } : {
+      expressions: 'Smile or change your expression to influence its colour and mood.',
+      hands: 'Move your hand and wiggle your fingers. Watch it follow, ripple and gently echo your gestures.',
+      voice: 'Speak or sing to create movement and waves.',
+      presence: 'Your presence helps it become more familiar with you.'
+    };
+    for (const [key, text] of Object.entries(tips)) $(`[data-help="${key}"]`).textContent = text;
+    // Opening help never changes the stage, capture tasks, particle loop or audio.
+    helpButton.focus({ preventScroll: true });
+    helpDialog.showModal(); helpDialog.querySelector('.help-scroll').scrollTop = 0;
+    helpButton.setAttribute('aria-expanded', 'true'); placeHelpUI();
+    helpDialog.querySelector('.close').focus({ preventScroll: true });
+  }
+  helpDialog.addEventListener('close', () => {
+    helpButton.setAttribute('aria-expanded', 'false');
+    if (creature.engaged && helpButton.getClientRects().length) helpButton.focus({ preventScroll: true });
+  });
+  helpDialog.addEventListener('keydown', event => {
+    if (event.key !== 'Tab') return;
+    const nodes = [...helpDialog.querySelectorAll('button:not(:disabled),[tabindex="0"]')].filter(node => node.getClientRects().length);
+    const first = nodes[0], last = nodes[nodes.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+  window.addEventListener('resize', placeHelpUI, { passive: true });
+  window.visualViewport?.addEventListener('resize', placeHelpUI, { passive: true });
+  $$('[data-dialog]').forEach(button => button.addEventListener('click', () => {
+    if (button.dataset.dialog === 'help-dialog') openHelp();
+    else $(`#${button.dataset.dialog}`).showModal();
+  }));
   $$('dialog').forEach(dialog => {
     dialog.querySelector('.close').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', e => { if (e.target === dialog) { const r = dialog.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dialog.close(); } });

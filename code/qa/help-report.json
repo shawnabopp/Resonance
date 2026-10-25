@@ -1,0 +1,684 @@
+{
+  "checks": [
+    "One existing Help entry shows five Live tips, honest Demo controls, and a once-per-session Live hint that disappears on opening",
+    "Desktop popover anchors above Help; focus enters and stays inside, Esc/outside click restore focus, while particles, models and the same music track continue",
+    "Phone-sized portrait/landscape sheets sit at the bottom, scroll internally, keep 44 px close/reset targets, and close by touch without ending Live or Music",
+    "The hint stays dismissed across Home, reentry and reload in the same browser session",
+    "In a fresh session the untouched hint expires after about 6 seconds"
+  ],
+  "errors": [],
+  "samples": {
+    "continuity": {
+      "before": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": "Green",
+        "inputs": {
+          "stage": "live",
+          "shape": "seed",
+          "theme": 2,
+          "expression": null,
+          "intensity": 0.85,
+          "sound": 0,
+          "sustain": false,
+          "muted": false,
+          "hand": false,
+          "openness": 0.5,
+          "body": 0,
+          "bodyLean": 0,
+          "arms": 0,
+          "present": true,
+          "faceX": 0.5
+        },
+        "signals": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0,
+          "level": 0,
+          "spike": 0,
+          "facePresent": false,
+          "faceX": 0.5,
+          "faceY": 0.5,
+          "presenceSince": 0,
+          "presenceUntil": 2212.3,
+          "handPresent": false,
+          "handX": 0.5,
+          "handY": 0.5,
+          "handOpen": 0.5,
+          "handSpeed": 0,
+          "handPose": null,
+          "bodyPresent": false,
+          "bodyMotion": 0,
+          "bodySway": 0,
+          "bodyLift": 0,
+          "bodySpread": 0
+        },
+        "color": [
+          162,
+          211,
+          171
+        ],
+        "center": [
+          546.0974354434234,
+          312.09305191149997
+        ],
+        "radius": 152.145,
+        "expansion": 0.9661438068772482,
+        "scale": 1.0107559441625673,
+        "level": 0,
+        "speed": 1.0048002025466989,
+        "wakeAge": 0.5166,
+        "rotation": 0.14489220640404707,
+        "sway": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0,
+        "depthSource": null,
+        "surprise": 0,
+        "body": {
+          "sway": 0,
+          "lift": 0,
+          "spread": 0,
+          "motion": 0
+        },
+        "handShape": {
+          "gesture": null,
+          "candidate": null,
+          "heldMs": 0,
+          "blend": 0,
+          "energy": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rippleMaxPx": 0,
+          "contourParticles": 1152,
+          "driftingParticles": 2448
+        },
+        "familiarity": 0.04,
+        "rest": 0,
+        "absenceSeconds": 0.4998999999999998,
+        "followRate": 1.6200050636674739,
+        "bounds": [
+          393.2453991355477,
+          154.8090346119189,
+          702.3057390389113,
+          463.160299788922
+        ],
+        "viewport": [
+          1092,
+          621
+        ],
+        "events": {
+          "surprise": 0,
+          "clap": 0,
+          "retreat": 0,
+          "depth": 0
+        },
+        "startle": {
+          "event": null,
+          "attempt": null,
+          "cooldownMs": 0
+        },
+        "playback": {
+          "active": true,
+          "context": "running",
+          "musicEnabled": true,
+          "effectsEnabled": true,
+          "current": "wake",
+          "retiring": 0,
+          "ready": true,
+          "musicPlaying": true,
+          "musicTracks": 1,
+          "musicGain": 0.035016316920518875,
+          "musicDefault": 0.1,
+          "musicTarget": 0.035,
+          "musicPosition": 0.861214,
+          "effectGain": 0.6499999761581421,
+          "blocked": false,
+          "echoGuard": true,
+          "afraid": null,
+          "counts": {
+            "wake": 1,
+            "curious": 0,
+            "happy": 0,
+            "afraid": 0
+          },
+          "history": [
+            {
+              "name": "wake",
+              "reason": "session start",
+              "eventId": null,
+              "at": 791.9000000003725,
+              "duration": 0.6139791666666666,
+              "delay": 0.008000000000000007
+            }
+          ],
+          "errors": []
+        },
+        "live": {
+          "active": true,
+          "starting": false,
+          "modelReady": true,
+          "worker": true,
+          "frames": 6,
+          "facePresent": false,
+          "expression": null,
+          "expressionDebug": {
+            "raw": {},
+            "adjusted": {},
+            "scores": {
+              "smile": 0,
+              "sad": 0,
+              "surprise": 0
+            },
+            "output": {
+              "smile": 0,
+              "sad": 0,
+              "surprise": 0
+            },
+            "active": null,
+            "candidate": null,
+            "heldMs": 0,
+            "reason": "No face scores",
+            "breakdown": {},
+            "reasons": {
+              "smile": "No fresh face scores. Expression output cleared.",
+              "sad": "No fresh face scores. Expression output cleared.",
+              "surprise": "No fresh face scores. Expression output cleared."
+            },
+            "relative": null,
+            "noise": {},
+            "continuousSad": {
+              "heldSeconds": 0,
+              "evidence": 0,
+              "previewEvidence": 0,
+              "route": "none",
+              "fullSettled": false,
+              "features": {
+                "mouth": 0,
+                "side": 0,
+                "inner": 0,
+                "down": 0,
+                "contrast": 0,
+                "outerFall": 0
+              },
+              "groups": {},
+              "floors": {}
+            },
+            "groupNoise": {},
+            "thresholds": {
+              "enter": {
+                "smile": 0.32,
+                "sad": 0.28,
+                "surprise": 0.32
+              },
+              "exit": 0.18,
+              "margin": 0.08,
+              "dwell": {
+                "smile": 300,
+                "sad": 650,
+                "surprise": 400,
+                "neutral": 400
+              },
+              "smoothing": 6,
+              "frownMean": 0.11,
+              "frownBoth": 0.055,
+              "innerBrow": 0.13,
+              "strongFrown": 0.24,
+              "strongBoth": 0.1,
+              "openJaw": 0.45,
+              "speechFrown": 0.2,
+              "speechBrow": 0.23,
+              "outerBrowFloor": 0.22,
+              "outerBrowRange": 0.45,
+              "eyeWideFloor": 0.15,
+              "eyeWideRange": 0.4,
+              "continuousSad": {
+                "noiseMultiplier": 1.5,
+                "mouthFloor": 0.0015,
+                "sideFloor": 0.00075,
+                "innerFloor": 0.008,
+                "downFloor": 0.0025,
+                "contrastFloor": 0.012,
+                "settledMouthFloor": 0.006,
+                "settledSideFloor": 0.004,
+                "outerFallFloor": 0.0035,
+                "warmup": 0.35,
+                "fadeIn": 0.8,
+                "fullAfter": 1.4,
+                "maxPreview": 0.42,
+                "visualGain": 1.7,
+                "featureSmoothing": 5
+              },
+              "relative": {
+                "frown": 0.004,
+                "frownSide": 0.003,
+                "innerSad": 0.018,
+                "browDown": 0.01,
+                "browContrast": 0.035,
+                "outer": 0.025,
+                "eye": 0.012,
+                "outerSide": 0.012,
+                "eyeSide": 0.007,
+                "innerSurprise": 0.045,
+                "supportedOuter": 0.018,
+                "supportedEye": 0.008,
+                "jaw": 0.12,
+                "noiseMultiplier": 4
+              }
+            },
+            "baseline": null,
+            "calibrating": false,
+            "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+          },
+          "approach": {
+            "face": {
+              "status": "No face/palm size: missing or clipped landmarks",
+              "armed": false,
+              "size": 0,
+              "rawSize": 0,
+              "spans": null,
+              "ageMs": null,
+              "growth": 0,
+              "rate": 0,
+              "count": 0,
+              "updates": 6,
+              "coherentSamples": 0,
+              "quietMs": 0,
+              "thresholds": null,
+              "checks": {},
+              "lastDetection": null
+            },
+            "hand": {
+              "status": "No face/palm size: missing or clipped landmarks",
+              "armed": false,
+              "size": 0,
+              "rawSize": 0,
+              "spans": null,
+              "ageMs": null,
+              "growth": 0,
+              "rate": 0,
+              "count": 0,
+              "updates": 2,
+              "coherentSamples": 0,
+              "quietMs": 0,
+              "thresholds": null,
+              "checks": {},
+              "lastDetection": null
+            }
+          },
+          "hands": {
+            "state": "ready",
+            "active": true,
+            "worker": true,
+            "error": null,
+            "busy": false,
+            "frames": 2,
+            "interval": 125
+          },
+          "body": {
+            "state": "ready",
+            "worker": true,
+            "error": null,
+            "busy": false,
+            "frames": 1,
+            "interval": 168.47652033220695
+          },
+          "tracks": [
+            {
+              "kind": "audio",
+              "state": "live",
+              "enabled": true
+            },
+            {
+              "kind": "video",
+              "state": "live",
+              "enabled": true
+            }
+          ],
+          "audio": "running",
+          "previewHidden": false
+        }
+      },
+      "after": {
+        "stage": "live",
+        "shape": "seed",
+        "theme": "Green",
+        "inputs": {
+          "stage": "live",
+          "shape": "seed",
+          "theme": 2,
+          "expression": null,
+          "intensity": 0.85,
+          "sound": 0,
+          "sustain": false,
+          "muted": false,
+          "hand": false,
+          "openness": 0.5,
+          "body": 0,
+          "bodyLean": 0,
+          "arms": 0,
+          "present": true,
+          "faceX": 0.5
+        },
+        "signals": {
+          "smile": 0,
+          "sad": 0,
+          "surprise": 0,
+          "level": 0,
+          "spike": 0,
+          "facePresent": false,
+          "faceX": 0.5,
+          "faceY": 0.5,
+          "presenceSince": 0,
+          "presenceUntil": 3795.6,
+          "handPresent": false,
+          "handX": 0.5,
+          "handY": 0.5,
+          "handOpen": 0.5,
+          "handSpeed": 0,
+          "handPose": null,
+          "bodyPresent": false,
+          "bodyMotion": 0,
+          "bodySway": 0,
+          "bodyLift": 0,
+          "bodySpread": 0
+        },
+        "color": [
+          162,
+          211,
+          171
+        ],
+        "center": [
+          546.2405684527724,
+          315.8628001932874
+        ],
+        "radius": 152.145,
+        "expansion": 0.9999324343234437,
+        "scale": 1.011955909981442,
+        "level": 0,
+        "speed": 1.0048000328164683,
+        "wakeAge": 2.0333,
+        "rotation": 0.35824944840853545,
+        "sway": 0,
+        "clap": 0,
+        "retreat": 0,
+        "depth": 0,
+        "depthSource": null,
+        "surprise": 0,
+        "body": {
+          "sway": 0,
+          "lift": 0,
+          "spread": 0,
+          "motion": 0
+        },
+        "handShape": {
+          "gesture": null,
+          "candidate": null,
+          "heldMs": 0,
+          "blend": 0,
+          "energy": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "rippleMaxPx": 0,
+          "contourParticles": 1152,
+          "driftingParticles": 2448
+        },
+        "familiarity": 0.04,
+        "rest": 0,
+        "absenceSeconds": 2.0166000000000004,
+        "followRate": 1.6200008204117078,
+        "bounds": [
+          377.7995599037688,
+          136.22857166460122,
+          720.1757201606262,
+          486.0564625094995
+        ],
+        "viewport": [
+          1092,
+          621
+        ],
+        "events": {
+          "surprise": 0,
+          "clap": 0,
+          "retreat": 0,
+          "depth": 0
+        },
+        "startle": {
+          "event": null,
+          "attempt": null,
+          "cooldownMs": 0
+        },
+        "playback": {
+          "active": true,
+          "context": "running",
+          "musicEnabled": true,
+          "effectsEnabled": true,
+          "current": null,
+          "retiring": 0,
+          "ready": true,
+          "musicPlaying": true,
+          "musicTracks": 1,
+          "musicGain": 0.09798409789800644,
+          "musicDefault": 0.1,
+          "musicTarget": 0.1,
+          "musicPosition": 2.37424,
+          "effectGain": 0,
+          "blocked": false,
+          "echoGuard": false,
+          "afraid": null,
+          "counts": {
+            "wake": 1,
+            "curious": 0,
+            "happy": 0,
+            "afraid": 0
+          },
+          "history": [
+            {
+              "name": "wake",
+              "reason": "session start",
+              "eventId": null,
+              "at": 791.9000000003725,
+              "duration": 0.6139791666666666,
+              "delay": 0.008000000000000007
+            }
+          ],
+          "errors": []
+        },
+        "live": {
+          "active": true,
+          "starting": false,
+          "modelReady": true,
+          "worker": true,
+          "frames": 25,
+          "facePresent": false,
+          "expression": null,
+          "expressionDebug": {
+            "raw": {},
+            "adjusted": {},
+            "scores": {
+              "smile": 0,
+              "sad": 0,
+              "surprise": 0
+            },
+            "output": {
+              "smile": 0,
+              "sad": 0,
+              "surprise": 0
+            },
+            "active": null,
+            "candidate": null,
+            "heldMs": 0,
+            "reason": "No face scores",
+            "breakdown": {},
+            "reasons": {
+              "smile": "No fresh face scores. Expression output cleared.",
+              "sad": "No fresh face scores. Expression output cleared.",
+              "surprise": "No fresh face scores. Expression output cleared."
+            },
+            "relative": null,
+            "noise": {},
+            "continuousSad": {
+              "heldSeconds": 0,
+              "evidence": 0,
+              "previewEvidence": 0,
+              "route": "none",
+              "fullSettled": false,
+              "features": {
+                "mouth": 0,
+                "side": 0,
+                "inner": 0,
+                "down": 0,
+                "contrast": 0,
+                "outerFall": 0
+              },
+              "groups": {},
+              "floors": {}
+            },
+            "groupNoise": {},
+            "thresholds": {
+              "enter": {
+                "smile": 0.32,
+                "sad": 0.28,
+                "surprise": 0.32
+              },
+              "exit": 0.18,
+              "margin": 0.08,
+              "dwell": {
+                "smile": 300,
+                "sad": 650,
+                "surprise": 400,
+                "neutral": 400
+              },
+              "smoothing": 6,
+              "frownMean": 0.11,
+              "frownBoth": 0.055,
+              "innerBrow": 0.13,
+              "strongFrown": 0.24,
+              "strongBoth": 0.1,
+              "openJaw": 0.45,
+              "speechFrown": 0.2,
+              "speechBrow": 0.23,
+              "outerBrowFloor": 0.22,
+              "outerBrowRange": 0.45,
+              "eyeWideFloor": 0.15,
+              "eyeWideRange": 0.4,
+              "continuousSad": {
+                "noiseMultiplier": 1.5,
+                "mouthFloor": 0.0015,
+                "sideFloor": 0.00075,
+                "innerFloor": 0.008,
+                "downFloor": 0.0025,
+                "contrastFloor": 0.012,
+                "settledMouthFloor": 0.006,
+                "settledSideFloor": 0.004,
+                "outerFallFloor": 0.0035,
+                "warmup": 0.35,
+                "fadeIn": 0.8,
+                "fullAfter": 1.4,
+                "maxPreview": 0.42,
+                "visualGain": 1.7,
+                "featureSmoothing": 5
+              },
+              "relative": {
+                "frown": 0.004,
+                "frownSide": 0.003,
+                "innerSad": 0.018,
+                "browDown": 0.01,
+                "browContrast": 0.035,
+                "outer": 0.025,
+                "eye": 0.012,
+                "outerSide": 0.012,
+                "eyeSide": 0.007,
+                "innerSurprise": 0.045,
+                "supportedOuter": 0.018,
+                "supportedEye": 0.008,
+                "jaw": 0.12,
+                "noiseMultiplier": 4
+              }
+            },
+            "baseline": null,
+            "calibrating": false,
+            "calibrationMessage": "For subtle expressions, calibrate a relaxed face with your mouth closed for two seconds."
+          },
+          "approach": {
+            "face": {
+              "status": "No face/palm size: missing or clipped landmarks",
+              "armed": false,
+              "size": 0,
+              "rawSize": 0,
+              "spans": null,
+              "ageMs": null,
+              "growth": 0,
+              "rate": 0,
+              "count": 0,
+              "updates": 25,
+              "coherentSamples": 0,
+              "quietMs": 0,
+              "thresholds": null,
+              "checks": {},
+              "lastDetection": null
+            },
+            "hand": {
+              "status": "No face/palm size: missing or clipped landmarks",
+              "armed": false,
+              "size": 0,
+              "rawSize": 0,
+              "spans": null,
+              "ageMs": null,
+              "growth": 0,
+              "rate": 0,
+              "count": 0,
+              "updates": 13,
+              "coherentSamples": 0,
+              "quietMs": 0,
+              "thresholds": null,
+              "checks": {},
+              "lastDetection": null
+            }
+          },
+          "hands": {
+            "state": "ready",
+            "active": true,
+            "worker": true,
+            "error": null,
+            "busy": false,
+            "frames": 13,
+            "interval": 125
+          },
+          "body": {
+            "state": "ready",
+            "worker": true,
+            "error": null,
+            "busy": false,
+            "frames": 9,
+            "interval": 167.10204801845074
+          },
+          "tracks": [
+            {
+              "kind": "audio",
+              "state": "live",
+              "enabled": true
+            },
+            {
+              "kind": "video",
+              "state": "live",
+              "enabled": true
+            }
+          ],
+          "audio": "running",
+          "previewHidden": false
+        }
+      }
+    },
+    "hintVisibleMs": 5976.699999999255
+  },
+  "limitation": "Chrome virtual media devices, actual local inference tasks, keyboard/mouse/touch events and emulated mobile viewports. No physical phone or assistive-technology test."
+}
